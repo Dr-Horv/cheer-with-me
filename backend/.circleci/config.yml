@@ -1,0 +1,45 @@
+version: 2.1
+jobs:
+  deploy-backend:
+    docker:
+      - image: cibuilds/aws:1.16.1
+    steps:
+      - run:
+          name: New deployment
+          command: aws ecs update-service --cluster dev-fredag --service cheerwithme-ecs-service --force-new-deployment
+
+  build-backend:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - run:
+          name: Login to DockerHub
+          command: docker login -u $DOCKER_USER -p $DOCKER_PASS
+      - run:
+          name: Build project
+          command: ./gradlew build
+      - run: 
+          name: Build image
+          command: docker build . -t fredagsdeploy/cheer-with-me
+      - run:
+          name: Push image
+          command: docker push fredagsdeploy/cheer-with-me:latest
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - build-backend
+      - deploy-backend:
+          filters:
+            branches:
+              only:
+                - master
+                - feature/terraform-ecs
+          requires:
+            - build-backend
