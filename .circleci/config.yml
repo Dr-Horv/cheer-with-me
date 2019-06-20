@@ -8,7 +8,20 @@ jobs:
           name: New deployment
           command: aws ecs update-service --cluster dev-fredag --service cheerwithme-ecs-service --force-new-deployment
 
+
   build-backend:
+    docker:
+      - image: circleci/openjdk:11.0.3-jdk-stretch
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - run:
+          name: Build project
+          command: cd backend && ./gradlew build
+      
+  build-and-push-backend:
     docker:
       - image: circleci/openjdk:11.0.3-jdk-stretch
 
@@ -34,12 +47,20 @@ workflows:
   version: 2
   deploy:
     jobs:
-      - build-backend
+      - build-backend:
+          filters:
+            branches:
+              ignore:
+                - master
+      - build-and-push-backend:
+          filters:
+            branches:
+              only:
+                - master
       - deploy-backend:
           filters:
             branches:
               only:
                 - master
-                - feature/terraform-ecs
           requires:
-            - build-backend
+            - build-and-push-backend
