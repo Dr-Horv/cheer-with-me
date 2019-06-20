@@ -42,6 +42,12 @@ fun Application.module(testing: Boolean = false) {
             call.respondText("Cheers mate! :D", contentType = ContentType.Text.Plain)
         }
 
+        post("/echo") {
+            val body = call.receive<Map<String, Any>>()
+            println(body)
+            call.respond(body)
+        }
+
         get("/json/jackson") {
             call.respond(mapOf("hello" to "world"))
         }
