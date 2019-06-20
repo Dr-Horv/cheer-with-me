@@ -17,6 +17,10 @@ jobs:
     steps:
       - checkout:
           path: ~/backend
+      
+      - run:
+          name: ls
+          command: ls -lah
 
       - run:
           name: Login to DockerHub
