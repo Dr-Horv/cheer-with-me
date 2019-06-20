@@ -10,16 +10,16 @@ resource "aws_ecs_task_definition" "cheerwithme" {
 [
   {
     "name": "cheerwithme",
-    "image": "nginxdemos/hello",
+    "image": "fredagsdeploy/cheer-with-me:latest",
     "essential": true,
     "portMappings": [
       {
-        "containerPort": 80,
-        "hostPort": 80
+        "containerPort": 8080,
+        "hostPort": 0
       }
     ],
-    "memory": 500,
-    "cpu": 10
+    "memory": 400,
+    "cpu": 256
   }
 ]
 DEFINITION
