@@ -13,6 +13,8 @@ import io.ktor.routing.routing
 data class FriendRequest(val adder:String, val adee:String)
 
 fun Application.friendModule(testing: Boolean = false){
+
+
     routing {
         get("/friends/"){
             call.respondText("You have no friends :,(",
@@ -20,7 +22,7 @@ fun Application.friendModule(testing: Boolean = false){
                 status = HttpStatusCode.OK)
         }
 
-        post("/friends/add"){
+        post("/friends/add/"){
             val friendReq = call.receive<FriendRequest>()
             val sb = StringBuilder()
             sb.append(friendReq.adder)

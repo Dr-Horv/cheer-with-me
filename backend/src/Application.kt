@@ -6,6 +6,7 @@ import io.ktor.request.*
 import io.ktor.routing.*
 import io.ktor.http.*
 import com.fasterxml.jackson.databind.*
+import dev.fredag.invitation.DatabaseFactory
 import io.ktor.jackson.*
 import io.ktor.features.*
 import org.slf4j.event.*
@@ -36,6 +37,10 @@ fun Application.module(testing: Boolean = false) {
         allowCredentials = true
         anyHost() // @TODO: Don't do this in production if possible. Try to limit it.
     }
+
+    install(DefaultHeaders)
+
+    DatabaseFactory.init()
 
     routing {
         get("/") {
