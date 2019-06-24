@@ -1,8 +1,6 @@
-package dev.fredag
+package dev.fredag.cheerwithme.invitation
 
 import io.ktor.application.Application
-import io.ktor.application.call
-import io.ktor.auth.parseAuthorizationHeader
 import io.ktor.routing.post
 import io.ktor.routing.routing
 
