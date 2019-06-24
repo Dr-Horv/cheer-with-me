@@ -1,4 +1,4 @@
-package dev.fredag
+package dev.fredag.cheerwithme.friends
 
 import io.ktor.application.Application
 import io.ktor.application.call
