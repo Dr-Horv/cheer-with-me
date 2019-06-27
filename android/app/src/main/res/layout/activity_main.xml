@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,65 +16,70 @@
             android:layout_height="match_parent"
             tools:context=".MainActivity"
     >
-
-        <TextView
+        <Button
                 android:textSize="45sp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_beer"
+                android:backgroundTint="@color/beer"
+                android:background="@drawable/button_bg_round"
                 android:id="@+id/textView2" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="95dp"
-                android:textColor="@color/beer"
         />
-        <TextView
+        <Button
                 android:textSize="45sp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_wine"
-                android:textColor="@color/wine"
+                android:backgroundTint="@color/wine"
+                android:background="@drawable/button_bg_round"
                 android:id="@+id/textView3" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" app:layout_constraintEnd_toEndOf="parent"
                 />
-        <TextView
+        <Button
                 android:textSize="45sp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_coffee"
-                android:textColor="@color/coffee"
+                android:backgroundTint="@color/coffee"
+                android:background="@drawable/button_bg_round"
                 android:id="@+id/textView4" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" app:layout_constraintEnd_toEndOf="parent"/>
-        <TextView
+                app:layout_constraintTop_toBottomOf="@+id/textView3" app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.501"/>
+        <Button
                 android:textSize="45sp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_whiskey"
-                android:textColor="@color/whiskey"
+                android:backgroundTint="@color/whiskey"
+                android:background="@drawable/button_bg_round"
                 android:id="@+id/textView5" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" app:layout_constraintEnd_toEndOf="parent"/>
-        <TextView
+        <Button
                 android:textSize="45sp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_cocktail"
-                android:textColor="@color/cocktail"
+                android:backgroundTint="@color/cocktail"
+                android:background="@drawable/button_bg_round"
                 android:id="@+id/textView6" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView5" app:layout_constraintEnd_toEndOf="parent"/>
-        <TextView
+        <Button
                 android:textSize="45sp"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_wineBottle"
-                android:textColor="@color/wineBottle"
+                android:background="@drawable/button_bg_round"
+                android:backgroundTint="@color/wineBottle"
                 android:id="@+id/textView7" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
