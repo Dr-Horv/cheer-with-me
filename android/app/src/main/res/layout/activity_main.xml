@@ -23,6 +23,7 @@
                 android:gravity="center"
                 android:text="@string/fa_icon_beer"
                 android:backgroundTint="@color/beer"
+                android:tag="beer"
                 android:background="@drawable/button_bg_round"
                 android:id="@+id/textView2" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
@@ -34,6 +35,7 @@
                 android:gravity="center"
                 android:text="@string/fa_icon_wine"
                 android:backgroundTint="@color/wine"
+                android:tag="wine"
                 android:background="@drawable/button_bg_round"
                 android:id="@+id/textView3" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView2" app:layout_constraintEnd_toEndOf="parent"
@@ -45,6 +47,7 @@
                 android:gravity="center"
                 android:text="@string/fa_icon_coffee"
                 android:backgroundTint="@color/coffee"
+                android:tag="coffee"
                 android:background="@drawable/button_bg_round"
                 android:id="@+id/textView4" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView3" app:layout_constraintEnd_toEndOf="parent"
@@ -56,6 +59,7 @@
                 android:gravity="center"
                 android:text="@string/fa_icon_whiskey"
                 android:backgroundTint="@color/whiskey"
+                android:tag="whiskey"
                 android:background="@drawable/button_bg_round"
                 android:id="@+id/textView5" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView4" app:layout_constraintEnd_toEndOf="parent"/>
@@ -66,6 +70,7 @@
                 android:gravity="center"
                 android:text="@string/fa_icon_cocktail"
                 android:backgroundTint="@color/cocktail"
+                android:tag="cocktail"
                 android:background="@drawable/button_bg_round"
                 android:id="@+id/textView6" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView5" app:layout_constraintEnd_toEndOf="parent"/>
@@ -77,6 +82,7 @@
                 android:text="@string/fa_icon_wineBottle"
                 android:background="@drawable/button_bg_round"
                 android:backgroundTint="@color/wineBottle"
+                android:tag="wineBottle"
                 android:id="@+id/textView7" app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView6" app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
