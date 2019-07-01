@@ -36,6 +36,9 @@ repositories {
 }
 
 dependencies {
+    compile 'software.amazon.awssdk:sns:2.6.0'
+
+
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "io.ktor:ktor-server-netty:$ktor_version"
     compile "ch.qos.logback:logback-classic:$logback_version"

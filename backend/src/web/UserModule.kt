@@ -1,6 +1,6 @@
-package dev.fredag.web
+package dev.fredag.cheerwithme.web
 
-import dev.fredag.service.UserService
+import dev.fredag.cheerwithme.service.UserService
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.request.receive
@@ -12,16 +12,15 @@ import io.ktor.routing.routing
 //This endpoint is probably not useful later on - the endpoint will probably be rolled into a login/signup.
 //Use for development purposes and whatnot.
 
-data class AddUserRequest(val user : String)
+data class AddUserRequest(val nick : String)
 
 fun Application.userModule(testing: Boolean = false){
-
     val userService = UserService()
 
     routing {
         post("/user/"){
             val newUserName = call.receive<AddUserRequest>()
-            val newUser = userService.addUser(newUserName.user)
+            val newUser = userService.addUser(newUserName.nick)
             call.respond(newUser)
         }
 

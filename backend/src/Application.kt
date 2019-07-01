@@ -21,16 +21,9 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import org.slf4j.event.Level
-import io.ktor.application.*
-import io.ktor.response.*
-import io.ktor.request.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import com.fasterxml.jackson.databind.*
-import dev.fredag.invitation.DatabaseFactory
-import io.ktor.jackson.*
+import dev.fredag.cheerwithme.service.Database
+import dev.fredag.cheerwithme.service.initAwsSdkClients
 import io.ktor.features.*
-import org.slf4j.event.*
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -68,7 +61,8 @@ fun Application.module(testing: Boolean = false) {
 
     install(DefaultHeaders)
 
-    DatabaseFactory.init()
+    Database.init()
+    initAwsSdkClients()
 
     routing {
         get("/") {

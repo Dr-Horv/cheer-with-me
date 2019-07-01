@@ -1,6 +1,6 @@
 package dev.fredag
 
-import dev.fredag.cheerwithme.friends.friendModule
+import dev.fredag.cheerwithme.web.friendModule
 import io.ktor.http.*
 import kotlin.test.*
 import io.ktor.server.testing.*
