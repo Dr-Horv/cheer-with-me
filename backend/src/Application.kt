@@ -6,21 +6,19 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.readValue
 import dev.fredag.cheerwithme.service.Database
 import dev.fredag.cheerwithme.service.initAwsSdkClients
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.application.install
+import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.HttpClient
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.post
 import io.ktor.features.*
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import io.ktor.jackson.jackson
 import io.ktor.request.host
 import io.ktor.request.path
@@ -31,12 +29,20 @@ import io.ktor.response.respondText
 import io.ktor.routing.*
 import org.slf4j.event.Level
 import java.net.URL
+import java.net.http.HttpResponse
 import java.util.concurrent.TimeUnit
 
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+data class AppleOauthResponse(
+    val access_token: String,
+    val expires_in: Long,
+    val id_token: String,
+    val refresh_token: String,
+    val token_type: String)
 
+data class AppleUserSignInRequest(val code: String)
 
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
@@ -95,7 +101,9 @@ fun Application.module(testing: Boolean = false) {
                 "https://appleid.apple.com"
             )
             validate { credentials ->
-                println(credentials)
+                log.debug("$credentials")
+                log.debug("${credentials.payload}")
+                log.debug(ObjectMapper().writeValueAsString(credentials))
                 JWTPrincipal(credentials.payload)
             }
 
@@ -117,7 +125,7 @@ fun Application.module(testing: Boolean = false) {
 
         post("/echo") {
             val body = call.receive<Map<String, Any>>()
-            println(body)
+            log.debug("$body")
             call.respond(body)
         }
 
@@ -125,7 +133,63 @@ fun Application.module(testing: Boolean = false) {
             call.respond(mapOf("hello" to "world"))
         }
 
-        authenticate(authOauthForLogin, "apple") {
+        authenticate("apple") {
+            post("/login/apple") {
+                val appleUserSignInRequest = call.receive<AppleUserSignInRequest>()
+
+                log.debug("Code ${appleUserSignInRequest.code}")
+
+                val data = Parameters.build {
+                    append("grant_type", "authorization_code")
+                    append("code", appleUserSignInRequest.code)
+                    // append("redirect_uri" , $redirect_uri)
+                    append("client_id" , "dev.fredag.CheerWithMe")
+                    append("client_secret" , "eyJraWQiOiJHNlA5NlIzNzdZIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJSS0hWM1daOUNSIiwiaWF0IjoxNTYyNzg4MjMzLCJleHAiOjE1NzgzNDAyMzMsImF1ZCI6Imh0dHBzOi8vYXBwbGVpZC5hcHBsZS5jb20iLCJzdWIiOiJkZXYuZnJlZGFnLkNoZWVyV2l0aE1lIn0.JS8YcwgGcsEFWDf_dhVwVM5IZf7451_Xp84o7_kaOoSP-z6n1zlXQJQMZXFmxG5adcjStxLeSuSnHOLCgPz-ig")
+                }
+
+                log.debug("Sending form with data: $data")
+                val body = HttpClient().submitForm<String>(
+                    url = "https://appleid.apple.com/auth/token",
+                    formParameters = data,
+                    encodeInQuery = false,
+                    block = { header("user-agent", "cheer-with-me") }
+                )
+
+                /**
+                 * Can't parse atm
+                 */
+                val appleOauthResponse = ObjectMapper().readValue<AppleOauthResponse>(body)
+
+                log.debug("RESPONSE $appleOauthResponse")
+                call.respond(mapOf("accessToken" to appleOauthResponse.access_token))
+
+                // TODO Store access token for user lookup
+                // Create and store user (use sub
+                // Implement custom auth lookup on access token
+                /*
+                val principal = call.authentication.principal<JWTPrincipal>()!!
+                principal.payload.subject
+
+                 */
+
+
+                /*
+                if(httpResponse.statusCode() == 200) {
+                    val body = httpResponse.body()
+                    log.debug("Success! $body")
+                    call.respond(mapOf("accessToken" to body))
+
+                    // Store Access token!
+                } else {
+                    log.debug("Failed! $httpResponse")
+                    call.respond(mapOf("error" to "failed"))
+                }
+
+                 */
+            }
+        }
+
+        authenticate(authOauthForLogin) {
             route("/login") {
                 param("error") {
                     handle {
@@ -143,8 +207,8 @@ fun Application.module(testing: Boolean = false) {
 
                     val data = ObjectMapper().readValue<Map<String, Any?>>(json)
                     val id = data["id"] as String?
-                    println(id)
-                    println(data)
+                    log.debug(id)
+                    log.debug("$data")
                     call.loggedInSuccessResponse(principal)
                 }
             }
