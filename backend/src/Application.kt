@@ -1,5 +1,6 @@
 package dev.fredag.cheerwithme
 
+import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -10,6 +11,8 @@ import io.ktor.application.ApplicationCall
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.*
+import io.ktor.auth.jwt.JWTPrincipal
+import io.ktor.auth.jwt.jwt
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -27,9 +30,13 @@ import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.*
 import org.slf4j.event.Level
+import java.net.URL
+import java.util.concurrent.TimeUnit
 
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+
+
 
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
@@ -78,6 +85,21 @@ fun Application.module(testing: Boolean = false) {
             }
             urlProvider = { redirectUrl("/login") }
         }
+
+        jwt("apple") {
+            verifier(
+                JwkProviderBuilder(URL("https://appleid.apple.com/auth/keys"))
+                .cached(10, 24, TimeUnit.HOURS)
+                .rateLimited(10, 1, TimeUnit.MINUTES)
+                .build(),
+                "https://appleid.apple.com"
+            )
+            validate { credentials ->
+                println(credentials)
+                JWTPrincipal(credentials.payload)
+            }
+
+        }
     }
 
     Database.init()
@@ -103,7 +125,7 @@ fun Application.module(testing: Boolean = false) {
             call.respond(mapOf("hello" to "world"))
         }
 
-        authenticate(authOauthForLogin) {
+        authenticate(authOauthForLogin, "apple") {
             route("/login") {
                 param("error") {
                     handle {
