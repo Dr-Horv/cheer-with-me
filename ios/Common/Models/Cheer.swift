@@ -1,0 +1,61 @@
+//
+//  Cheer.swift
+//  CheerWithMeWatch WatchKit Extension
+//
+//  Created by Johan Lindskogen on 2019-06-12.
+//  Copyright © 2019 Johan Lindskogen. All rights reserved.
+//
+
+import SwiftUI
+
+struct Cheer: Identifiable {
+    var id = UUID()
+    
+    var type: CheerType
+    
+    enum CheerType: String, CaseIterable, Codable, Hashable {
+        case beer = "beer"
+        case wine = "wine"
+        case coffee = "coffee"
+        case whiskey = "whiskey"
+        case cocktail = "cocktail"
+        case wineBottle = "wineBottle"
+        
+        var color: Color {
+            switch self {
+            case .beer:
+                return .init(.displayP3, red: 1.00, green: 0.78, blue: 0.00, opacity: 1.00)
+            case .wine:
+                return .init(.displayP3, red: 1.00, green: 0.41, blue: 0.51, opacity: 1.00)
+            case .whiskey:
+                return .init(.displayP3, red: 0.19, green: 0.56, blue: 0.91, opacity: 1.00)
+            case .cocktail:
+                return .init(.displayP3, red: 0.57, green: 0.86, blue: 0.32, opacity: 1.00)
+            case .wineBottle:
+                return .init(.displayP3, red: 0.73, green: 0.42, blue: 1.00, opacity: 1.00)
+            case .coffee:
+                return .init(.displayP3, red: 0.68, green: 0.50, blue: 0.36, opacity: 1.00)
+            }
+        }
+        
+        var imageName: String {
+            switch self {
+            case .beer:
+                return "\u{f0fc}"
+            case .wine:
+                return "\u{f5ce}"
+            case .coffee:
+                return "\u{f0f4}"
+            case .whiskey:
+                return "\u{f7a0}"
+            case .cocktail:
+                return "\u{f561}"
+            case .wineBottle:
+                return "\u{f72f}"
+            }
+        }
+    }
+}
+
+
+let allCheers = Cheer.CheerType.allCases.map { Cheer(type: $0) }

@@ -1,0 +1,825 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3D0F1E6222C17675007783E9 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F1E6122C17675007783E9 /* LoginView.swift */; };
+		3D0F1E6422C17866007783E9 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F1E6322C17866007783E9 /* DetailView.swift */; };
+		3D0F1E6622C178C0007783E9 /* CheersListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F1E6522C178C0007783E9 /* CheersListView.swift */; };
+		3D0F1E6822C52028007783E9 /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F1E6722C52028007783E9 /* PushNotificationManager.swift */; };
+		3D0F1E6A22C52660007783E9 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F1E6922C52660007783E9 /* MainView.swift */; };
+		3D0F1E6C22C56547007783E9 /* UserStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F1E6B22C56547007783E9 /* UserStore.swift */; };
+		3D2FBD6722CBF68A00B5B29F /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2FBD6622CBF68A00B5B29F /* AuthenticationController.swift */; };
+		3D879EE322BAC6A7003C00E3 /* CheerIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D879EE222BAC6A7003C00E3 /* CheerIcon.swift */; };
+		3DAE435122B1A29A0012B142 /* CheerWithMeWatch WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 3DAE435022B1A29A0012B142 /* CheerWithMeWatch WatchKit App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3DAE435722B1A29A0012B142 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DAE435522B1A29A0012B142 /* Interface.storyboard */; };
+		3DAE435922B1A29C0012B142 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DAE435822B1A29C0012B142 /* Assets.xcassets */; };
+		3DAE436022B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 3DAE435F22B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3DAE436522B1A29C0012B142 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE436422B1A29C0012B142 /* ContentView.swift */; };
+		3DAE436722B1A29C0012B142 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE436622B1A29C0012B142 /* HostingController.swift */; };
+		3DAE436922B1A29C0012B142 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE436822B1A29C0012B142 /* ExtensionDelegate.swift */; };
+		3DAE436B22B1A29C0012B142 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE436A22B1A29C0012B142 /* NotificationController.swift */; };
+		3DAE436D22B1A29C0012B142 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE436C22B1A29C0012B142 /* NotificationView.swift */; };
+		3DAE436F22B1A29E0012B142 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DAE436E22B1A29E0012B142 /* Assets.xcassets */; };
+		3DAE437222B1A29E0012B142 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DAE437122B1A29E0012B142 /* Preview Assets.xcassets */; };
+		3DAE438422B1AB120012B142 /* Cheer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE438322B1AB120012B142 /* Cheer.swift */; };
+		3DB59B4222BBDD1B00766AD8 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB59B4122BBDD1B00766AD8 /* DetailView.swift */; };
+		3DB59B4422BBE41E00766AD8 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB59B4322BBE41E00766AD8 /* Position.swift */; };
+		3DC21FE322BC0A20005B6281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE222BC0A20005B6281 /* AppDelegate.swift */; };
+		3DC21FE522BC0A20005B6281 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE422BC0A20005B6281 /* SceneDelegate.swift */; };
+		3DC21FE722BC0A20005B6281 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE622BC0A20005B6281 /* ContentView.swift */; };
+		3DC21FE922BC0A24005B6281 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DC21FE822BC0A24005B6281 /* Assets.xcassets */; };
+		3DC21FEC22BC0A24005B6281 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DC21FEB22BC0A24005B6281 /* Preview Assets.xcassets */; };
+		3DC21FEF22BC0A24005B6281 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DC21FED22BC0A24005B6281 /* LaunchScreen.storyboard */; };
+		3DC21FF522BC0A75005B6281 /* CheerIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D879EE222BAC6A7003C00E3 /* CheerIcon.swift */; };
+		3DC21FF622BC0A78005B6281 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB59B4322BBE41E00766AD8 /* Position.swift */; };
+		3DC21FF922BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3DC21FF822BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf */; };
+		3DC21FFA22BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3DC21FF822BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf */; };
+		3DC21FFB22BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3DC21FF822BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf */; };
+		3DC21FFC22BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3DC21FF822BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf */; };
+		3DC21FFD22BC0B6F005B6281 /* Cheer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE438322B1AB120012B142 /* Cheer.swift */; };
+		3DC21FFF22BC0F9D005B6281 /* BackendServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */; };
+		3DC2200022BC0F9D005B6281 /* BackendServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */; };
+		3DC2200222C134CB005B6281 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC2200122C134CB005B6281 /* ActivityIndicator.swift */; };
+		3DC2200322C134CB005B6281 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC2200122C134CB005B6281 /* ActivityIndicator.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3DAE435222B1A29A0012B142 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3DAE434622B1A29A0012B142 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3DAE434F22B1A29A0012B142;
+			remoteInfo = "CheerWithMeWatch WatchKit App";
+		};
+		3DAE436122B1A29C0012B142 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3DAE434622B1A29A0012B142 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3DAE435E22B1A29C0012B142;
+			remoteInfo = "CheerWithMeWatch WatchKit Extension";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		3DAE437A22B1A29E0012B142 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				3DAE436022B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DAE437E22B1A29E0012B142 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				3DAE435122B1A29A0012B142 /* CheerWithMeWatch WatchKit App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		3D0F1E6022C175CB007783E9 /* CheerWithMe.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CheerWithMe.entitlements; sourceTree = "<group>"; };
+		3D0F1E6122C17675007783E9 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		3D0F1E6322C17866007783E9 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		3D0F1E6522C178C0007783E9 /* CheersListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheersListView.swift; sourceTree = "<group>"; };
+		3D0F1E6722C52028007783E9 /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
+		3D0F1E6922C52660007783E9 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		3D0F1E6B22C56547007783E9 /* UserStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStore.swift; sourceTree = "<group>"; };
+		3D2FBD6622CBF68A00B5B29F /* AuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
+		3D879EE122BAC326003C00E3 /* CheerWithMeWatch WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "CheerWithMeWatch WatchKit Extension.entitlements"; sourceTree = "<group>"; };
+		3D879EE222BAC6A7003C00E3 /* CheerIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheerIcon.swift; sourceTree = "<group>"; };
+		3DAE434C22B1A29A0012B142 /* CheerWithMeWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheerWithMeWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DAE435022B1A29A0012B142 /* CheerWithMeWatch WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "CheerWithMeWatch WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DAE435622B1A29A0012B142 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		3DAE435822B1A29C0012B142 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3DAE435A22B1A29C0012B142 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DAE435F22B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "CheerWithMeWatch WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DAE436422B1A29C0012B142 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3DAE436622B1A29C0012B142 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
+		3DAE436822B1A29C0012B142 /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
+		3DAE436A22B1A29C0012B142 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		3DAE436C22B1A29C0012B142 /* NotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
+		3DAE436E22B1A29E0012B142 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3DAE437122B1A29E0012B142 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		3DAE437322B1A29E0012B142 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DAE437422B1A29E0012B142 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
+		3DAE438322B1AB120012B142 /* Cheer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cheer.swift; sourceTree = "<group>"; };
+		3DB59B4122BBDD1B00766AD8 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		3DB59B4322BBE41E00766AD8 /* Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
+		3DC21FE022BC0A20005B6281 /* CheerWithMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheerWithMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3DC21FE222BC0A20005B6281 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		3DC21FE422BC0A20005B6281 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		3DC21FE622BC0A20005B6281 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3DC21FE822BC0A24005B6281 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3DC21FEB22BC0A24005B6281 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		3DC21FEE22BC0A24005B6281 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		3DC21FF022BC0A24005B6281 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		3DC21FF822BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Pro-Regular-400.otf"; sourceTree = "<group>"; };
+		3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendServices.swift; sourceTree = "<group>"; };
+		3DC2200122C134CB005B6281 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3DAE435C22B1A29C0012B142 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DC21FDD22BC0A20005B6281 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3DAE434522B1A29A0012B142 = {
+			isa = PBXGroup;
+			children = (
+				3DC21FF422BC0A59005B6281 /* Common */,
+				3DAE435422B1A29A0012B142 /* CheerWithMeWatch WatchKit App */,
+				3DAE436322B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension */,
+				3DC21FE122BC0A20005B6281 /* CheerWithMe */,
+				3DAE434D22B1A29A0012B142 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3DAE434D22B1A29A0012B142 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3DAE434C22B1A29A0012B142 /* CheerWithMeWatch.app */,
+				3DAE435022B1A29A0012B142 /* CheerWithMeWatch WatchKit App.app */,
+				3DAE435F22B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension.appex */,
+				3DC21FE022BC0A20005B6281 /* CheerWithMe.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3DAE435422B1A29A0012B142 /* CheerWithMeWatch WatchKit App */ = {
+			isa = PBXGroup;
+			children = (
+				3DAE435522B1A29A0012B142 /* Interface.storyboard */,
+				3DAE435822B1A29C0012B142 /* Assets.xcassets */,
+				3DAE435A22B1A29C0012B142 /* Info.plist */,
+			);
+			path = "CheerWithMeWatch WatchKit App";
+			sourceTree = "<group>";
+		};
+		3DAE436322B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension */ = {
+			isa = PBXGroup;
+			children = (
+				3D879EE122BAC326003C00E3 /* CheerWithMeWatch WatchKit Extension.entitlements */,
+				3DAE436422B1A29C0012B142 /* ContentView.swift */,
+				3DB59B4122BBDD1B00766AD8 /* DetailView.swift */,
+				3DAE436622B1A29C0012B142 /* HostingController.swift */,
+				3DAE436822B1A29C0012B142 /* ExtensionDelegate.swift */,
+				3DAE436A22B1A29C0012B142 /* NotificationController.swift */,
+				3DAE436C22B1A29C0012B142 /* NotificationView.swift */,
+				3DAE436E22B1A29E0012B142 /* Assets.xcassets */,
+				3DAE437322B1A29E0012B142 /* Info.plist */,
+				3DAE437422B1A29E0012B142 /* PushNotificationPayload.apns */,
+				3DAE437022B1A29E0012B142 /* Preview Content */,
+			);
+			path = "CheerWithMeWatch WatchKit Extension";
+			sourceTree = "<group>";
+		};
+		3DAE437022B1A29E0012B142 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				3DAE437122B1A29E0012B142 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		3DAE438222B1AAFD0012B142 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				3DAE438322B1AB120012B142 /* Cheer.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		3DC21FE122BC0A20005B6281 /* CheerWithMe */ = {
+			isa = PBXGroup;
+			children = (
+				3D0F1E6022C175CB007783E9 /* CheerWithMe.entitlements */,
+				3DC21FE222BC0A20005B6281 /* AppDelegate.swift */,
+				3DC21FE422BC0A20005B6281 /* SceneDelegate.swift */,
+				3DC21FE622BC0A20005B6281 /* ContentView.swift */,
+				3D0F1E6322C17866007783E9 /* DetailView.swift */,
+				3D2FBD6622CBF68A00B5B29F /* AuthenticationController.swift */,
+				3D0F1E6922C52660007783E9 /* MainView.swift */,
+				3DC21FE822BC0A24005B6281 /* Assets.xcassets */,
+				3DC21FED22BC0A24005B6281 /* LaunchScreen.storyboard */,
+				3DC21FF022BC0A24005B6281 /* Info.plist */,
+				3DC21FEA22BC0A24005B6281 /* Preview Content */,
+				3D0F1E6122C17675007783E9 /* LoginView.swift */,
+				3D0F1E6522C178C0007783E9 /* CheersListView.swift */,
+				3D0F1E6722C52028007783E9 /* PushNotificationManager.swift */,
+				3D0F1E6B22C56547007783E9 /* UserStore.swift */,
+			);
+			path = CheerWithMe;
+			sourceTree = "<group>";
+		};
+		3DC21FEA22BC0A24005B6281 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				3DC21FEB22BC0A24005B6281 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		3DC21FF422BC0A59005B6281 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				3DAE438222B1AAFD0012B142 /* Models */,
+				3DC21FF722BC0A99005B6281 /* Resources */,
+				3D879EE222BAC6A7003C00E3 /* CheerIcon.swift */,
+				3DC2200122C134CB005B6281 /* ActivityIndicator.swift */,
+				3DB59B4322BBE41E00766AD8 /* Position.swift */,
+				3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		3DC21FF722BC0A99005B6281 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3DC21FF822BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3DAE434B22B1A29A0012B142 /* CheerWithMeWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3DAE437F22B1A29E0012B142 /* Build configuration list for PBXNativeTarget "CheerWithMeWatch" */;
+			buildPhases = (
+				3DAE434A22B1A29A0012B142 /* Resources */,
+				3DAE437E22B1A29E0012B142 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3DAE435322B1A29A0012B142 /* PBXTargetDependency */,
+			);
+			name = CheerWithMeWatch;
+			productName = CheerWithMeWatch;
+			productReference = 3DAE434C22B1A29A0012B142 /* CheerWithMeWatch.app */;
+			productType = "com.apple.product-type.application.watchapp2-container";
+		};
+		3DAE434F22B1A29A0012B142 /* CheerWithMeWatch WatchKit App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3DAE437B22B1A29E0012B142 /* Build configuration list for PBXNativeTarget "CheerWithMeWatch WatchKit App" */;
+			buildPhases = (
+				3DAE434E22B1A29A0012B142 /* Resources */,
+				3DAE437A22B1A29E0012B142 /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3DAE436222B1A29C0012B142 /* PBXTargetDependency */,
+			);
+			name = "CheerWithMeWatch WatchKit App";
+			productName = "CheerWithMeWatch WatchKit App";
+			productReference = 3DAE435022B1A29A0012B142 /* CheerWithMeWatch WatchKit App.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+		3DAE435E22B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3DAE437722B1A29E0012B142 /* Build configuration list for PBXNativeTarget "CheerWithMeWatch WatchKit Extension" */;
+			buildPhases = (
+				3DAE435B22B1A29C0012B142 /* Sources */,
+				3DAE435C22B1A29C0012B142 /* Frameworks */,
+				3DAE435D22B1A29C0012B142 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "CheerWithMeWatch WatchKit Extension";
+			productName = "CheerWithMeWatch WatchKit Extension";
+			productReference = 3DAE435F22B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
+		};
+		3DC21FDF22BC0A20005B6281 /* CheerWithMe */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3DC21FF322BC0A24005B6281 /* Build configuration list for PBXNativeTarget "CheerWithMe" */;
+			buildPhases = (
+				3DC21FDC22BC0A20005B6281 /* Sources */,
+				3DC21FDD22BC0A20005B6281 /* Frameworks */,
+				3DC21FDE22BC0A20005B6281 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CheerWithMe;
+			productName = CheerWithMe;
+			productReference = 3DC21FE022BC0A20005B6281 /* CheerWithMe.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3DAE434622B1A29A0012B142 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1100;
+				LastUpgradeCheck = 1100;
+				ORGANIZATIONNAME = "Johan Lindskogen";
+				TargetAttributes = {
+					3DAE434B22B1A29A0012B142 = {
+						CreatedOnToolsVersion = 11.0;
+					};
+					3DAE434F22B1A29A0012B142 = {
+						CreatedOnToolsVersion = 11.0;
+					};
+					3DAE435E22B1A29C0012B142 = {
+						CreatedOnToolsVersion = 11.0;
+					};
+					3DC21FDF22BC0A20005B6281 = {
+						CreatedOnToolsVersion = 11.0;
+					};
+				};
+			};
+			buildConfigurationList = 3DAE434922B1A29A0012B142 /* Build configuration list for PBXProject "CheerWithMeWatch" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3DAE434522B1A29A0012B142;
+			productRefGroup = 3DAE434D22B1A29A0012B142 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3DAE434B22B1A29A0012B142 /* CheerWithMeWatch */,
+				3DAE434F22B1A29A0012B142 /* CheerWithMeWatch WatchKit App */,
+				3DAE435E22B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension */,
+				3DC21FDF22BC0A20005B6281 /* CheerWithMe */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3DAE434A22B1A29A0012B142 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DC21FF922BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DAE434E22B1A29A0012B142 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DAE435922B1A29C0012B142 /* Assets.xcassets in Resources */,
+				3DAE435722B1A29A0012B142 /* Interface.storyboard in Resources */,
+				3DC21FFA22BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DAE435D22B1A29C0012B142 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DAE437222B1A29E0012B142 /* Preview Assets.xcassets in Resources */,
+				3DAE436F22B1A29E0012B142 /* Assets.xcassets in Resources */,
+				3DC21FFB22BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DC21FDE22BC0A20005B6281 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DC21FEF22BC0A24005B6281 /* LaunchScreen.storyboard in Resources */,
+				3DC21FEC22BC0A24005B6281 /* Preview Assets.xcassets in Resources */,
+				3DC21FE922BC0A24005B6281 /* Assets.xcassets in Resources */,
+				3DC21FFC22BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3DAE435B22B1A29C0012B142 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DAE436722B1A29C0012B142 /* HostingController.swift in Sources */,
+				3DB59B4222BBDD1B00766AD8 /* DetailView.swift in Sources */,
+				3DC21FFF22BC0F9D005B6281 /* BackendServices.swift in Sources */,
+				3DAE436522B1A29C0012B142 /* ContentView.swift in Sources */,
+				3DAE436B22B1A29C0012B142 /* NotificationController.swift in Sources */,
+				3DC2200222C134CB005B6281 /* ActivityIndicator.swift in Sources */,
+				3DB59B4422BBE41E00766AD8 /* Position.swift in Sources */,
+				3DAE436922B1A29C0012B142 /* ExtensionDelegate.swift in Sources */,
+				3DAE436D22B1A29C0012B142 /* NotificationView.swift in Sources */,
+				3DAE438422B1AB120012B142 /* Cheer.swift in Sources */,
+				3D879EE322BAC6A7003C00E3 /* CheerIcon.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3DC21FDC22BC0A20005B6281 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3DC2200022BC0F9D005B6281 /* BackendServices.swift in Sources */,
+				3D0F1E6A22C52660007783E9 /* MainView.swift in Sources */,
+				3DC21FE322BC0A20005B6281 /* AppDelegate.swift in Sources */,
+				3D2FBD6722CBF68A00B5B29F /* AuthenticationController.swift in Sources */,
+				3DC21FE522BC0A20005B6281 /* SceneDelegate.swift in Sources */,
+				3D0F1E6422C17866007783E9 /* DetailView.swift in Sources */,
+				3D0F1E6222C17675007783E9 /* LoginView.swift in Sources */,
+				3DC2200322C134CB005B6281 /* ActivityIndicator.swift in Sources */,
+				3D0F1E6822C52028007783E9 /* PushNotificationManager.swift in Sources */,
+				3D0F1E6C22C56547007783E9 /* UserStore.swift in Sources */,
+				3DC21FF522BC0A75005B6281 /* CheerIcon.swift in Sources */,
+				3DC21FF622BC0A78005B6281 /* Position.swift in Sources */,
+				3D0F1E6622C178C0007783E9 /* CheersListView.swift in Sources */,
+				3DC21FE722BC0A20005B6281 /* ContentView.swift in Sources */,
+				3DC21FFD22BC0B6F005B6281 /* Cheer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3DAE435322B1A29A0012B142 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3DAE434F22B1A29A0012B142 /* CheerWithMeWatch WatchKit App */;
+			targetProxy = 3DAE435222B1A29A0012B142 /* PBXContainerItemProxy */;
+		};
+		3DAE436222B1A29C0012B142 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3DAE435E22B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension */;
+			targetProxy = 3DAE436122B1A29C0012B142 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		3DAE435522B1A29A0012B142 /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3DAE435622B1A29A0012B142 /* Base */,
+			);
+			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
+		3DC21FED22BC0A24005B6281 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3DC21FEE22BC0A24005B6281 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		3DAE437522B1A29E0012B142 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		3DAE437622B1A29E0012B142 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3DAE437822B1A29E0012B142 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_ENTITLEMENTS = "CheerWithMeWatch WatchKit Extension/CheerWithMeWatch WatchKit Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"CheerWithMeWatch WatchKit Extension\"/Preview\\ Content";
+				DEVELOPMENT_TEAM = RKHV3WZ9CR;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "CheerWithMeWatch WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMeWatch.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
+			};
+			name = Debug;
+		};
+		3DAE437922B1A29E0012B142 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_ENTITLEMENTS = "CheerWithMeWatch WatchKit Extension/CheerWithMeWatch WatchKit Extension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"CheerWithMeWatch WatchKit Extension\"/Preview\\ Content";
+				DEVELOPMENT_TEAM = RKHV3WZ9CR;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = "CheerWithMeWatch WatchKit Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMeWatch.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
+			};
+			name = Release;
+		};
+		3DAE437C22B1A29E0012B142 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = RKHV3WZ9CR;
+				IBSC_MODULE = CheerWithMeWatch_WatchKit_Extension;
+				INFOPLIST_FILE = "CheerWithMeWatch WatchKit App/Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMeWatch.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
+			};
+			name = Debug;
+		};
+		3DAE437D22B1A29E0012B142 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = RKHV3WZ9CR;
+				IBSC_MODULE = CheerWithMeWatch_WatchKit_Extension;
+				INFOPLIST_FILE = "CheerWithMeWatch WatchKit App/Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMeWatch.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.0;
+			};
+			name = Release;
+		};
+		3DAE438022B1A29E0012B142 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RKHV3WZ9CR;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMeWatch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		3DAE438122B1A29E0012B142 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = RKHV3WZ9CR;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMeWatch;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		3DC21FF122BC0A24005B6281 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CheerWithMe/CheerWithMe.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "CheerWithMe/Preview\\ Content";
+				DEVELOPMENT_TEAM = RKHV3WZ9CR;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = CheerWithMe/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMe;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3DC21FF222BC0A24005B6281 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = CheerWithMe/CheerWithMe.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "CheerWithMe/Preview\\ Content";
+				DEVELOPMENT_TEAM = RKHV3WZ9CR;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = CheerWithMe/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMe;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3DAE434922B1A29A0012B142 /* Build configuration list for PBXProject "CheerWithMeWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3DAE437522B1A29E0012B142 /* Debug */,
+				3DAE437622B1A29E0012B142 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3DAE437722B1A29E0012B142 /* Build configuration list for PBXNativeTarget "CheerWithMeWatch WatchKit Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3DAE437822B1A29E0012B142 /* Debug */,
+				3DAE437922B1A29E0012B142 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3DAE437B22B1A29E0012B142 /* Build configuration list for PBXNativeTarget "CheerWithMeWatch WatchKit App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3DAE437C22B1A29E0012B142 /* Debug */,
+				3DAE437D22B1A29E0012B142 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3DAE437F22B1A29E0012B142 /* Build configuration list for PBXNativeTarget "CheerWithMeWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3DAE438022B1A29E0012B142 /* Debug */,
+				3DAE438122B1A29E0012B142 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3DC21FF322BC0A24005B6281 /* Build configuration list for PBXNativeTarget "CheerWithMe" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3DC21FF122BC0A24005B6281 /* Debug */,
+				3DC21FF222BC0A24005B6281 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3DAE434622B1A29A0012B142 /* Project object */;
+}
