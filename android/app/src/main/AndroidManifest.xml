@@ -17,7 +17,7 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
         <service
-                android:name=".NotificationService"
+                android:name=".FirebaseNotificationReceiver"
                 android:exported="false">
 
             <intent-filter>

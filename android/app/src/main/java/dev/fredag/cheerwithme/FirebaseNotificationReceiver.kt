@@ -6,12 +6,17 @@ import android.content.Context
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import org.koin.android.ext.android.get
 
-class NotificationService : FirebaseMessagingService() {
+class FirebaseNotificationReceiver : FirebaseMessagingService() {
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        val TAG = "FirebaseNotification"
+        val context: Context = get()
+        val notificationService: NotificationService = get()
+        remoteMessage.getFrom()?.let { notificationService.showNotification("cheer_with_me", it, context) }
+        Log.d(TAG, "did we get contect? $context")
 
-        val TAG = "NotificationService"
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
@@ -36,7 +41,7 @@ class NotificationService : FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
-        val TAG = "NotificationService"
+        val TAG = "FirebaseNotificationReceiver"
         Log.d(TAG, "Refreshed token: " + token);
 
         // If you want to send messages to this application instance or
