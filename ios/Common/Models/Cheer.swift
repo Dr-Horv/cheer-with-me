@@ -59,3 +59,20 @@ struct Cheer: Identifiable {
 
 
 let allCheers = Cheer.CheerType.allCases.map { Cheer(type: $0) }
+
+
+
+enum FontIcon: String {
+    case beer = "\u{f0fc}"
+    case wineGlassAlt = "\u{f5ce}"
+    case coffee = "\u{f0f4}"
+    case glassWhiskey = "\u{f7a0}"
+    case cocktail = "\u{f561}"
+    case wineBottle = "\u{f72f}"
+    case map = "\u{f279}"
+    case calendar = "\u{f133}"
+    case userFriends = "\u{f500}"
+    case user = "\u{f007}"
+    case times = "\u{f00d}"
+    case check = "\u{f00c}"
+}
