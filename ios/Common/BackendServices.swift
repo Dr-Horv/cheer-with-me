@@ -12,7 +12,7 @@ import Combine
 let host = "http://192.168.1.71:8080"
 // let host = "http://cheer-with-me.fredag.dev"
 
-class RequestStatus<T>: BindableObject {
+class RequestStatus<T>: ObservableObject {
     var willChange = PassthroughSubject<Void, Never>()
     
     var data: T? { didSet { willChange.send() }}

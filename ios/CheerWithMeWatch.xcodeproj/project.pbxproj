@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,6 +27,7 @@
 		3DAE436F22B1A29E0012B142 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DAE436E22B1A29E0012B142 /* Assets.xcassets */; };
 		3DAE437222B1A29E0012B142 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DAE437122B1A29E0012B142 /* Preview Assets.xcassets */; };
 		3DAE438422B1AB120012B142 /* Cheer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE438322B1AB120012B142 /* Cheer.swift */; };
+		3DB2AE6822F2340C0061193B /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB2AE6722F2340C0061193B /* MapView.swift */; };
 		3DB59B4222BBDD1B00766AD8 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB59B4122BBDD1B00766AD8 /* DetailView.swift */; };
 		3DB59B4422BBE41E00766AD8 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB59B4322BBE41E00766AD8 /* Position.swift */; };
 		3DC21FE322BC0A20005B6281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE222BC0A20005B6281 /* AppDelegate.swift */; };
@@ -46,6 +47,10 @@
 		3DC2200022BC0F9D005B6281 /* BackendServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */; };
 		3DC2200222C134CB005B6281 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC2200122C134CB005B6281 /* ActivityIndicator.swift */; };
 		3DC2200322C134CB005B6281 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC2200122C134CB005B6281 /* ActivityIndicator.swift */; };
+		3DDFE05022E775F900FE5434 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDFE04F22E775F900FE5434 /* AppState.swift */; };
+		3DDFE05222E776E100FE5434 /* UserActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDFE05122E776E100FE5434 /* UserActions.swift */; };
+		3DDFE05422E7952600FE5434 /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDFE05322E7952600FE5434 /* FriendsView.swift */; };
+		3DDFE05622E7AC3F00FE5434 /* CreateCheerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDFE05522E7AC3F00FE5434 /* CreateCheerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -117,6 +122,7 @@
 		3DAE437322B1A29E0012B142 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DAE437422B1A29E0012B142 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 		3DAE438322B1AB120012B142 /* Cheer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cheer.swift; sourceTree = "<group>"; };
+		3DB2AE6722F2340C0061193B /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		3DB59B4122BBDD1B00766AD8 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		3DB59B4322BBE41E00766AD8 /* Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
 		3DC21FE022BC0A20005B6281 /* CheerWithMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheerWithMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -130,6 +136,10 @@
 		3DC21FF822BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Pro-Regular-400.otf"; sourceTree = "<group>"; };
 		3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendServices.swift; sourceTree = "<group>"; };
 		3DC2200122C134CB005B6281 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
+		3DDFE04F22E775F900FE5434 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppState.swift; path = ../../../../../System/Volumes/Data/Users/johanlindskogen/Projects/CheerWithMeWatch/Common/AppState.swift; sourceTree = "<group>"; };
+		3DDFE05122E776E100FE5434 /* UserActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserActions.swift; path = ../../../../../System/Volumes/Data/Users/johanlindskogen/Projects/CheerWithMeWatch/Common/UserActions.swift; sourceTree = "<group>"; };
+		3DDFE05322E7952600FE5434 /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FriendsView.swift; path = ../../../../../System/Volumes/Data/Users/johanlindskogen/Projects/CheerWithMeWatch/CheerWithMe/FriendsView.swift; sourceTree = "<group>"; };
+		3DDFE05522E7AC3F00FE5434 /* CreateCheerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CreateCheerView.swift; path = ../../../../../System/Volumes/Data/Users/johanlindskogen/Projects/CheerWithMeWatch/CheerWithMe/CreateCheerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,6 +234,7 @@
 				3DC21FE422BC0A20005B6281 /* SceneDelegate.swift */,
 				3DC21FE622BC0A20005B6281 /* ContentView.swift */,
 				3D0F1E6322C17866007783E9 /* DetailView.swift */,
+				3DDFE05322E7952600FE5434 /* FriendsView.swift */,
 				3D2FBD6622CBF68A00B5B29F /* AuthenticationController.swift */,
 				3D0F1E6922C52660007783E9 /* MainView.swift */,
 				3DC21FE822BC0A24005B6281 /* Assets.xcassets */,
@@ -232,8 +243,10 @@
 				3DC21FEA22BC0A24005B6281 /* Preview Content */,
 				3D0F1E6122C17675007783E9 /* LoginView.swift */,
 				3D0F1E6522C178C0007783E9 /* CheersListView.swift */,
+				3DB2AE6722F2340C0061193B /* MapView.swift */,
 				3D0F1E6722C52028007783E9 /* PushNotificationManager.swift */,
 				3D0F1E6B22C56547007783E9 /* UserStore.swift */,
+				3DDFE05522E7AC3F00FE5434 /* CreateCheerView.swift */,
 			);
 			path = CheerWithMe;
 			sourceTree = "<group>";
@@ -255,6 +268,8 @@
 				3DC2200122C134CB005B6281 /* ActivityIndicator.swift */,
 				3DB59B4322BBE41E00766AD8 /* Position.swift */,
 				3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */,
+				3DDFE04F22E775F900FE5434 /* AppState.swift */,
+				3DDFE05122E776E100FE5434 /* UserActions.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -283,6 +298,9 @@
 				3DAE435322B1A29A0012B142 /* PBXTargetDependency */,
 			);
 			name = CheerWithMeWatch;
+			packageProductDependencies = (
+				3DDFE04E22E775AF00FE5434 /* SwiftUIFlux */,
+			);
 			productName = CheerWithMeWatch;
 			productReference = 3DAE434C22B1A29A0012B142 /* CheerWithMeWatch.app */;
 			productType = "com.apple.product-type.application.watchapp2-container";
@@ -371,6 +389,9 @@
 				Base,
 			);
 			mainGroup = 3DAE434522B1A29A0012B142;
+			packageReferences = (
+				3DDFE04D22E775AF00FE5434 /* XCRemoteSwiftPackageReference "SwiftUIFlux" */,
+			);
 			productRefGroup = 3DAE434D22B1A29A0012B142 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -433,7 +454,9 @@
 				3DAE436722B1A29C0012B142 /* HostingController.swift in Sources */,
 				3DB59B4222BBDD1B00766AD8 /* DetailView.swift in Sources */,
 				3DC21FFF22BC0F9D005B6281 /* BackendServices.swift in Sources */,
+				3DDFE05022E775F900FE5434 /* AppState.swift in Sources */,
 				3DAE436522B1A29C0012B142 /* ContentView.swift in Sources */,
+				3DDFE05222E776E100FE5434 /* UserActions.swift in Sources */,
 				3DAE436B22B1A29C0012B142 /* NotificationController.swift in Sources */,
 				3DC2200222C134CB005B6281 /* ActivityIndicator.swift in Sources */,
 				3DB59B4422BBE41E00766AD8 /* Position.swift in Sources */,
@@ -450,15 +473,18 @@
 			files = (
 				3DC2200022BC0F9D005B6281 /* BackendServices.swift in Sources */,
 				3D0F1E6A22C52660007783E9 /* MainView.swift in Sources */,
+				3DDFE05422E7952600FE5434 /* FriendsView.swift in Sources */,
 				3DC21FE322BC0A20005B6281 /* AppDelegate.swift in Sources */,
 				3D2FBD6722CBF68A00B5B29F /* AuthenticationController.swift in Sources */,
 				3DC21FE522BC0A20005B6281 /* SceneDelegate.swift in Sources */,
 				3D0F1E6422C17866007783E9 /* DetailView.swift in Sources */,
+				3DB2AE6822F2340C0061193B /* MapView.swift in Sources */,
 				3D0F1E6222C17675007783E9 /* LoginView.swift in Sources */,
 				3DC2200322C134CB005B6281 /* ActivityIndicator.swift in Sources */,
 				3D0F1E6822C52028007783E9 /* PushNotificationManager.swift in Sources */,
 				3D0F1E6C22C56547007783E9 /* UserStore.swift in Sources */,
 				3DC21FF522BC0A75005B6281 /* CheerIcon.swift in Sources */,
+				3DDFE05622E7AC3F00FE5434 /* CreateCheerView.swift in Sources */,
 				3DC21FF622BC0A78005B6281 /* Position.swift in Sources */,
 				3D0F1E6622C178C0007783E9 /* CheersListView.swift in Sources */,
 				3DC21FE722BC0A20005B6281 /* ContentView.swift in Sources */,
@@ -820,6 +846,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3DDFE04D22E775AF00FE5434 /* XCRemoteSwiftPackageReference "SwiftUIFlux" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Dimillian/SwiftUIFlux";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3DDFE04E22E775AF00FE5434 /* SwiftUIFlux */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3DDFE04D22E775AF00FE5434 /* XCRemoteSwiftPackageReference "SwiftUIFlux" */;
+			productName = SwiftUIFlux;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3DAE434622B1A29A0012B142 /* Project object */;
 }

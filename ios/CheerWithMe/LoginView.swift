@@ -23,9 +23,7 @@ struct LoginView : View {
             }
             
             HStack {
-                Text("Username")
-                TextField($username)
-                    .textFieldStyle(.roundedBorder)
+                TextField("Username", text: $username).textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
             }
             .padding()

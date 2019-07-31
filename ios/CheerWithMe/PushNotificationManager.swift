@@ -12,7 +12,7 @@ import UserNotifications
 
 
 
-class PushNotificationManager: NSObject, BindableObject, UNUserNotificationCenterDelegate {
+class PushNotificationManager: NSObject, ObservableObject, UNUserNotificationCenterDelegate {
     var willChange = PassthroughSubject<Void, Never>()
     
     let manager = UNUserNotificationCenter.current()

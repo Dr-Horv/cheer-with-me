@@ -10,9 +10,7 @@ import SwiftUI
 import Combine
 
 struct ContentView : View {
-    @State var signedIn: Bool = false
-    
-    @State var userManager: UserManager = .shared
+    @State var signedIn: Bool = true
     
     func onSubmit(with username: String) {
         

@@ -47,14 +47,13 @@ struct CheerIcon : View {
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .foregroundColor(cheer.type.color.opacity(0.5))
+            Rectangle().foregroundColor(cheer.type.color.opacity(0.5))
                 .frame(width: size.outterSize, height: size.outterSize)
             Rectangle()
                 .foregroundColor(cheer.type.color)
                 .frame(width: size.outterSize, height: size.outterSize)
                 .offset(x: 0, y: active ? 0 : size.outterSize)
-        Text(cheer.type.imageName).font(.custom("FontAwesome5Pro-Regular", size: size.fontSize))
+            Text(cheer.type.imageName).font(.custom("FontAwesome5Pro-Regular", size: size.fontSize))
                 .foregroundColor(.black)
                 .offset(x: cheer.type == .beer ? size.beerOffset : 0, y: 0)
                 .frame(width: size.outterSize, height: size.outterSize)

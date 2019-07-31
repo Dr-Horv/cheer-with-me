@@ -7,10 +7,9 @@
 //
 
 import CoreLocation
-import SwiftUI
 import Combine
 
-class PositionManager: NSObject, BindableObject, CLLocationManagerDelegate {
+class PositionManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     var willChange = PassthroughSubject<Void, Never>()
     
     var locationManager: CLLocationManager

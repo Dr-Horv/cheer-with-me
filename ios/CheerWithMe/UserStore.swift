@@ -6,12 +6,11 @@
 //  Copyright © 2019 Johan Lindskogen. All rights reserved.
 //
 
-import SwiftUI
 import Combine
 
 
 
-class UserManager: BindableObject {
+class UserManager: ObservableObject {
     var willChange = PassthroughSubject<Void, Never>()
     
     static var shared = UserManager.init()
