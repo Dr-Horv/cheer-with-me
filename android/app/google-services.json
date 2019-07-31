@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "100813085034",
+    "firebase_url": "https://cheer-with-me.firebaseio.com",
+    "project_id": "cheer-with-me",
+    "storage_bucket": "cheer-with-me.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:100813085034:android:4ed850984d5dd4d4",
+        "android_client_info": {
+          "package_name": "dev.fredag.cheerwithme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "100813085034-gs7ih8rud7ejj3lhjkbraquboolvnocn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.fredag.cheerwithme",
+            "certificate_hash": "0a7fa2937cf4af5dd6884b36139cc6a37e75a920"
+          }
+        },
+        {
+          "client_id": "100813085034-3cuk5oujcet9dg16j2ihc30vjojoofa6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJP806V2xbq_ND1OBtcobw5076lh650Sc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "100813085034-5bqsp43dnio00dmbea4fhe0brjnnq8fi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

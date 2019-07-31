@@ -1,91 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".MainActivity" android:id="@+id/main_container">
 
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_height="match_parent"
+              android:id="@+id/main_activity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/icons_container"
+    <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".MainActivity"
-    >
-        <Button
-                android:textSize="45sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/fa_icon_beer"
-                android:backgroundTint="@color/beer"
-                android:tag="beer"
-                android:background="@drawable/button_bg_round"
-                android:id="@+id/textView2" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" app:layout_constraintEnd_toEndOf="parent"
-        />
-        <Button
-                android:textSize="45sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/fa_icon_wine"
-                android:backgroundTint="@color/wine"
-                android:tag="wine"
-                android:background="@drawable/button_bg_round"
-                android:id="@+id/textView3" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView2" app:layout_constraintEnd_toEndOf="parent"
-                />
-        <Button
-                android:textSize="45sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/fa_icon_coffee"
-                android:backgroundTint="@color/coffee"
-                android:tag="coffee"
-                android:background="@drawable/button_bg_round"
-                android:id="@+id/textView4" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView3" app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.501"/>
-        <Button
-                android:textSize="45sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/fa_icon_whiskey"
-                android:backgroundTint="@color/whiskey"
-                android:tag="whiskey"
-                android:background="@drawable/button_bg_round"
-                android:id="@+id/textView5" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView4" app:layout_constraintEnd_toEndOf="parent"/>
-        <Button
-                android:textSize="45sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/fa_icon_cocktail"
-                android:backgroundTint="@color/cocktail"
-                android:tag="cocktail"
-                android:background="@drawable/button_bg_round"
-                android:id="@+id/textView6" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView5" app:layout_constraintEnd_toEndOf="parent"/>
-        <Button
-                android:textSize="45sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/fa_icon_wineBottle"
-                android:background="@drawable/button_bg_round"
-                android:backgroundTint="@color/wineBottle"
-                android:tag="wineBottle"
-                android:id="@+id/textView7" app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView6" app:layout_constraintEnd_toEndOf="parent"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/fragment_container" />
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp"
+            android:background="?android:attr/windowBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:menu="@menu/bottom_nav_bar"/>
 
-</ScrollView>
+</LinearLayout>

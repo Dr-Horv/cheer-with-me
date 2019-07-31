@@ -7,22 +7,15 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.view.children
-import com.android.volley.Request
-import com.android.volley.Response
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.iid.FirebaseInstanceId
 
-import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
-import org.koin.android.ext.android.get
 
 class Controller(val notificationService : NotificationService)
 
@@ -32,11 +25,63 @@ var notificationModule = module {
 }
 
 class MainActivity : AppCompatActivity() {
-    val CHANNEL_ID = "cheer_with_me";
+
+    val fragmentManager = supportFragmentManager
+
+    private var currentNavigationId = -1
+
+
+    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
+
+        if (currentNavigationId == item.itemId) {
+            return@OnNavigationItemSelectedListener false
+        }
+        currentNavigationId = item.itemId
+
+        lateinit var switchToFragment: Fragment
+        var retValue = false
+        when (item.itemId) {
+            R.id.navigation_cheer -> {
+                switchToFragment = CheerViewFragment()
+                retValue = true
+            }
+            R.id.navigation_map-> {
+                switchToFragment = CheerViewFragment()
+                retValue = true
+            }
+            R.id.navigation_calendar -> {
+                switchToFragment = CheerViewFragment()
+                retValue = true
+            }
+            R.id.navigation_friends -> {
+                switchToFragment = CheerViewFragment()
+                retValue = true
+            }
+            R.id.navigation_profile-> {
+                switchToFragment = CheerViewFragment()
+                retValue = true
+            }
+        }
+        val fragmentTransaction = fragmentManager.beginTransaction()
+            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
+        fragmentTransaction.replace(R.id.fragment_container, switchToFragment)
+        fragmentTransaction.commit()
+
+        retValue
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.fragment_container, CheerViewFragment())
+        fragmentTransaction.commit()
+
+        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+
+        navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
+
 
         FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
             Log.d("MAIN_STUFF", "STUFFFF" + it.result?.token)
@@ -50,38 +95,7 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-        val iconFont = FontManager.getTypeface(applicationContext, FontManager.FONTAWESOME)
-        FontManager.markAsIconContainer(icons_container, iconFont)
 
-        val queue = Volley.newRequestQueue(this)
-        val url = "http://cheer-with-me.fredag.dev/"
-        val notificationService: NotificationService = get()
-        notificationService.createNotificationChannel(CHANNEL_ID, this)
-        notificationService.showNotification(CHANNEL_ID, "App opened", this)
-
-        for (child in icons_container.children) {
-            if (child is Button) {
-                child.setOnClickListener { view ->
-
-                    println(view.tag)
-
-
-                    val stringRequest = StringRequest(Request.Method.GET, url,
-                        Response.Listener<String> { response ->
-                            // Display the first 500 characters of the response string.
-                            println("Response: %s".format(response.toString()))
-                        },
-                        Response.ErrorListener { error ->
-                            // TODO: Handle error
-                            println(error.message)
-                            println("That didn't work!")
-                        })
-                    queue.add(stringRequest)
-
-
-                }
-            }
-        }
     }
 
 
