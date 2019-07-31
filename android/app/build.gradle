@@ -45,4 +45,6 @@ dependencies {
     // Koin Android Experimental features
     implementation "org.koin:koin-android-ext:2.0.1"
     implementation 'com.google.android.material:material:1.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
 }

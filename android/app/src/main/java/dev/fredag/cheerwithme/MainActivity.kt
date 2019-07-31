@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
                 retValue = true
             }
             R.id.navigation_map-> {
-                switchToFragment = CheerViewFragment()
+                switchToFragment = MapViewFragment()
                 retValue = true
             }
             R.id.navigation_calendar -> {
