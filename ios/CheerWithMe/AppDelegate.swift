@@ -19,6 +19,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print(aps)
         }
         
+        PushNotificationManager.shared.requestPermissions()
+        
         // Override point for customization after application launch.
         return true
     }
@@ -31,7 +33,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let tokenParts = deviceToken.map { data in String(format: "%02.2hhx", data) }
         let token = tokenParts.joined()
         
-        if let username = UserManager.shared.username {
+        print("Device Token: \(token)")
+        
+        /*if let username = UserManager.shared.username {
             let _ = BackendService.shared.post(pushToken: token, withAuthentication: username)
                 .sink(receiveCompletion: { completion in
                     print("completion \(completion)")
@@ -41,8 +45,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     
                     
                 })
-        }
-        print("Device Token: \(token)")
+        }*/
+        
     }
     
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
