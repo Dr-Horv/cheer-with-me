@@ -9,9 +9,43 @@
 import SwiftUI
 
 struct MainView : View {
+    @State var selectedTab = Tab.cheer
+    
+    enum Tab: Int {
+       case cheer, map, calendar, friends, me
+    }
+    
+    func tabbarItem(icon: String, text: String) -> some View {
+        VStack {
+            Image(icon)
+            Text(text)
+        }
+    }
+    
     var body: some View {
-        NavigationView {
-            CheersListView(cheers: allCheers)
+        TabView(selection: $selectedTab) {
+            CreateCheerView().tabItem {
+                self.tabbarItem(icon: "beer", text: "Cheer")
+            }.tag(Tab.cheer)
+            MapView()
+                .tabItem {
+                    self.tabbarItem(icon: "map", text: "Map")
+            }.tag(Tab.map)
+            NavigationView {
+                CheersListView(cheers: allCheers)
+            }
+            .tabItem {
+                self.tabbarItem(icon: "calendar", text: "Events")
+            }.tag(Tab.calendar)
+            FriendsView(friends: allFriends, requests: allRequests)
+                .environment(\.colorScheme, .dark)
+               .tabItem {
+                self.tabbarItem(icon: "user-friends", text: "Friends")
+           }.tag(Tab.friends)
+            DetailView(cheer: allCheers[3])
+                .tabItem {
+                    self.tabbarItem(icon: "user", text: "Me")
+            }.tag(Tab.me)
         }
     }
 }
