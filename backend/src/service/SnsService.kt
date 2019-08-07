@@ -15,7 +15,7 @@ class SnsService(
 
     //TODO: Move to somewhere more fitting
     private val pushArnApple = "arn:aws:sns:eu-central-1:601851889032:app/APNS_SANDBOX/cheer-with-me"
-    private val pushArnAndroid = ""
+    private val pushArnAndroid = "arn:aws:sns:eu-central-1:601851889032:app/GCM/cheer-with-me"
 
     private var badgeNbr = 0
 
