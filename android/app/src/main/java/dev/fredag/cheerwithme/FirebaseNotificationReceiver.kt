@@ -1,7 +1,5 @@
 package dev.fredag.cheerwithme
 
-import android.app.IntentService
-import android.content.Intent
 import android.content.Context
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -14,7 +12,11 @@ class FirebaseNotificationReceiver : FirebaseMessagingService() {
         val TAG = "FirebaseNotification"
         val context: Context = get()
         val notificationService: NotificationService = get()
-        remoteMessage.getFrom()?.let { notificationService.showNotification("cheer_with_me", it, context) }
+        Log.d("FirebaseNotification", remoteMessage.notification.toString())
+        notificationService.showNotification("cheer_with_me", remoteMessage.notification!!, get())
+
+        //notificationService.showNotificationString("cheer_with_me", remoteMessage.data["message"]!!, get())
+        //remoteMessage.getFrom()?.let { notificationService.showNotificationString("cheer_with_me", it, context) }
         Log.d(TAG, "did we get contect? $context")
 
         // TODO(developer): Handle FCM messages here.

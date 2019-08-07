@@ -4,15 +4,15 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.iid.FirebaseInstanceId
-
+import com.google.firebase.messaging.RemoteMessage
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import org.koin.dsl.module
@@ -54,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                 retValue = true
             }
             R.id.navigation_friends -> {
-                switchToFragment = CheerViewFragment()
+                switchToFragment = FriendsFragment()
                 retValue = true
             }
             R.id.navigation_profile-> {
@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
 }
 
 class NotificationService {
-    fun showNotification(channelId: String, title: String, context: Context) {
+    fun showNotificationString(channelId: String, title: String, context: Context) {
         val notificationBuilder = NotificationCompat.Builder(context, channelId)
             .setSmallIcon(R.drawable.notification_icon_background)
             .setContentTitle(title)
@@ -114,6 +114,25 @@ class NotificationService {
             notify(1, notificationBuilder.build())
         }
     }
+
+    fun showNotification(channelId: String, notification: RemoteMessage.Notification, context: Context) {
+        val notificationBuilder = NotificationCompat.Builder(context, channelId)
+            //.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.logo_gris))
+            //.setSmallIcon(R.drawable.big_button_bg_round)
+            .setSmallIcon(R.drawable.notification_icon_background)
+            .setContentTitle(notification.title)
+            .setContentText(notification.body)
+            //.setAutoCancel(true)
+            //.setSound(defaultSoundUri)
+            //.setContentIntent(pendingIntent);
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+
+        with(NotificationManagerCompat.from(context)) {
+            notify(1, notificationBuilder.build())
+        }
+    }
+
 
     fun createNotificationChannel(channel_id: String, context: Context) {
         // Create the NotificationChannel, but only on API 26+ because
