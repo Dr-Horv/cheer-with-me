@@ -1,6 +1,8 @@
 package dev.fredag.cheerwithme.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import dev.fredag.cheerwithme.model.Platform
+import dev.fredag.cheerwithme.web.DeviceRegistration
 import software.amazon.awssdk.services.sns.SnsClient
 import software.amazon.awssdk.services.sns.model.*
 import java.util.*
@@ -12,7 +14,8 @@ class SnsService(
     private val snsClient: SnsClient) {
 
     //TODO: Move to somewhere more fitting
-    private val applicationArn = "arn:aws:sns:eu-central-1:601851889032:app/APNS_SANDBOX/cheer-with-me"
+    private val pushArnApple = "arn:aws:sns:eu-central-1:601851889032:app/APNS_SANDBOX/cheer-with-me"
+    private val pushArnAndroid = ""
 
     private var badgeNbr = 0
 
@@ -43,14 +46,15 @@ class SnsService(
         snsClient.publish(publishRequest)
     }
 
-    fun registerWithSNS(token: String, previousEndpointArn: String?): String {
+    fun registerWithSNS(deviceRegistration: DeviceRegistration, previousEndpointArn: String?): String {
         var endpointArn = previousEndpointArn
         var updateNeeded = false
         var createNeeded = null == endpointArn
+        var token = deviceRegistration.pushToken
 
         if (createNeeded) {
             // No platform endpoint ARN is stored; need to call createEndpoint.
-            endpointArn = createEndpoint(token)
+            endpointArn = createEndpoint(deviceRegistration)
             createNeeded = false
         }
 
@@ -72,7 +76,7 @@ class SnsService(
         }
 
         if (createNeeded) {
-            createEndpoint(token)
+            createEndpoint(deviceRegistration)
         }
 
         println("updateNeeded = $updateNeeded")
@@ -97,12 +101,14 @@ class SnsService(
     /**
      * @return never null
      */
-    private fun createEndpoint(token: String): String? {
+    private fun createEndpoint(registration: DeviceRegistration): String? {
         var endpointArn: String? = null
+        val (token, platform) = registration
+        val pushArn = platformPushArn(platform)
         try {
             println("Creating platform endpoint with token $token")
             val cpeReq = CreatePlatformEndpointRequest.builder()
-                .platformApplicationArn(applicationArn)
+                .platformApplicationArn(pushArn)
                 .token(token)
                 .build()
             val cpeRes = snsClient
@@ -127,5 +133,12 @@ class SnsService(
         }
 
         return endpointArn
+    }
+
+    private fun platformPushArn(platform: Platform): String {
+        return when(platform){
+            Platform.ANDROID -> pushArnAndroid
+            Platform.APPLE -> pushArnApple
+        }
     }
 }

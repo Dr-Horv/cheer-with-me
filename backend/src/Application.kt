@@ -52,6 +52,8 @@ val userService : UserService = UserService()
 val snsService : SnsService = SnsService(buildSnsClient())
 val pushService : PushService = PushService(snsService, userService)
 
+const val OAUTH_LOGIN_REFERENCE = "OAUTH_LOGIN_REFERENCE"
+
 data class AppleUserSignInRequest(val code: String)
 
 @Suppress("unused") // Referenced in application.conf
@@ -86,9 +88,8 @@ fun Application.module(testing: Boolean = false) {
     }
     install(DefaultHeaders)
 
-    val authOauthForLogin = "authOauthForLogin"
     install(Authentication) {
-        oauth(authOauthForLogin) {
+        oauth(OAUTH_LOGIN_REFERENCE) {
             client = HttpClient()
             providerLookup = {
                 val path = this.request.path()
@@ -199,7 +200,7 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        authenticate(authOauthForLogin) {
+        authenticate(OAUTH_LOGIN_REFERENCE) {
             route("/login") {
                 param("error") {
                     handle {

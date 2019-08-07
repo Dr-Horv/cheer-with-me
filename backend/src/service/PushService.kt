@@ -4,6 +4,7 @@ import dev.fredag.cheerwithme.model.NotFoundException
 import dev.fredag.cheerwithme.model.UserPushArn
 import dev.fredag.cheerwithme.model.UserPushArns
 import dev.fredag.cheerwithme.model.Users
+import dev.fredag.cheerwithme.web.DeviceRegistration
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.select
@@ -12,11 +13,11 @@ class PushService(
     private val snsService: SnsService,
     private val userService: UserService) {
 
-    suspend fun registerDeviceToken(nick: String, token: String) {
+    suspend fun registerDeviceToken(nick: String, registration: DeviceRegistration) {
         val user = userService.findUserByNick(nick)
         user ?: throw NotFoundException("No user with nick $nick")
 
-        val arn = snsService.registerWithSNS(token, lookupArn(user.id))
+        val arn = snsService.registerWithSNS(registration, lookupArn(user.id))
         Database.dbQuery {
             UserPushArns.insert {
                 it[UserPushArns.arn] = arn
