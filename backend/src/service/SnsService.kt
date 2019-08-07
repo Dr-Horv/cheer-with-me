@@ -1,14 +1,19 @@
 package dev.fredag.cheerwithme.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import software.amazon.awssdk.services.sns.SnsClient
 import software.amazon.awssdk.services.sns.model.*
 import java.util.*
 import java.util.regex.Pattern
 
-const val applicationArn = "arn:aws:sns:eu-central-1:601851889032:app/APNS_SANDBOX/cheer-with-me"
 
-class SnsService {
-    private val snsClient = AwsSNSFactory.snsClient()
+
+class SnsService(
+    private val snsClient: SnsClient) {
+
+    //TODO: Move to somewhere more fitting
+    private val applicationArn = "arn:aws:sns:eu-central-1:601851889032:app/APNS_SANDBOX/cheer-with-me"
+
     private var badgeNbr = 0
 
     fun sendPush(arn: String, message: String) {

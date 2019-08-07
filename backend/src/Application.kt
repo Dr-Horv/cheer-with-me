@@ -7,6 +7,14 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import dev.fredag.cheerwithme.service.Database
 import dev.fredag.cheerwithme.service.initAwsSdkClients
 import io.ktor.application.*
+import dev.fredag.cheerwithme.service.*
+import dev.fredag.cheerwithme.web.friendRouting
+import dev.fredag.cheerwithme.web.pushRouting
+import dev.fredag.cheerwithme.web.userRouting
+import io.ktor.application.Application
+import io.ktor.application.ApplicationCall
+import io.ktor.application.call
+import io.ktor.application.install
 import io.ktor.auth.*
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
@@ -28,6 +36,8 @@ import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.*
 import org.slf4j.event.Level
+import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.sns.SnsClient
 import java.net.URL
 import java.net.http.HttpResponse
 import java.util.concurrent.TimeUnit
@@ -41,6 +51,10 @@ data class AppleOauthResponse(
     val id_token: String,
     val refresh_token: String,
     val token_type: String)
+//Dependency injection without magic? Instantiate service classes for insertion in "modules" (routes) here
+val userService : UserService = UserService()
+val snsService : SnsService = SnsService(buildSnsClient())
+val pushService : PushService = PushService(snsService, userService)
 
 data class AppleUserSignInRequest(val code: String)
 
@@ -211,12 +225,21 @@ fun Application.module(testing: Boolean = false) {
                     log.debug("$data")
                     call.loggedInSuccessResponse(principal)
                 }
+
+            }
+
+            //Put all other externally defined routes here (if they require authentication)
+            routing {
+                userRouting(userService)
+                pushRouting(pushService)
+                friendRouting()
             }
 
             get("/safe") {
                 call.respond(mapOf("secret" to "hello"))
             }
         }
+
     }
 }
 
@@ -237,4 +260,11 @@ private suspend fun ApplicationCall.loginFailedPage(errors: List<String>) {
 
 private suspend fun ApplicationCall.loggedInSuccessResponse(callback: Principal) {
     respondText { "Success" }
+}
+
+private fun buildSnsClient(): SnsClient {
+    return SnsClient
+        .builder()
+        .region(Region.EU_CENTRAL_1)
+        .build()
 }

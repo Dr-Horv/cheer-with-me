@@ -10,29 +10,26 @@ import io.ktor.application.call
 import io.ktor.request.header
 import io.ktor.request.receive
 import io.ktor.response.respondText
+import io.ktor.routing.Routing
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.util.pipeline.PipelineContext
 
 data class DeviceRegistration(val pushToken: String)
 
-fun Application.pushModule(testing: Boolean = false) {
+fun Routing.pushRouting(pushService: PushService, testing: Boolean = false) {
+    post("/push/register-device") {
+        val body = call.receive<DeviceRegistration>()
+        val nick = getNickOrUnauthorized()
+        pushService.registerDeviceToken(nick, body.pushToken)
 
-    val pushService = PushService(SnsService(), UserService())
-
-    routing {
-        post("/push/register-device") {
-            val body = call.receive<DeviceRegistration>()
-            val nick = getNickOrUnauthorized()
-            pushService.registerDeviceToken(nick, body.pushToken)
-
-            call.respondText("Hello")
-        }
-
-        post("/push/test/{nick}") {
-            pushService.push(call.parameters["nick"]!!, call.receive())
-        }
+        call.respondText("Hello")
     }
+
+    post("/push/test/{nick}") {
+        pushService.push(call.parameters["nick"]!!, call.receive())
+    }
+
 }
 
 private fun PipelineContext<Unit, ApplicationCall>.getNickOrUnauthorized(): String {
