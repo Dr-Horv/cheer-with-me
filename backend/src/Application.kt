@@ -19,12 +19,9 @@ import io.ktor.auth.*
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.HttpClient
-import io.ktor.client.request.HttpRequestBuilder
-import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.header
-import io.ktor.client.request.post
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.jackson.jackson
@@ -39,7 +36,6 @@ import org.slf4j.event.Level
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sns.SnsClient
 import java.net.URL
-import java.net.http.HttpResponse
 import java.util.concurrent.TimeUnit
 
 
