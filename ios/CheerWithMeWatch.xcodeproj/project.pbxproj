@@ -47,8 +47,6 @@
 		3DC2200022BC0F9D005B6281 /* BackendServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */; };
 		3DC2200222C134CB005B6281 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC2200122C134CB005B6281 /* ActivityIndicator.swift */; };
 		3DC2200322C134CB005B6281 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC2200122C134CB005B6281 /* ActivityIndicator.swift */; };
-		3DDFE05022E775F900FE5434 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDFE04F22E775F900FE5434 /* AppState.swift */; };
-		3DDFE05222E776E100FE5434 /* UserActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDFE05122E776E100FE5434 /* UserActions.swift */; };
 		3DDFE05422E7952600FE5434 /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDFE05322E7952600FE5434 /* FriendsView.swift */; };
 		3DDFE05622E7AC3F00FE5434 /* CreateCheerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDFE05522E7AC3F00FE5434 /* CreateCheerView.swift */; };
 /* End PBXBuildFile section */
@@ -136,10 +134,8 @@
 		3DC21FF822BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Pro-Regular-400.otf"; sourceTree = "<group>"; };
 		3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendServices.swift; sourceTree = "<group>"; };
 		3DC2200122C134CB005B6281 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
-		3DDFE04F22E775F900FE5434 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppState.swift; path = ../../../../../System/Volumes/Data/Users/johanlindskogen/Projects/CheerWithMeWatch/Common/AppState.swift; sourceTree = "<group>"; };
-		3DDFE05122E776E100FE5434 /* UserActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UserActions.swift; path = ../../../../../System/Volumes/Data/Users/johanlindskogen/Projects/CheerWithMeWatch/Common/UserActions.swift; sourceTree = "<group>"; };
-		3DDFE05322E7952600FE5434 /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FriendsView.swift; path = ../../../../../System/Volumes/Data/Users/johanlindskogen/Projects/CheerWithMeWatch/CheerWithMe/FriendsView.swift; sourceTree = "<group>"; };
-		3DDFE05522E7AC3F00FE5434 /* CreateCheerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CreateCheerView.swift; path = ../../../../../System/Volumes/Data/Users/johanlindskogen/Projects/CheerWithMeWatch/CheerWithMe/CreateCheerView.swift; sourceTree = "<group>"; };
+		3DDFE05322E7952600FE5434 /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
+		3DDFE05522E7AC3F00FE5434 /* CreateCheerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCheerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -268,8 +264,6 @@
 				3DC2200122C134CB005B6281 /* ActivityIndicator.swift */,
 				3DB59B4322BBE41E00766AD8 /* Position.swift */,
 				3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */,
-				3DDFE04F22E775F900FE5434 /* AppState.swift */,
-				3DDFE05122E776E100FE5434 /* UserActions.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -454,9 +448,7 @@
 				3DAE436722B1A29C0012B142 /* HostingController.swift in Sources */,
 				3DB59B4222BBDD1B00766AD8 /* DetailView.swift in Sources */,
 				3DC21FFF22BC0F9D005B6281 /* BackendServices.swift in Sources */,
-				3DDFE05022E775F900FE5434 /* AppState.swift in Sources */,
 				3DAE436522B1A29C0012B142 /* ContentView.swift in Sources */,
-				3DDFE05222E776E100FE5434 /* UserActions.swift in Sources */,
 				3DAE436B22B1A29C0012B142 /* NotificationController.swift in Sources */,
 				3DC2200222C134CB005B6281 /* ActivityIndicator.swift in Sources */,
 				3DB59B4422BBE41E00766AD8 /* Position.swift in Sources */,

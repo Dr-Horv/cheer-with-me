@@ -36,9 +36,9 @@ struct CreateCheerView: View {
                 Button(action: { print(self.icon) }) {
                     ZStack {
                         Circle().fill(Color.hex(0xf9ab02))
-                        FontAwesomeIcon(icon: self.icon, size: 50)
-                            .padding(80)
-                    }.aspectRatio(1.0, contentMode: .fit)
+                            .frame(height: 200)
+                        FontAwesomeIcon(icon: self.icon, size: 70)
+                    }
                 }
             }
             
@@ -76,15 +76,17 @@ struct CreateCheerView: View {
                     Spacer()
                 }.padding(.vertical, 20)
             }
-        }
-        
+        }.foregroundColor(.primary)
     }
 }
 
 #if DEBUG
 struct CreateCheerView_Previews: PreviewProvider {
     static var previews: some View {
-        CreateCheerView()
+        Group {
+            CreateCheerView()
+            CreateCheerView().background(Color.black).edgesIgnoringSafeArea(.all).environment(\.colorScheme, .dark)
+        }
     }
 }
 #endif

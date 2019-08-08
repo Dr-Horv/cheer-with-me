@@ -46,21 +46,26 @@ struct FriendsView: View {
                     HStack {
                         UserRow(username: username)
                         Spacer()
-                        Button(action: {}) {
+                        Button(action: {
+                            print("Pressed \(username): x")
+                        }) {
                             ZStack {
                                 Circle().stroke(lineWidth: 2)
                                 FontAwesomeIcon(icon: .times, size: 25)
-                            }.foregroundColor(.hex(0x9aa0a6)).frame(width: 44, height: 44)
+                            }.foregroundColor(.hex(0x9aa0a6)).frame(width: 44)
                         }
-                        Button(action: {}) {
+                        Button(action: {
+                            print("Pressed \(username): ✔")
+                        }) {
                             ZStack {
                                 Circle().stroke(lineWidth: 2)
                                 FontAwesomeIcon(icon: .check, size: 25)
                                 
                             }.foregroundColor(.hex(0xf9ab02))
-                                .frame(width: 44, height: 44)
+                                .frame(width: 44)
                         }
-                    }.padding()
+                    }.padding([.top, .bottom])
+                        
                 }
                 
             }
@@ -68,17 +73,21 @@ struct FriendsView: View {
             Section(header: Text("Friends")) {
                 ForEach(friends, id: \.self) { username in
                     UserRow(username: username)
-                        .padding()
                 }
             }
-        }
+        }.listStyle(GroupedListStyle())
+            .listRowInsets(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
     }
 }
 
 #if DEBUG
 struct FriendsView_Previews: PreviewProvider {
     static var previews: some View {
-        FriendsView(friends: allFriends, requests: allRequests)
+        Group {
+            FriendsView(friends: allFriends, requests: allRequests)
+            FriendsView(friends: allFriends, requests: allRequests)
+                .environment(\.colorScheme, .dark)
+        }
     }
 }
 #endif

@@ -38,7 +38,6 @@ struct MainView : View {
                 self.tabbarItem(icon: "calendar", text: "Events")
             }.tag(Tab.calendar)
             FriendsView(friends: allFriends, requests: allRequests)
-                .environment(\.colorScheme, .dark)
                .tabItem {
                 self.tabbarItem(icon: "user-friends", text: "Friends")
            }.tag(Tab.friends)

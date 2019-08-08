@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct LoginView : View {
-    @State private var username: String = "Horv"
+    @State private var username: String = ""
     
     var onPressSignIn: (String) -> Void
     

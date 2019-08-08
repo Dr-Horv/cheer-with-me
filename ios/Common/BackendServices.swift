@@ -124,11 +124,12 @@ extension BackendService {
 
 struct PostPushTokenPayload: Codable {
     let pushToken: String
+    let platform: String
 }
 
 extension BackendService {
     func post(pushToken: String, withAuthentication token: String) -> AnyPublisher<PostPushTokenPayload, Error> {
-        let payload = PostPushTokenPayload(pushToken: pushToken)
+        let payload = PostPushTokenPayload(pushToken: pushToken, platform: "APPLE")
         
         guard let inputData = try? encoder.encode(payload) else {
             preconditionFailure("Payload cannot be serialized")
