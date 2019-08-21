@@ -29,6 +29,24 @@ import androidx.core.content.ContextCompat
 
 class CheerViewFragment: Fragment() {
 
+    val tagToColor = mutableMapOf(
+        "beer" to R.color.beer,
+        "wine" to R.color.wine,
+        "cocktail" to R.color.cocktail,
+        "wineBottle" to R.color.wineBottle,
+        "whiskey" to R.color.whiskey,
+        "coffee" to R.color.coffee
+    )
+
+    val tagToIcon = mutableMapOf(
+        "beer" to R.string.fa_icon_beer,
+        "wine" to R.string.fa_icon_wine,
+        "cocktail" to R.string.fa_icon_cocktail,
+        "wineBottle" to R.string.fa_icon_wineBottle,
+        "whiskey" to R.string.fa_icon_whiskey,
+        "coffee" to R.string.fa_icon_coffee
+    )
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.cheers_view, container, false)
     }
@@ -38,7 +56,7 @@ class CheerViewFragment: Fragment() {
 
 
         val iconFont = FontManager.getTypeface(get(), FontManager.FONTAWESOME)
-        FontManager.markAsIconContainer(icons_container, iconFont)
+        FontManager.markAsIconContainer(cheer_view_container, iconFont)
 
         val queue = Volley.newRequestQueue(get())
         val url = "http://cheer-with-me.fredag.dev/"
@@ -48,23 +66,7 @@ class CheerViewFragment: Fragment() {
                 Log.d("Child", child.toString())
 
                 child.setOnClickListener { button ->
-                    val tagToColor = mutableMapOf(
-                        "beer" to R.color.beer,
-                        "wine" to R.color.wine,
-                        "cocktail" to R.color.cocktail,
-                        "wineBottle" to R.color.wineBottle,
-                        "whiskey" to R.color.whiskey,
-                        "coffee" to R.color.coffee
-                    )
 
-                    val tagToIcon = mutableMapOf(
-                        "beer" to R.string.fa_icon_beer,
-                        "wine" to R.string.fa_icon_wine,
-                        "cocktail" to R.string.fa_icon_cocktail,
-                        "wineBottle" to R.string.fa_icon_wineBottle,
-                        "whiskey" to R.string.fa_icon_whiskey,
-                        "coffee" to R.string.fa_icon_coffee
-                    )
 
                     val unwrappedDrawable = AppCompatResources.getDrawable(get(), R.drawable.big_button_bg_round)
                     val wrappedDrawable = DrawableCompat.wrap(unwrappedDrawable!!)
@@ -72,16 +74,7 @@ class CheerViewFragment: Fragment() {
                     DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(get(), tagToColor[button.tag] ?: Color.RED) )
                     active_button.background = wrappedDrawable
 
-                    //active_button.text = resources.getString(tagToIcon[button.tag] ?: R.string.fa_icon_beer)
-
-
-                    //val packageName = (get() as Context).packageName
-                    //val resId = resources.getIdentifier(aString, "string", packageName)
-                    active_button.text = getString(R.string.fa_icon_coffee)
-
-                    //it.mutate().colorFilter = PorterDuffColorFilter(view.background.color)
-                    //it.mutate().colorFilter = view.background.colorFilter
-                    //active_button.setBackgroundColor(resources.getColor(R.color.beer))
+                    active_button.text = getString(tagToIcon[button.tag] ?: R.string.fa_icon_beer)
 
                     val stringRequest = StringRequest(
                         Request.Method.GET, url,

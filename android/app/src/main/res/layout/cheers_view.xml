@@ -24,6 +24,8 @@
             app:layout_constraintHeight_default="spread"
     >
         <Button
+                android:text="@string/fa_icon_beer"
+                android:textSize="100sp"
                 android:id="@+id/active_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,18 +42,16 @@
             android:layout_height="wrap_content"
             tools:context=".MainActivity"
             android:layout_marginTop="8dp"
-
             app:layout_constraintStart_toStartOf="@+id/active_button_container"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
-                android:textSize="45sp"
-                android:layout_width="100dp"
+                android:textSize="@dimen/small_button_font_size"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_beer"
-                android:backgroundTint="@color/beer"
                 android:tag="beer"
                 android:background="@drawable/button_bg_round"
                 android:id="@+id/beer_button"
@@ -61,12 +61,11 @@
                 app:layout_constraintEnd_toStartOf="@+id/wine_button"
                 app:layout_constraintBottom_toBottomOf="@+id/wine_button"/>
         <Button
-                android:textSize="45sp"
+                android:textSize="@dimen/small_button_font_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_wine"
-                android:backgroundTint="@color/wine"
                 android:tag="wine"
                 android:background="@drawable/button_bg_round"
                 android:id="@+id/wine_button"
@@ -74,12 +73,11 @@
                 app:layout_constraintBottom_toTopOf="@+id/whiskey_button"
                 app:layout_constraintStart_toStartOf="@+id/whiskey_button"/>
         <Button
-                android:textSize="45sp"
+                android:textSize="@dimen/small_button_font_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_coffee"
-                android:backgroundTint="@color/coffee"
                 android:tag="coffee"
                 android:background="@drawable/button_bg_round"
                 android:id="@+id/coffee_button"
@@ -87,12 +85,11 @@
                 android:layout_marginStart="8dp" android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="@+id/whiskey_button"/>
         <Button
-                android:textSize="45sp"
+                android:textSize="@dimen/small_button_font_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_whiskey"
-                android:backgroundTint="@color/whiskey"
                 android:tag="whiskey"
                 android:background="@drawable/button_bg_round"
                 android:id="@+id/whiskey_button"
@@ -100,12 +97,11 @@
                 app:layout_constraintStart_toStartOf="parent" android:layout_marginEnd="8dp"
                 app:layout_constraintEnd_toEndOf="parent"/>
         <Button
-                android:textSize="45sp"
+                android:textSize="@dimen/small_button_font_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_cocktail"
-                android:backgroundTint="@color/cocktail"
                 android:tag="cocktail"
                 android:background="@drawable/button_bg_round"
                 android:id="@+id/cocktail_button"
@@ -114,13 +110,12 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toBottomOf="@+id/wine_button"/>
         <Button
-                android:textSize="45sp"
+                android:textSize="@dimen/small_button_font_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="@string/fa_icon_wineBottle"
                 android:background="@drawable/button_bg_round"
-                android:backgroundTint="@color/wineBottle"
                 android:tag="wineBottle"
                 android:id="@+id/wine_bottle_button"
                 android:layout_marginStart="8dp"

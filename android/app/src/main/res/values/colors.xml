@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="primary">#ffffff</color>
+    <color name="primaryDark">#202124</color>
+    <color name="accent">#f9ab02</color>
+    <color name="accentLight">#f6be27</color>
     <color name="beer">#FFC700</color>
     <color name="wine">#FF6982</color>
     <color name="whiskey">#308FE8</color>
     <color name="cocktail">#91DB52</color>
     <color name="wineBottle"> #BA6BFF</color>
     <color name="coffee">#AD805C</color>
+    <color name="background">#202124</color>
+    <color name="details">#9aa0a6</color>
 </resources>
