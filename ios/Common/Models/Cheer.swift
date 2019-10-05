@@ -38,20 +38,20 @@ struct Cheer: Identifiable {
             }
         }
         
-        var imageName: String {
+        var imageName: FontIcon {
             switch self {
             case .beer:
-                return "\u{f0fc}"
+                return .beer
             case .wine:
-                return "\u{f5ce}"
+                return .wineGlassAlt
             case .coffee:
-                return "\u{f0f4}"
+                return .coffee
             case .whiskey:
-                return "\u{f7a0}"
+                return .glassWhiskey
             case .cocktail:
-                return "\u{f561}"
+                return .cocktail
             case .wineBottle:
-                return "\u{f72f}"
+                return .wineBottle
             }
         }
     }

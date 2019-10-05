@@ -14,69 +14,73 @@ struct CheerSwitchButton: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 20) {
-            ZStack {
-                Circle().stroke().frame(width: 44, height: 44)
-                FontAwesomeIcon(icon: icon, size: 20)
-                
-            }.frame(width: 20, height: 20)
-            
+            FontAwesomeIcon(icon: icon, size: 20)
+                .background(
+                    Circle().stroke().frame(width: 44, height: 44)
+            )
             Text(label).font(.system(size: 13))
-        }
+        }.frame(width: 70)
+    }
+}
+
+struct LowPrioritySpacer: View {
+    var body: some View {
+        Spacer().layoutPriority(-1)
     }
 }
 
 struct CreateCheerView: View {
-    @State var icon = FontIcon.beer
+    @State var cheerType: Cheer.CheerType = Cheer.CheerType.beer
     
     var body: some View {
         VStack {
-            Spacer()
+            LowPrioritySpacer()
             
             VStack {
-                Button(action: { print(self.icon) }) {
+                Button(action: { print(self.cheerType.imageName) }) {
                     ZStack {
-                        Circle().fill(Color.hex(0xf9ab02))
+                        Circle().fill(self.cheerType.color)
                             .frame(height: 200)
-                        FontAwesomeIcon(icon: self.icon, size: 70)
+                        FontAwesomeIcon(icon: self.cheerType.imageName, size: 50)
                     }
                 }
             }
             
-            Spacer()
+            LowPrioritySpacer()
             
             VStack {
                 HStack {
-                    Spacer()
-                    Button(action: { self.icon = .wineGlassAlt  }) {
-                        CheerSwitchButton(icon: .wineGlassAlt, label: "Wine")
+                    LowPrioritySpacer()
+                    Button(action: { self.cheerType = .beer  }) {
+                        CheerSwitchButton(icon: .beer, label: "Beer")
                     }
-                    Spacer()
-                    Button(action: { self.icon = .glassWhiskey }) {
+                    LowPrioritySpacer()
+                    Button(action: { self.cheerType = .whiskey }) {
                         CheerSwitchButton(icon: .glassWhiskey, label: "Whiskey")
                     }
-                    Spacer()
-                    Button(action: { self.icon = .coffee }) {
+                    LowPrioritySpacer()
+                    Button(action: { self.cheerType = .coffee }) {
                         CheerSwitchButton(icon: .coffee, label: "Coffee")
                     }
-                    Spacer()
+                    LowPrioritySpacer()
                 }.padding(.top, 20)
                 HStack {
-                    Spacer()
-                    Button(action: { self.icon = .wineGlassAlt  }) {
+                    LowPrioritySpacer()
+                    Button(action: { self.cheerType = .wine  }) {
                         CheerSwitchButton(icon: .wineGlassAlt, label: "Wine")
                     }
-                    Spacer()
-                    Button(action: { self.icon = .glassWhiskey }) {
-                        CheerSwitchButton(icon: .glassWhiskey, label: "Whiskey")
+                    LowPrioritySpacer()
+                    Button(action: { self.cheerType = .cocktail }) {
+                        CheerSwitchButton(icon: .cocktail, label: "Cocktail")
                     }
-                    Spacer()
-                    Button(action: { self.icon = .coffee }) {
-                        CheerSwitchButton(icon: .coffee, label: "Coffee")
+                    LowPrioritySpacer()
+                    Button(action: { self.cheerType = .wineBottle }) {
+                        CheerSwitchButton(icon: .wineBottle, label: "Wine bottle")
                     }
-                    Spacer()
+                    LowPrioritySpacer()
                 }.padding(.vertical, 20)
             }
-        }.foregroundColor(.primary)
+        }
     }
 }
 
@@ -85,7 +89,7 @@ struct CreateCheerView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             CreateCheerView()
-            CreateCheerView().background(Color.black).edgesIgnoringSafeArea(.all).environment(\.colorScheme, .dark)
+            CreateCheerView().environment(\.colorScheme, .dark).background(Color.black).edgesIgnoringSafeArea(.all)
         }
     }
 }

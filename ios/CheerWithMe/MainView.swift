@@ -45,7 +45,7 @@ struct MainView : View {
                 .tabItem {
                     self.tabbarItem(icon: "user", text: "Me")
             }.tag(Tab.me)
-        }
+        }.accentColor(.primary)
     }
 }
 
