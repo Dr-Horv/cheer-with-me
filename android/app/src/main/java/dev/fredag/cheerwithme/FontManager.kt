@@ -9,7 +9,9 @@ import android.view.ViewGroup
 object FontManager {
 
     val ROOT = "fonts/"
-    val FONTAWESOME = ROOT + "fontawesomepro.otf"
+    val FONTAWESOME_REGULAR = ROOT + "Font Awesome 5 Pro-Regular-400.otf"
+    val FONTAWESOME_SOLID = ROOT + "Font Awesome 5 Pro-Solid-900.otf"
+
 
     fun getTypeface(context: Context, font: String): Typeface {
         return Typeface.createFromAsset(context.assets, font)

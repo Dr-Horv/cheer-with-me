@@ -25,10 +25,7 @@ import io.ktor.client.request.header
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.jackson.jackson
-import io.ktor.request.host
-import io.ktor.request.path
-import io.ktor.request.port
-import io.ktor.request.receive
+import io.ktor.request.*
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.*
@@ -89,18 +86,21 @@ fun Application.module(testing: Boolean = false) {
     install(DefaultHeaders)
 
     install(Authentication) {
-        oauth(OAUTH_LOGIN_REFERENCE) {
-            client = HttpClient()
-            providerLookup = {
-                val path = this.request.path()
-                val type = this.parameters["type"]
-                if (path.startsWith("/login") && type != null) {
-                    loginProviders[type]
-                } else {
-                    loginProviders["google"]
-                }
+        jwt("google") {
+            verifier(
+                JwkProviderBuilder(URL("https://www.googleapis.com/oauth2/v3/certs"))
+                    .cached(10, 24, TimeUnit.HOURS)
+                    .rateLimited(10, 1, TimeUnit.MINUTES)
+                    .build(),
+                "https://accounts.google.com"
+            )
+            validate { credentials ->
+                log.debug("$credentials")
+                log.debug("${credentials.payload}")
+                log.debug(ObjectMapper().writeValueAsString(credentials))
+                JWTPrincipal(credentials.payload)
             }
-            urlProvider = { redirectUrl("/login") }
+
         }
 
         jwt("apple") {
@@ -200,8 +200,8 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-        authenticate(OAUTH_LOGIN_REFERENCE) {
-            route("/login") {
+        authenticate("google") {
+            route("/login/google") {
                 param("error") {
                     handle {
                         call.loginFailedPage(call.parameters.getAll("error").orEmpty())
@@ -209,17 +209,22 @@ fun Application.module(testing: Boolean = false) {
                 }
 
                 handle {
-                    val principal = call.authentication.principal<OAuthAccessTokenResponse.OAuth2>()
+                    log.debug(call.request.header("Authorization"))
+                    val bearer = call.request.header("Authorization")
+                    val principal = call.authentication.principal<JWTPrincipal>()
                         ?: error("No principal")
+                    log.debug("Principal payload: ${ObjectMapper().writeValueAsString(principal.payload)}")
 
-                    val json = HttpClient().get<String>("https://www.googleapis.com/userinfo/v2/me") {
-                        header("Authorization", "Bearer ${principal.accessToken}")
-                    }
 
-                    val data = ObjectMapper().readValue<Map<String, Any?>>(json)
-                    val id = data["id"] as String?
-                    log.debug(id)
-                    log.debug("$data")
+                    //val json = HttpClient().get<String>("https://www.googleapis.com/userinfo/v2/me") {
+                    /*val json = HttpClient().get<String>("https://openidconnect.googleapis.com/v1/userinfo") {
+                        header("Authorization", "$bearer")
+                    }*/
+
+                    //val data = ObjectMapper().readValue<Map<String, Any?>>(json)
+                    //val id = data["id"] as String?
+                    //log.debug(id)
+                    //log.debug("$data")
                     call.loggedInSuccessResponse(principal)
                 }
 
