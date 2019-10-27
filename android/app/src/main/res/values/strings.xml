@@ -7,4 +7,5 @@
     <string name="title_calendar">Calendar</string>
     <string name="default_notification_channel">default_notofication_channel</string>
     <string name="default_notification_channel_description">default_notofication_channel_description</string>
+    <string name="oauth_server_client_id">1050244063916-g27252e1nebdd75gnu8fs9beh5d7ku5t.apps.googleusercontent.com</string>
 </resources>

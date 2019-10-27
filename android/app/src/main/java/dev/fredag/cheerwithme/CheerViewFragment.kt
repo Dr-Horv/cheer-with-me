@@ -1,18 +1,13 @@
 package dev.fredag.cheerwithme
 
-import android.content.Context
 import android.graphics.Color
-import android.graphics.ColorFilter
 import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import com.android.volley.Request
@@ -22,7 +17,6 @@ import com.android.volley.toolbox.Volley
 import kotlinx.android.synthetic.main.cheers_view.*
 import org.koin.android.ext.android.get
 import androidx.core.graphics.drawable.DrawableCompat
-import android.graphics.drawable.Drawable
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 
@@ -55,7 +49,7 @@ class CheerViewFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?)  {
 
 
-        val iconFont = FontManager.getTypeface(get(), FontManager.FONTAWESOME)
+        val iconFont = FontManager.getTypeface(get(), FontManager.FONTAWESOME_REGULAR)
         FontManager.markAsIconContainer(cheer_view_container, iconFont)
 
         val queue = Volley.newRequestQueue(get())

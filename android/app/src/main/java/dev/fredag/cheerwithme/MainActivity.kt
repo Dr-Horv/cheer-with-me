@@ -1,24 +1,32 @@
 package dev.fredag.cheerwithme
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.fragment.app.Fragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.iid.FirebaseInstanceId
-import com.google.firebase.messaging.RemoteMessage
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
+import com.android.volley.AuthFailureError
+import com.android.volley.NetworkResponse
+import com.android.volley.Response
+import com.android.volley.toolbox.HttpHeaderParser
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
 import org.koin.dsl.module
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
-class Controller(val notificationService : NotificationService)
+
+class Controller(val notificationService: NotificationService)
 
 var notificationModule = module {
     single { Controller(get()) }
@@ -26,134 +34,182 @@ var notificationModule = module {
 }
 
 class MainActivity : AppCompatActivity() {
+    val RC_SIGN_IN = 15
 
-    val fragmentManager = supportFragmentManager
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
 
-    private var currentNavigationId = -1
-
-
-    private val onNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-
-        if (currentNavigationId == item.itemId) {
-            return@OnNavigationItemSelectedListener false
-        }
-        currentNavigationId = item.itemId
-
-        lateinit var switchToFragment: Fragment
-        var retValue = false
-        when (item.itemId) {
-            R.id.navigation_cheer -> {
-                switchToFragment = CheerViewFragment()
-                retValue = true
-            }
-            R.id.navigation_map-> {
-                switchToFragment = MapViewFragment()
-                retValue = true
-            }
-            R.id.navigation_calendar -> {
-                switchToFragment = CheerViewFragment()
-                retValue = true
-            }
-            R.id.navigation_friends -> {
-                switchToFragment = FriendsFragment()
-                retValue = true
-            }
-            R.id.navigation_profile-> {
-                switchToFragment = CheerViewFragment()
-                retValue = true
-            }
-        }
-        val fragmentTransaction = fragmentManager.beginTransaction()
-            .setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out)
-        fragmentTransaction.replace(R.id.fragment_container, switchToFragment)
-        fragmentTransaction.commit()
-
-        retValue
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_main)
+
         this.supportActionBar?.let {
             it.hide()
         }
 
 
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragment_container, CheerViewFragment())
-        fragmentTransaction.commit()
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.oauth_server_client_id))
+            .requestEmail()
+            .build()
 
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        navView.setOnNavigationItemSelectedListener(onNavigationItemSelectedListener)
-
-
-        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
-            Log.d("MAIN_STUFF", "STUFFFF" + it.result?.token)
+        Log.d("mainactivity", "loaded")
+        val signInButton: SignInButton = findViewById(R.id.sign_in_button)
+        signInButton.setSize(SignInButton.SIZE_STANDARD)
+        signInButton.setOnClickListener {
+            login_status.text = "Logging in..."
+            Log.d("mainactivity", "login pressed")
+            val signInIntent = mGoogleSignInClient.signInIntent
+            startActivityForResult(signInIntent, RC_SIGN_IN)
         }
-
-        startKoin {
-            // Android context
-            androidContext(this@MainActivity)
-            // modules
-            modules(notificationModule)
-        }
-
-
 
     }
 
+    override fun onStart() {
+        super.onStart()
+        val account = GoogleSignIn.getLastSignedInAccount(this)
+        Log.d("mainactivity", "found already signed in user" + account.toString())
+    }
 
-}
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-class NotificationService {
-    fun showNotificationString(channelId: String, title: String, context: Context) {
-        val notificationBuilder = NotificationCompat.Builder(context, channelId)
-            .setSmallIcon(R.drawable.notification_icon_background)
-            .setContentTitle(title)
-            //.setContentText("Woop content")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
 
-        with(NotificationManagerCompat.from(context)) {
-            // notificationId is a unique int for each notification that you must define
-            notify(1, notificationBuilder.build())
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(data)
+            handleSignInResult(task)
         }
     }
 
-    fun showNotification(channelId: String, notification: RemoteMessage.Notification, context: Context) {
-        val notificationBuilder = NotificationCompat.Builder(context, channelId)
-            //.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.logo_gris))
-            //.setSmallIcon(R.drawable.big_button_bg_round)
-            .setSmallIcon(R.drawable.notification_icon_background)
-            .setContentTitle(notification.title)
-            .setContentText(notification.body)
-            //.setAutoCancel(true)
-            //.setSound(defaultSoundUri)
-            //.setContentIntent(pendingIntent);
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-
-
-        with(NotificationManagerCompat.from(context)) {
-            notify(1, notificationBuilder.build())
-        }
+    private fun startApp() {
+        val intent = Intent(this, App::class.java)
+        startActivity(intent)
     }
 
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        val context = this
+        try {
+            completedTask.getResult(ApiException::class.java)?.let {
+                Log.d("Granted scopes", it.grantedScopes.toString())
+                Log.d("Requested scopes", it.requestedScopes.toString())
+                val result = it
+                Log.d(
+                    "GoogleLogin",
+                    "${result.displayName} ${result.email} '${result.grantedScopes}' ${result.id} ${result.idToken}"
+                )
+                login_status.text = "Hello, ${result.displayName}. Wait some more."
+                val jwt = result.idToken
+                val url = "http://192.168.1.193:8080/login/google"
 
-    fun createNotificationChannel(channel_id: String, context: Context) {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = context.getString(R.string.default_notification_channel)
-            val descriptionText = context.getString(R.string.default_notification_channel_description)
-            val importance = NotificationManager.IMPORTANCE_DEFAULT
-            val channel = NotificationChannel(channel_id, name, importance).apply {
-                description = descriptionText
+
+
+                val requestQueue = Volley.newRequestQueue(this)
+
+                val request = object : StringRequest(Method.POST, url,
+                    Response.Listener { response ->
+                        Log.i("VOLLEY", response)
+                        //cont.resume(response)
+
+                    },
+                    Response.ErrorListener { error ->
+                        error.printStackTrace()
+                        Log.e("VOLLEYerror", error.toString())
+                        //cont.resumeWithException(error)
+                    }) {
+                    override fun getBodyContentType(): String {
+                        return "application/json; charset=utf-8"
+                    }
+
+                    @Throws(AuthFailureError::class)
+                    override fun getHeaders(): Map<String, String> {
+                        return mapOf("Authorization" to "Bearer $jwt")
+                    }
+
+                    override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
+                        var responseString = ""
+                        if (response != null) {
+                            responseString = response.statusCode.toString()
+                            // can get more details such as response.headers
+                        }
+                        return Response.success(
+                            responseString,
+                            HttpHeaderParser.parseCacheHeaders(response)
+                        )
+                    }
+                }
+
+                requestQueue.add(request)
+
+//                MainScope().async {
+//                    try {
+//                        val resp = get(url, jwt)
+//                        Log.d("mainactivity", resp)
+//                        //login_status.text = "Success $resp"
+//                        //startApp()
+//
+//                    } catch (e: Error) {
+//                        login_status.text = e.toString()
+//                    }
+//                }
+
+                //this.runOnUiThread {
+                //    login_status.text = "Done waiting, welcome! $response"
+                // }
             }
-            // Register the channel with the system
-            val notificationManager: NotificationManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
+        } catch (e: ApiException) {
+
+            Log.d("GoogleLogin failed", e.toString())
+
         }
+
+
+    }
+
+    suspend fun get(url: String, jwt: String?): String? = suspendCoroutine { cont ->
+
+        val requestQueue = Volley.newRequestQueue(this)
+
+        val request = object : StringRequest(Method.POST, url,
+            Response.Listener { response ->
+                Log.i("VOLLEY", response)
+                //cont.resume(response)
+
+            },
+            Response.ErrorListener { error ->
+                error.printStackTrace()
+                Log.e("VOLLEY", error.toString())
+                //cont.resumeWithException(error)
+            }) {
+            override fun getBodyContentType(): String {
+                return "application/json; charset=utf-8"
+            }
+
+            @Throws(AuthFailureError::class)
+            override fun getHeaders(): Map<String, String> {
+                return mapOf("Authorization" to "Bearer $jwt")
+            }
+
+            override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
+                var responseString = ""
+                if (response != null) {
+                    responseString = response.statusCode.toString()
+                    // can get more details such as response.headers
+                }
+                return Response.success(
+                    responseString,
+                    HttpHeaderParser.parseCacheHeaders(response)
+                )
+            }
+        }
+
+        requestQueue.add(request)
     }
 }

@@ -3,5 +3,7 @@
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">fredag.dev</domain>
         <domain includeSubdomains="true">192.168.0.108</domain>
+        <domain includeSubdomains="true">192.168.1.21</domain>
+        <domain includeSubdomains="true">192.168.1.193</domain>
     </domain-config>
 </network-security-config>
