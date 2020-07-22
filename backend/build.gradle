@@ -50,6 +50,8 @@ dependencies {
     implementation "com.auth0:java-jwt:3.3.0"
     implementation 'com.auth0:jwks-rsa:0.1.0'
 
+    implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.11.+"
+
     implementation "io.ktor:ktor-client-apache:$ktor_version"
     implementation "com.h2database:h2:$h2_version"
     implementation "org.jetbrains.exposed:exposed:$exposed_version"

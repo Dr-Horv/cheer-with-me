@@ -4,6 +4,7 @@ import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dev.fredag.cheerwithme.service.Database
 import dev.fredag.cheerwithme.service.initAwsSdkClients
 import io.ktor.application.*
@@ -22,6 +23,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.post
 import io.ktor.features.*
 import io.ktor.http.*
 import io.ktor.jackson.jackson
@@ -29,6 +31,7 @@ import io.ktor.request.*
 import io.ktor.response.respond
 import io.ktor.response.respondText
 import io.ktor.routing.*
+import io.ktor.util.KtorExperimentalAPI
 import org.slf4j.event.Level
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sns.SnsClient
@@ -38,21 +41,34 @@ import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
+val objectMapper = ObjectMapper().registerKotlinModule()
+
 data class AppleOauthResponse(
     val access_token: String,
     val expires_in: Long,
     val id_token: String,
     val refresh_token: String,
-    val token_type: String)
-//Dependency injection without magic? Instantiate service classes for insertion in "modules" (routes) here
-val userService : UserService = UserService()
-val snsService : SnsService = SnsService(buildSnsClient())
-val pushService : PushService = PushService(snsService, userService)
+    val token_type: String
+)
 
-const val OAUTH_LOGIN_REFERENCE = "OAUTH_LOGIN_REFERENCE"
+data class GoogleOauthResponse(
+    val access_token: String,
+    val expires_in: Long,
+    val scope: String,
+    val id_token: String,
+    val refresh_token: String?,
+    val token_type: String
+)
+
+//Dependency injection without magic? Instantiate service classes for insertion in "modules" (routes) here
+val userService: UserService = UserService()
+val snsService: SnsService = SnsService(buildSnsClient())
+val pushService: PushService = PushService(snsService, userService)
 
 data class AppleUserSignInRequest(val code: String)
+data class GoogleUserSignInRequest(val code: String)
 
+@KtorExperimentalAPI
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
@@ -97,7 +113,7 @@ fun Application.module(testing: Boolean = false) {
             validate { credentials ->
                 log.debug("$credentials")
                 log.debug("${credentials.payload}")
-                log.debug(ObjectMapper().writeValueAsString(credentials))
+                log.debug(objectMapper.writeValueAsString(credentials))
                 JWTPrincipal(credentials.payload)
             }
 
@@ -106,15 +122,15 @@ fun Application.module(testing: Boolean = false) {
         jwt("apple") {
             verifier(
                 JwkProviderBuilder(URL("https://appleid.apple.com/auth/keys"))
-                .cached(10, 24, TimeUnit.HOURS)
-                .rateLimited(10, 1, TimeUnit.MINUTES)
-                .build(),
+                    .cached(10, 24, TimeUnit.HOURS)
+                    .rateLimited(10, 1, TimeUnit.MINUTES)
+                    .build(),
                 "https://appleid.apple.com"
             )
             validate { credentials ->
                 log.debug("$credentials")
                 log.debug("${credentials.payload}")
-                log.debug(ObjectMapper().writeValueAsString(credentials))
+                log.debug(objectMapper.writeValueAsString(credentials))
                 JWTPrincipal(credentials.payload)
             }
 
@@ -154,8 +170,11 @@ fun Application.module(testing: Boolean = false) {
                     append("grant_type", "authorization_code")
                     append("code", appleUserSignInRequest.code)
                     // append("redirect_uri" , $redirect_uri)
-                    append("client_id" , "dev.fredag.CheerWithMe")
-                    append("client_secret" , "eyJraWQiOiJHNlA5NlIzNzdZIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiJSS0hWM1daOUNSIiwiaWF0IjoxNTYyNzg4MjMzLCJleHAiOjE1NzgzNDAyMzMsImF1ZCI6Imh0dHBzOi8vYXBwbGVpZC5hcHBsZS5jb20iLCJzdWIiOiJkZXYuZnJlZGFnLkNoZWVyV2l0aE1lIn0.JS8YcwgGcsEFWDf_dhVwVM5IZf7451_Xp84o7_kaOoSP-z6n1zlXQJQMZXFmxG5adcjStxLeSuSnHOLCgPz-ig")
+                    append("client_id", application.environment.config.property("oauth.apple.client_id").getString())
+                    append(
+                        "client_secret",
+                        application.environment.config.property("oauth.apple.client_secret").getString()
+                    )
                 }
 
                 log.debug("Sending form with data: $data")
@@ -166,10 +185,7 @@ fun Application.module(testing: Boolean = false) {
                     block = { header("user-agent", "cheer-with-me") }
                 )
 
-                /**
-                 * Can't parse atm
-                 */
-                val appleOauthResponse = ObjectMapper().readValue<AppleOauthResponse>(body)
+                val appleOauthResponse = objectMapper.readValue<AppleOauthResponse>(body)
 
                 log.debug("RESPONSE $appleOauthResponse")
                 call.respond(mapOf("accessToken" to appleOauthResponse.access_token))
@@ -177,56 +193,51 @@ fun Application.module(testing: Boolean = false) {
                 // TODO Store access token for user lookup
                 // Create and store user (use sub
                 // Implement custom auth lookup on access token
-                /*
-                val principal = call.authentication.principal<JWTPrincipal>()!!
-                principal.payload.subject
+            }
 
-                 */
-
-
-                /*
-                if(httpResponse.statusCode() == 200) {
-                    val body = httpResponse.body()
-                    log.debug("Success! $body")
-                    call.respond(mapOf("accessToken" to body))
-
-                    // Store Access token!
-                } else {
-                    log.debug("Failed! $httpResponse")
-                    call.respond(mapOf("error" to "failed"))
-                }
-
-                 */
+            get("/safe") {
+                call.respond(mapOf("secret" to "hello"))
             }
         }
 
         authenticate("google") {
-            route("/login/google") {
-                param("error") {
-                    handle {
-                        call.loginFailedPage(call.parameters.getAll("error").orEmpty())
-                    }
+            post("/login/google") {
+                val googleUserSignInRequest = call.receive<GoogleUserSignInRequest>()
+                log.debug("Code ${googleUserSignInRequest.code}")
+                val principal = call.authentication.principal<JWTPrincipal>()
+                    ?: error("No principal")
+                log.debug("Principal payload: ${objectMapper.writeValueAsString(principal.payload)}")
+                val data = Parameters.build {
+                    append("grant_type", "authorization_code")
+                    append("code", googleUserSignInRequest.code)
+                    append("redirect_uri", "")
+                    append("client_id", application.environment.config.property("oauth.google.client_id").getString())
+                    append(
+                        "client_secret",
+                        application.environment.config.property("oauth.google.client_secret").getString()
+                    )
                 }
 
-                handle {
-                    log.debug(call.request.header("Authorization"))
-                    val bearer = call.request.header("Authorization")
-                    val principal = call.authentication.principal<JWTPrincipal>()
-                        ?: error("No principal")
-                    log.debug("Principal payload: ${ObjectMapper().writeValueAsString(principal.payload)}")
+                log.debug("Sending form with data: $data")
+                val body = HttpClient().submitForm<String>(
+                    url = "https://oauth2.googleapis.com/token",
+                    formParameters = data,
+                    encodeInQuery = false,
+                    block = { header("user-agent", "cheer-with-me") }
+                )
 
+                log.debug(body)
+                val googleOauthResponse = objectMapper.readValue<GoogleOauthResponse>(body)
 
-                    //val json = HttpClient().get<String>("https://www.googleapis.com/userinfo/v2/me") {
-                    /*val json = HttpClient().get<String>("https://openidconnect.googleapis.com/v1/userinfo") {
-                        header("Authorization", "$bearer")
-                    }*/
-
-                    //val data = ObjectMapper().readValue<Map<String, Any?>>(json)
-                    //val id = data["id"] as String?
-                    //log.debug(id)
-                    //log.debug("$data")
-                    call.loggedInSuccessResponse(principal)
+                val json = HttpClient().get<String>("https://www.googleapis.com/userinfo/v2/me") {
+                    header("Authorization", "Bearer ${googleOauthResponse.access_token}")
                 }
+
+                log.debug(json);
+                call.respond(mapOf("accessToken" to googleOauthResponse.access_token))
+                // TODO Store access token for user lookup
+                // Create and store user (use sub
+                // Implement custom auth lookup on access token
 
             }
 
@@ -243,25 +254,6 @@ fun Application.module(testing: Boolean = false) {
         }
 
     }
-}
-
-private fun ApplicationCall.redirectUrl(path: String): String {
-    val defaultPort = if (request.origin.scheme == "http") 80 else 443
-    val hostPort = request.host() + request.port().let { port -> if (port == defaultPort) "" else ":$port" }
-    val protocol = request.origin.scheme
-    return "$protocol://$hostPort$path"
-}
-
-private suspend fun ApplicationCall.loginPage() {
-    respondText { "Yeah, login page" }
-}
-
-private suspend fun ApplicationCall.loginFailedPage(errors: List<String>) {
-    respondText { "Failed $errors" }
-}
-
-private suspend fun ApplicationCall.loggedInSuccessResponse(callback: Principal) {
-    respondText { "Success" }
 }
 
 private fun buildSnsClient(): SnsClient {

@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "100813085034-0ggcsb0ms6diiguo10mmpekgmiht65pd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.fredag.cheerwithme",
+            "certificate_hash": "ff7c293f4d0019d68b45ffbd1355be1279fecba5"
+          }
+        },
+        {
           "client_id": "100813085034-gs7ih8rud7ejj3lhjkbraquboolvnocn.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
