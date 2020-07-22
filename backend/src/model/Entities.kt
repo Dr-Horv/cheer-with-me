@@ -4,6 +4,8 @@ import org.jetbrains.exposed.sql.Table
 
 object Users : Table() {
     val id = long("id").primaryKey().autoIncrement()
+    val googleId = varchar("google_id", 255).nullable()
+    val appleId = varchar("apple_id", 255).nullable()
     val nick = varchar("nick", 255)
 }
 

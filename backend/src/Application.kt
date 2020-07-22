@@ -3,34 +3,37 @@ package dev.fredag.cheerwithme
 import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import dev.fredag.cheerwithme.service.Database
-import dev.fredag.cheerwithme.service.initAwsSdkClients
-import io.ktor.application.*
+import dev.fredag.cheerwithme.model.AppleOauthResponse
+import dev.fredag.cheerwithme.model.AppleUserSignInRequest
+import dev.fredag.cheerwithme.model.GoogleOauthResponse
+import dev.fredag.cheerwithme.model.GoogleUserSignInRequest
 import dev.fredag.cheerwithme.service.*
 import dev.fredag.cheerwithme.web.friendRouting
 import dev.fredag.cheerwithme.web.pushRouting
 import dev.fredag.cheerwithme.web.userRouting
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.auth.*
+import io.ktor.application.*
+import io.ktor.auth.Authentication
+import io.ktor.auth.authenticate
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.HttpClient
-import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.header
-import io.ktor.client.request.post
 import io.ktor.features.*
-import io.ktor.http.*
+import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
-import io.ktor.request.*
+import io.ktor.request.path
+import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.response.respondText
-import io.ktor.routing.*
+import io.ktor.routing.Routing
+import io.ktor.routing.get
+import io.ktor.routing.post
+import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import org.slf4j.event.Level
 import software.amazon.awssdk.regions.Region
@@ -43,30 +46,13 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 val objectMapper = ObjectMapper().registerKotlinModule()
 
-data class AppleOauthResponse(
-    val access_token: String,
-    val expires_in: Long,
-    val id_token: String,
-    val refresh_token: String,
-    val token_type: String
-)
-
-data class GoogleOauthResponse(
-    val access_token: String,
-    val expires_in: Long,
-    val scope: String,
-    val id_token: String,
-    val refresh_token: String?,
-    val token_type: String
-)
 
 //Dependency injection without magic? Instantiate service classes for insertion in "modules" (routes) here
 val userService: UserService = UserService()
 val snsService: SnsService = SnsService(buildSnsClient())
 val pushService: PushService = PushService(snsService, userService)
+val oauth2Service: Oauth2Service = Oauth2Service()
 
-data class AppleUserSignInRequest(val code: String)
-data class GoogleUserSignInRequest(val code: String)
 
 @KtorExperimentalAPI
 @Suppress("unused") // Referenced in application.conf
@@ -163,37 +149,23 @@ fun Application.module(testing: Boolean = false) {
         authenticate("apple") {
             post("/login/apple") {
                 val appleUserSignInRequest = call.receive<AppleUserSignInRequest>()
-
-                log.debug("Code ${appleUserSignInRequest.code}")
-
-                val data = Parameters.build {
-                    append("grant_type", "authorization_code")
-                    append("code", appleUserSignInRequest.code)
-                    // append("redirect_uri" , $redirect_uri)
-                    append("client_id", application.environment.config.property("oauth.apple.client_id").getString())
-                    append(
-                        "client_secret",
-                        application.environment.config.property("oauth.apple.client_secret").getString()
-                    )
-                }
-
-                log.debug("Sending form with data: $data")
-                val body = HttpClient().submitForm<String>(
-                    url = "https://appleid.apple.com/auth/token",
-                    formParameters = data,
-                    encodeInQuery = false,
-                    block = { header("user-agent", "cheer-with-me") }
-                )
-
-                val appleOauthResponse = objectMapper.readValue<AppleOauthResponse>(body)
-
-                log.debug("RESPONSE $appleOauthResponse")
+                call.application.log.debug("Code ${appleUserSignInRequest.code}")
+                val appleOauthResponse = oauth2Service.authenticate<AppleOauthResponse>("https://appleid.apple.com/auth/token", Oauth2Parameters(
+                    grantType = "authorization_code",
+                    code = appleUserSignInRequest.code,
+                    clientId = application.environment.config.property("oauth.apple.client_id").getString(),
+                    clientSecret =  application.environment.config.property("oauth.apple.client_secret").getString(),
+                    redirectUri = null
+                ))
+                call.application.log.debug("RESPONSE $appleOauthResponse")
                 call.respond(mapOf("accessToken" to appleOauthResponse.access_token))
 
                 // TODO Store access token for user lookup
                 // Create and store user (use sub
                 // Implement custom auth lookup on access token
             }
+
+            authenticatedRoutes()
 
             get("/safe") {
                 call.respond(mapOf("secret" to "hello"))
@@ -204,30 +176,16 @@ fun Application.module(testing: Boolean = false) {
             post("/login/google") {
                 val googleUserSignInRequest = call.receive<GoogleUserSignInRequest>()
                 log.debug("Code ${googleUserSignInRequest.code}")
-                val principal = call.authentication.principal<JWTPrincipal>()
-                    ?: error("No principal")
-                log.debug("Principal payload: ${objectMapper.writeValueAsString(principal.payload)}")
-                val data = Parameters.build {
-                    append("grant_type", "authorization_code")
-                    append("code", googleUserSignInRequest.code)
-                    append("redirect_uri", "")
-                    append("client_id", application.environment.config.property("oauth.google.client_id").getString())
-                    append(
-                        "client_secret",
-                        application.environment.config.property("oauth.google.client_secret").getString()
-                    )
-                }
 
-                log.debug("Sending form with data: $data")
-                val body = HttpClient().submitForm<String>(
-                    url = "https://oauth2.googleapis.com/token",
-                    formParameters = data,
-                    encodeInQuery = false,
-                    block = { header("user-agent", "cheer-with-me") }
-                )
+                val googleOauthResponse = oauth2Service.authenticate<GoogleOauthResponse>("https://oauth2.googleapis.com/token",
+                    Oauth2Parameters(
+                        grantType = "authorization_code",
+                        code = googleUserSignInRequest.code,
+                        redirectUri = "",
+                        clientId = application.environment.config.property("oauth.google.client_id").getString(),
+                        clientSecret = application.environment.config.property("oauth.google.client_secret").getString()
+                    ))
 
-                log.debug(body)
-                val googleOauthResponse = objectMapper.readValue<GoogleOauthResponse>(body)
 
                 val json = HttpClient().get<String>("https://www.googleapis.com/userinfo/v2/me") {
                     header("Authorization", "Bearer ${googleOauthResponse.access_token}")
@@ -238,21 +196,24 @@ fun Application.module(testing: Boolean = false) {
                 // TODO Store access token for user lookup
                 // Create and store user (use sub
                 // Implement custom auth lookup on access token
-
             }
 
             //Put all other externally defined routes here (if they require authentication)
-            routing {
-                userRouting(userService)
-                pushRouting(pushService)
-                friendRouting()
-            }
+            authenticatedRoutes()
 
             get("/safe") {
                 call.respond(mapOf("secret" to "hello"))
             }
         }
 
+    }
+}
+
+private fun Application.authenticatedRoutes() {
+    routing {
+        userRouting(userService)
+        pushRouting(pushService)
+        friendRouting()
     }
 }
 
