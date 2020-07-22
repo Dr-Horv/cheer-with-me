@@ -14,7 +14,7 @@ struct AuthenticationButton : UIViewRepresentable {
         let requests = [ASAuthorizationAppleIDProvider().createRequest(),
                         ASAuthorizationPasswordProvider().createRequest()]
         
-        let buttonColor = context.environment.colorScheme == .dark ? ButtonStyle.white : ButtonStyle.black
+        let buttonColor: ASAuthorizationAppleIDButton.Style = context.environment.colorScheme == .dark ? .white : .black
         
         // Create an authorization controller with the given requests.
         let authorizationController = ASAuthorizationController(authorizationRequests: requests)
@@ -39,15 +39,24 @@ struct AuthenticationButton : UIViewRepresentable {
     }
     
     class Coordinator: NSObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
-        var button: AuthenticationButton
+        let button: AuthenticationButton
+        let provider: ASAuthorizationAppleIDProvider
+        var user: String?
         
         init(_ button: AuthenticationButton) {
             self.button = button
+            self.provider = ASAuthorizationAppleIDProvider()
         }
         
         @objc func handleButtonPressed(sender: ASAuthorizationAppleIDButton) {
-            let appleIDProvider = ASAuthorizationAppleIDProvider()
-            let request = appleIDProvider.createRequest()
+            let request = self.provider.createRequest()
+            if let previousUser = self.user {
+                request.user = previousUser
+                request.requestedOperation = .operationRefresh
+                print("Previous user is set, performing refresh instead!")
+            }
+            
+            
             request.requestedScopes = [.fullName, .email]
             
             let authorizationController = ASAuthorizationController(authorizationRequests: [request])
@@ -64,6 +73,8 @@ struct AuthenticationButton : UIViewRepresentable {
                 let fullName = appleIDCredential.fullName
                 let email = appleIDCredential.email
                 
+                self.user = userIdentifier
+                
                 let identityToken = appleIDCredential.identityToken.flatMap { String(data: $0, encoding: .utf8) }
                 let authorizationCode = appleIDCredential.authorizationCode.flatMap { String(data: $0, encoding: .utf8) }
                 
@@ -74,6 +85,16 @@ struct AuthenticationButton : UIViewRepresentable {
                 guard let code = authorizationCode else {
                     preconditionFailure("authorizationCode must be defined")
                 }
+                
+                self.provider.getCredentialState(forUserID: userIdentifier) { state, error in
+                    if let error = error {
+                        print("error \(error)")
+                    } else {
+                        print("state \(state)")
+                    }
+                }
+                
+                
                 
                 let _ = BackendService.shared.register(payload: .init(code: code)).sink(receiveCompletion: { completion in
                     print(completion)

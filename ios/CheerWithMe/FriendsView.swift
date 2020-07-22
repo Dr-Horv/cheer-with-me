@@ -12,16 +12,13 @@ struct UserRow: View {
     let username: String
     
     var body: some View {
-        HStack {
-            ZStack {
-                Circle().foregroundColor(.hex(0xf6be27))
-                Text(FontIcon.user.rawValue)
-                                .font(.custom("FontAwesome5Pro-Regular", size: 25)).foregroundColor(.white)
-            }.frame(width: 44, height: 44)
-            
+        HStack(spacing: 16) {
+            Text(FontIcon.user.rawValue)
+                .font(.custom("FontAwesome5Pro-Regular", size: 25)).foregroundColor(.primary).frame(width: 44, height: 44).background(Circle().foregroundColor(.hex(0xf6be27)))
             
             Text(username)
-        }
+            LowPrioritySpacer()
+        }.frame(height: 44)
     }
 }
 
@@ -40,43 +37,35 @@ struct FriendsView: View {
     let requests: [String]
     
     var body: some View {
-        List {
-            Section(header: Text("Friend requests")) {
-                ForEach(requests, id: \.self) { username in
-                    HStack {
-                        UserRow(username: username)
-                        Spacer()
-                        Button(action: {
-                            print("Pressed \(username): x")
-                        }) {
-                            ZStack {
-                                Circle().stroke(lineWidth: 2)
-                                FontAwesomeIcon(icon: .times, size: 25)
-                            }.foregroundColor(.hex(0x9aa0a6)).frame(width: 44)
-                        }
-                        Button(action: {
-                            print("Pressed \(username): ✔")
-                        }) {
-                            ZStack {
-                                Circle().stroke(lineWidth: 2)
-                                FontAwesomeIcon(icon: .check, size: 25)
-                                
-                            }.foregroundColor(.hex(0xf9ab02))
-                                .frame(width: 44)
-                        }
-                    }.padding([.top, .bottom])
-                        
+        ScrollView {
+            SmallHeader(text: "Friend requests")
+            ForEach(requests, id: \.self) { username in
+                HStack {
+                    UserRow(username: username)
+                    Button(action: {
+                        print("Pressed \(username): x")
+                    }) {
+                        FontAwesomeIcon(icon: .times, size: 20).frame(width: 42, height: 40).background(Circle().stroke(lineWidth: 2))
+                            .foregroundColor(.hex(0x9aa0a6))
+                    }
+                    Button(action: {
+                        print("Pressed \(username): ✔")
+                    }) {
+                        FontAwesomeIcon(icon: .check, size: 20).frame(width: 42, height: 40).background(Circle().stroke(lineWidth: 2))
+                            .foregroundColor(.hex(0xf9ab02))
+                    }.padding(.leading, 10)
                 }
+                .padding(.bottom, 10)
                 
             }
             
-            Section(header: Text("Friends")) {
-                ForEach(friends, id: \.self) { username in
-                    UserRow(username: username)
-                }
+            SmallHeader(text: "Friends")
+                .padding(.top)
+            ForEach(friends, id: \.self) { username in
+                UserRow(username: username)
+                    .padding(.bottom, 10)
             }
-        }.listStyle(GroupedListStyle())
-            .listRowInsets(EdgeInsets(top: 10, leading: 0, bottom: 10, trailing: 0))
+        }.padding()
     }
 }
 
@@ -84,9 +73,10 @@ struct FriendsView: View {
 struct FriendsView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
+            FriendsView(friends: allFriends, requests: allRequests).environment(\.colorScheme, .dark).background(Color.hex(0x202124))
+            
             FriendsView(friends: allFriends, requests: allRequests)
-            FriendsView(friends: allFriends, requests: allRequests)
-                .environment(\.colorScheme, .dark)
+            
         }
     }
 }
@@ -96,3 +86,14 @@ struct FriendsView_Previews: PreviewProvider {
 let allFriends = ["Alkohorv", "Andrøhl", "Screwdriver", "Trivodka"]
 
 let allRequests = ["Nrussain", "Joale"]
+
+struct SmallHeader: View {
+    let text: String
+    
+    var body: some View {
+        HStack {
+            Text(text.uppercased()).font(.caption).foregroundColor(.secondary)
+            LowPrioritySpacer()
+        }
+    }
+}

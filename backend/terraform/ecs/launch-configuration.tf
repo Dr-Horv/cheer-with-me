@@ -1,12 +1,11 @@
 resource "aws_launch_configuration" "ecs-launch-configuration" {
-  name                 = "ecs-launch-configuration"
   image_id             = "ami-0c788f17fd2f1f650"
   instance_type        = "t3.micro"
   iam_instance_profile = "${aws_iam_instance_profile.ecs-instance-profile.id}"
 
   root_block_device {
     volume_type           = "standard"
-    volume_size           = 100
+    volume_size           = 30
     delete_on_termination = true
   }
 

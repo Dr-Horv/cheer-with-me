@@ -53,7 +53,8 @@ struct CheerIcon : View {
                 .foregroundColor(cheer.type.color)
                 .frame(width: size.outterSize, height: size.outterSize)
                 .offset(x: 0, y: active ? 0 : size.outterSize)
-            Text(cheer.type.imageName).font(.custom("FontAwesome5Pro-Regular", size: size.fontSize))
+            
+            FontAwesomeIcon(icon: cheer.type.imageName, size: size.fontSize)
                 .foregroundColor(.black)
                 .offset(x: cheer.type == .beer ? size.beerOffset : 0, y: 0)
                 .frame(width: size.outterSize, height: size.outterSize)

@@ -16,9 +16,10 @@ struct CheersListView : View {
             ForEach(cheers) { cheer in
                 NavigationLink(destination: DetailView(cheer: cheer)) {
                     CheerIcon(cheer: cheer, size: .small, active: true)
+                    Text(cheer.type.rawValue)
                 }
             }
-        }
+        }.navigationBarTitle("Cheer list")
     }
 }
 
