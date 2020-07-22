@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -293,7 +293,6 @@
 			);
 			name = CheerWithMeWatch;
 			packageProductDependencies = (
-				3DDFE04E22E775AF00FE5434 /* SwiftUIFlux */,
 			);
 			productName = CheerWithMeWatch;
 			productReference = 3DAE434C22B1A29A0012B142 /* CheerWithMeWatch.app */;
@@ -357,7 +356,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1100;
+				LastUpgradeCheck = 1200;
 				ORGANIZATIONNAME = "Johan Lindskogen";
 				TargetAttributes = {
 					3DAE434B22B1A29A0012B142 = {
@@ -384,16 +383,15 @@
 			);
 			mainGroup = 3DAE434522B1A29A0012B142;
 			packageReferences = (
-				3DDFE04D22E775AF00FE5434 /* XCRemoteSwiftPackageReference "SwiftUIFlux" */,
 			);
 			productRefGroup = 3DAE434D22B1A29A0012B142 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				3DC21FDF22BC0A20005B6281 /* CheerWithMe */,
 				3DAE434B22B1A29A0012B142 /* CheerWithMeWatch */,
 				3DAE434F22B1A29A0012B142 /* CheerWithMeWatch WatchKit App */,
 				3DAE435E22B1A29C0012B142 /* CheerWithMeWatch WatchKit Extension */,
-				3DC21FDF22BC0A20005B6281 /* CheerWithMe */,
 			);
 		};
 /* End PBXProject section */
@@ -545,6 +543,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -604,6 +603,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -755,7 +755,7 @@
 				DEVELOPMENT_TEAM = RKHV3WZ9CR;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = CheerWithMe/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -777,7 +777,7 @@
 				DEVELOPMENT_TEAM = RKHV3WZ9CR;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = CheerWithMe/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -838,25 +838,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		3DDFE04D22E775AF00FE5434 /* XCRemoteSwiftPackageReference "SwiftUIFlux" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Dimillian/SwiftUIFlux";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.4.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		3DDFE04E22E775AF00FE5434 /* SwiftUIFlux */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 3DDFE04D22E775AF00FE5434 /* XCRemoteSwiftPackageReference "SwiftUIFlux" */;
-			productName = SwiftUIFlux;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3DAE434622B1A29A0012B142 /* Project object */;
 }
