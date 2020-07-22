@@ -6,6 +6,8 @@ object Users : Table() {
     val id = long("id").primaryKey().autoIncrement()
     val googleId = varchar("google_id", 255).nullable()
     val appleId = varchar("apple_id", 255).nullable()
+    val accessToken = varchar("access_token", 255).nullable()
+    val refreshToken = varchar("refresh_token", 255).nullable()
     val nick = varchar("nick", 255)
 }
 

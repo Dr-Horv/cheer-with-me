@@ -3,6 +3,7 @@ package dev.fredag.cheerwithme
 import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dev.fredag.cheerwithme.model.AppleOauthResponse
 import dev.fredag.cheerwithme.model.AppleUserSignInRequest
@@ -15,6 +16,7 @@ import dev.fredag.cheerwithme.web.userRouting
 import io.ktor.application.*
 import io.ktor.auth.Authentication
 import io.ktor.auth.authenticate
+import io.ktor.auth.authentication
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.HttpClient
@@ -157,6 +159,15 @@ fun Application.module(testing: Boolean = false) {
                     clientSecret =  application.environment.config.property("oauth.apple.client_secret").getString(),
                     redirectUri = null
                 ))
+
+                val principal = call.authentication.principal<JWTPrincipal>()!!
+                userService.upsertUserWithId(
+                    id=principal.payload.subject,
+                    nick = appleUserSignInRequest.nick,
+                    accessToken = appleOauthResponse.access_token,
+                    refreshToken = appleOauthResponse.refresh_token
+                )
+
                 call.application.log.debug("RESPONSE $appleOauthResponse")
                 call.respond(mapOf("accessToken" to appleOauthResponse.access_token))
 
@@ -191,7 +202,16 @@ fun Application.module(testing: Boolean = false) {
                     header("Authorization", "Bearer ${googleOauthResponse.access_token}")
                 }
 
+                val googleUser = objectMapper.readValue<Map<String, String>>(json)
+                val id = googleUser.getValue("id")
                 log.debug(json);
+                log.debug(googleUser.toString())
+                userService.upsertUserWithId(
+                    id=id,
+                    nick = googleUser.getValue("name"),
+                    accessToken = googleOauthResponse.access_token
+                )
+
                 call.respond(mapOf("accessToken" to googleOauthResponse.access_token))
                 // TODO Store access token for user lookup
                 // Create and store user (use sub
