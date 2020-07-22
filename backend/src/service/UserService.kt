@@ -43,8 +43,10 @@ class UserService {
                 refreshToken = refreshToken
             )
         } else {
-            Users.update ({ Users.id.eq(user.id) }) {
-                it[Users.accessToken] = accessToken
+            Database.dbQuery {
+                Users.update ({ Users.id.eq(user.id) }) {
+                    it[Users.accessToken] = accessToken
+                }
             }
         }
     }
