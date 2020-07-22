@@ -18,11 +18,9 @@ import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
+import org.json.JSONObject
 import org.koin.dsl.module
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
+import java.nio.charset.Charset
 import kotlin.coroutines.suspendCoroutine
 
 
@@ -51,6 +49,8 @@ class MainActivity : AppCompatActivity() {
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.oauth_server_client_id))
+            .requestProfile()
+            .requestServerAuthCode(getString(R.string.oauth_server_client_id))
             .requestEmail()
             .build()
 
@@ -102,13 +102,16 @@ class MainActivity : AppCompatActivity() {
                 val result = it
                 Log.d(
                     "GoogleLogin",
-                    "${result.displayName} ${result.email} '${result.grantedScopes}' ${result.id} ${result.idToken}"
+                    "${result.displayName} ${result.email} '${result.grantedScopes}' ${result.id} ${result.idToken} ${result.serverAuthCode}"
                 )
                 login_status.text = "Hello, ${result.displayName}. Wait some more."
                 val jwt = result.idToken
-                val url = "http://192.168.1.193:8080/login/google"
+                val url = "http://192.168.0.113:8080/login/google"
 
 
+                val jsonBody = JSONObject()
+                jsonBody.put("code", result.serverAuthCode)
+                val requestBody = jsonBody.toString()
 
 
                 val requestQueue = Volley.newRequestQueue(this)
@@ -126,6 +129,11 @@ class MainActivity : AppCompatActivity() {
                     }) {
                     override fun getBodyContentType(): String {
                         return "application/json; charset=utf-8"
+                    }
+
+                    override fun getBody(): ByteArray {
+                        Log.d("GoogleLogin", "Body: $jsonBody");
+                         return requestBody.toByteArray(Charset.forName("utf-8"))
                     }
 
                     @Throws(AuthFailureError::class)
@@ -167,6 +175,7 @@ class MainActivity : AppCompatActivity() {
         } catch (e: ApiException) {
 
             Log.d("GoogleLogin failed", e.toString())
+            Log.d("GoogleLogin failed", e.statusCode.toString())
 
         }
 
