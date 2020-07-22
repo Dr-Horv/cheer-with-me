@@ -17,5 +17,5 @@ data class GoogleOauthResponse(
     val token_type: String
 )
 
-data class AppleUserSignInRequest(val code: String)
+data class AppleUserSignInRequest(val code: String, val nick: String)
 data class GoogleUserSignInRequest(val code: String)
