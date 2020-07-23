@@ -37,7 +37,13 @@ struct CreateCheerView: View {
             LowPrioritySpacer()
             
             VStack {
-                Button(action: { print(self.cheerType.imageName) }) {
+                Button(action: {
+                        print(self.cheerType.imageName)
+                    BackendService.shared.safe() { response in
+                        print("Secret response:", response)
+                    }
+                    
+                }) {
                     ZStack {
                         Circle().fill(self.cheerType.color)
                             .frame(height: 200)

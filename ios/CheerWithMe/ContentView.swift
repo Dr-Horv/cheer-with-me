@@ -12,16 +12,15 @@ import Combine
 struct ContentView : View {
     @State var signedIn: Bool = false
     
-    func onSubmit(with username: String) {
-        
-        
+    func setSignedIn(signedIn: Bool) {
+        self.signedIn = signedIn
     }
     
     var body: some View {
         if self.signedIn {
             return AnyView(MainView())
         } else {
-            return AnyView(LoginView(onPressSignIn: onSubmit(with:)))
+            return AnyView(LoginView(setSignedIn: setSignedIn(signedIn:)))
         }
     }
 }
