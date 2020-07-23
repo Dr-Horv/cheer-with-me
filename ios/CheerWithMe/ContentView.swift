@@ -14,6 +14,13 @@ struct ContentView : View {
     
     func setSignedIn(signedIn: Bool) {
         self.signedIn = signedIn
+        
+        if signedIn {
+            PushNotificationManager.shared.requestPermissions() // Callback in AppDelegate
+            BackendService.shared.safe() { response in
+                print("Secret response:", response)
+            }
+        }
     }
     
     var body: some View {

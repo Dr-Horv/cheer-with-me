@@ -39,10 +39,6 @@ struct CreateCheerView: View {
             VStack {
                 Button(action: {
                         print(self.cheerType.imageName)
-                    BackendService.shared.safe() { response in
-                        print("Secret response:", response)
-                    }
-                    
                 }) {
                     ZStack {
                         Circle().fill(self.cheerType.color)
