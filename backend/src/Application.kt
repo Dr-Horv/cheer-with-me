@@ -10,13 +10,12 @@ import dev.fredag.cheerwithme.model.AppleUserSignInRequest
 import dev.fredag.cheerwithme.model.GoogleOauthResponse
 import dev.fredag.cheerwithme.model.GoogleUserSignInRequest
 import dev.fredag.cheerwithme.service.*
+import dev.fredag.cheerwithme.web.cheerWithMe
 import dev.fredag.cheerwithme.web.friendRouting
 import dev.fredag.cheerwithme.web.pushRouting
 import dev.fredag.cheerwithme.web.userRouting
 import io.ktor.application.*
-import io.ktor.auth.Authentication
-import io.ktor.auth.authenticate
-import io.ktor.auth.authentication
+import io.ktor.auth.*
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import io.ktor.client.HttpClient
@@ -90,6 +89,7 @@ fun Application.module(testing: Boolean = false) {
     install(DefaultHeaders)
 
     install(Authentication) {
+
         jwt("google") {
             verifier(
                 JwkProviderBuilder(URL("https://www.googleapis.com/oauth2/v3/certs"))
@@ -104,7 +104,6 @@ fun Application.module(testing: Boolean = false) {
                 log.debug(objectMapper.writeValueAsString(credentials))
                 JWTPrincipal(credentials.payload)
             }
-
         }
 
         jwt("apple") {
@@ -122,6 +121,15 @@ fun Application.module(testing: Boolean = false) {
                 JWTPrincipal(credentials.payload)
             }
 
+        }
+
+        cheerWithMe("cheerWithMe") {
+            verifyToken {
+                when {
+                    it.isNotBlank() -> object: Principal {}
+                    else -> null
+                }
+            }
         }
     }
 
@@ -152,24 +160,26 @@ fun Application.module(testing: Boolean = false) {
             post("/login/apple") {
                 val appleUserSignInRequest = call.receive<AppleUserSignInRequest>()
                 call.application.log.debug("Code ${appleUserSignInRequest.code}")
-                val appleOauthResponse = oauth2Service.authenticate<AppleOauthResponse>("https://appleid.apple.com/auth/token", Oauth2Parameters(
-                    grantType = "authorization_code",
-                    code = appleUserSignInRequest.code,
-                    clientId = application.environment.config.property("oauth.apple.client_id").getString(),
-                    clientSecret =  application.environment.config.property("oauth.apple.client_secret").getString(),
-                    redirectUri = null
-                ))
+                val appleOauthResponse = oauth2Service.authenticate<AppleOauthResponse>(
+                    "https://appleid.apple.com/auth/token", Oauth2Parameters(
+                        grantType = "authorization_code",
+                        code = appleUserSignInRequest.code,
+                        clientId = application.environment.config.property("oauth.apple.client_id").getString(),
+                        clientSecret = application.environment.config.property("oauth.apple.client_secret").getString(),
+                        redirectUri = null
+                    )
+                )
 
                 val principal = call.authentication.principal<JWTPrincipal>()!!
                 userService.upsertUserWithId(
-                    id=principal.payload.subject,
+                    id = principal.payload.subject,
                     nick = appleUserSignInRequest.nick,
                     accessToken = appleOauthResponse.access_token,
                     refreshToken = appleOauthResponse.refresh_token
                 )
 
                 call.application.log.debug("RESPONSE $appleOauthResponse")
-                call.respond(mapOf("accessToken" to appleOauthResponse.access_token))
+                call.respond(mapOf("identityToken" to appleOauthResponse.id_token))
 
                 // TODO Store access token for user lookup
                 // Create and store user (use sub
@@ -188,14 +198,16 @@ fun Application.module(testing: Boolean = false) {
                 val googleUserSignInRequest = call.receive<GoogleUserSignInRequest>()
                 log.debug("Code ${googleUserSignInRequest.code}")
 
-                val googleOauthResponse = oauth2Service.authenticate<GoogleOauthResponse>("https://oauth2.googleapis.com/token",
+                val googleOauthResponse = oauth2Service.authenticate<GoogleOauthResponse>(
+                    "https://oauth2.googleapis.com/token",
                     Oauth2Parameters(
                         grantType = "authorization_code",
                         code = googleUserSignInRequest.code,
                         redirectUri = "",
                         clientId = application.environment.config.property("oauth.google.client_id").getString(),
                         clientSecret = application.environment.config.property("oauth.google.client_secret").getString()
-                    ))
+                    )
+                )
 
 
                 val json = HttpClient().get<String>("https://www.googleapis.com/userinfo/v2/me") {
@@ -207,12 +219,12 @@ fun Application.module(testing: Boolean = false) {
                 log.debug(json);
                 log.debug(googleUser.toString())
                 userService.upsertUserWithId(
-                    id=id,
+                    id = id,
                     nick = googleUser.getValue("name"),
                     accessToken = googleOauthResponse.access_token
                 )
 
-                call.respond(mapOf("accessToken" to googleOauthResponse.access_token))
+                call.respond(mapOf("identityToken" to googleOauthResponse.id_token))
                 // TODO Store access token for user lookup
                 // Create and store user (use sub
                 // Implement custom auth lookup on access token
