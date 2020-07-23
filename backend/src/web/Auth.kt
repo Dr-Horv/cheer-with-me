@@ -48,6 +48,11 @@ fun Authentication.Configuration.cheerWithMe(
             val principal = verify(call, token)
             if (principal != null) {
                 context.principal(principal)
+            } else {
+                context.challenge("cheerWithMeAuth", AuthenticationFailedCause.InvalidCredentials) {
+                    call.respond(UnauthorizedResponse())
+                    it.complete()
+                }
             }
         }
     }
