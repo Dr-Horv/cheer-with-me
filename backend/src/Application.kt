@@ -189,7 +189,7 @@ fun Application.module(testing: Boolean = false) {
 
             get("/safe") {
                 call.respond(mapOf(
-                    "secret" to "hello",
+                    "secret" to "hello apple",
                     "user" to call.principal<CheerWithMePrincipal>()!!.userId
                 ))
             }
@@ -236,7 +236,17 @@ fun Application.module(testing: Boolean = false) {
             authenticatedRoutes()
 
             get("/safe") {
-                call.respond(mapOf("secret" to "hello"))
+                call.respond(mapOf("secret" to "hello google"))
+            }
+        }
+
+        authenticate("cheerWithMe") {
+            authenticatedRoutes()
+            get("/safe") {
+                call.respond(mapOf(
+                    "secret" to "hello cheerWithMe",
+                    "user" to call.principal<CheerWithMePrincipal>()!!.userId
+                ))
             }
         }
 
