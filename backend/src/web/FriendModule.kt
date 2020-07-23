@@ -1,33 +1,37 @@
 package dev.fredag.cheerwithme.web
 
+import dev.fredag.cheerwithme.getUserId
+import dev.fredag.cheerwithme.model.AcceptFriendRequest
+import dev.fredag.cheerwithme.model.SendFriendRequest
+import dev.fredag.cheerwithme.service.UserFriendsService
+import dev.fredag.cheerwithme.service.UserService
 import io.ktor.application.call
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.request.receive
-import io.ktor.response.respondText
+import io.ktor.response.respond
 import io.ktor.routing.Route
 import io.ktor.routing.get
 import io.ktor.routing.post
 
 
-data class FriendRequest(val adder: String, val adee: String)
-
-fun Route.friendRouting(testing: Boolean = false) {
+fun Route.friendRouting(
+    userFriendsService: UserFriendsService, testing: Boolean = false) {
     get("/friends/") {
-        call.respondText(
-            "You have no friends :,(",
-            contentType = ContentType.Text.Plain,
-            status = HttpStatusCode.OK
+        call.respond(
+            userFriendsService.getUserFriends(getUserId())
         )
     }
 
-    post("/friends/add/") {
-        val friendReq = call.receive<FriendRequest>()
-        val sb = StringBuilder()
-        sb.append(friendReq.adder)
-            .append(" added ")
-            .append(friendReq.adee)
+    post("/friends/sendFriendRequest/") {
+        val friendReq = call.receive<SendFriendRequest>()
+        userFriendsService.sendFriendRequest(getUserId(), friendReq)
+        call.respond(HttpStatusCode.NoContent)
+    }
 
-        call.respondText(sb.toString(), contentType = ContentType.Text.Plain)
+    post("/friends/acceptFriendRequest/") {
+        val acceptReq = call.receive<AcceptFriendRequest>()
+        userFriendsService.acceptFriendRequest(getUserId(), acceptReq)
+        call.respond(HttpStatusCode.NoContent)
     }
 }
+

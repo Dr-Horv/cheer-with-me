@@ -1,17 +1,19 @@
 package dev.fredag.cheerwithme.service
 
 import dev.fredag.cheerwithme.model.User
+import dev.fredag.cheerwithme.model.UserId
 import dev.fredag.cheerwithme.model.UserWithToken
 import dev.fredag.cheerwithme.model.Users
-import dev.fredag.cheerwithme.userService
 import org.jetbrains.exposed.sql.*
 
 class UserService {
-    suspend fun addUser(newNick: String,
-                        accessToken: String,
-                        googleId: String? = null,
-                        appleId: String? = null,
-                        refreshToken: String?): User {
+    suspend fun addUser(
+        newNick: String,
+        accessToken: String,
+        googleId: String? = null,
+        appleId: String? = null,
+        refreshToken: String? = null
+    ): User {
         var newId = 0L
         Database.dbQuery {
             newId = Users.insert {
@@ -29,15 +31,16 @@ class UserService {
         Users.selectAll().map(this::toUser)
     }
 
-    suspend fun upsertUserWithId(nick: String,
-                                 accessToken: String,
-                                 refreshToken: String? = null,
-                                 googleId: String? = null,
-                                 appleId: String? = null
-                                 ) {
+    suspend fun upsertUserWithId(
+        nick: String,
+        accessToken: String,
+        refreshToken: String? = null,
+        googleId: String? = null,
+        appleId: String? = null
+    ) {
         val user = findUserByGoogleOrAppleId(googleId ?: appleId ?: "")
         if (user == null) {
-            userService.addUser(
+            addUser(
                 newNick = nick,
                 accessToken = accessToken,
                 googleId = googleId,
@@ -46,7 +49,7 @@ class UserService {
             )
         } else {
             Database.dbQuery {
-                Users.update ({ Users.id.eq(user.id) }) {
+                Users.update({ Users.id.eq(user.id) }) {
                     it[Users.accessToken] = accessToken
                 }
             }
@@ -66,7 +69,11 @@ class UserService {
     }
 
     suspend fun findUsersWithAccessToken(): List<UserWithToken> = Database.dbQuery {
-        Users.select { Users.accessToken.isNotNull()}.map(this::toUserWithToken).toList()
+        Users.select { Users.accessToken.isNotNull() }.map(this::toUserWithToken).toList()
+    }
+
+    suspend fun findUsersWithIds(userIds: List<UserId>): List<User> = Database.dbQuery {
+        Users.select { Users.id.inList(userIds) }.map(this::toUser)
     }
 
     private fun toUserWithToken(row: ResultRow): UserWithToken = UserWithToken(
@@ -74,8 +81,13 @@ class UserService {
         accessToken = row[Users.accessToken].orEmpty()
     )
 
+
     private fun toUser(row: ResultRow): User = User(
-            id = row[Users.id],
-            nick = row[Users.nick]
-        )
+        id = row[Users.id],
+        nick = row[Users.nick]
+    )
+
+    suspend fun searchUserByNick(nick: String): List<User> = Database.dbQuery {
+        Users.select { Users.nick.lowerCase().like("%${nick.toLowerCase()}%") }.map(this::toUser)
+    }
 }

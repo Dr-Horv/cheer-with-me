@@ -14,8 +14,14 @@ import io.ktor.routing.post
 
 fun Route.userRouting(userService: UserService, testing: Boolean = false){
 
-    get("/user/"){
+    get("/users/"){
         call.respond(userService.getUsers())
+    }
+
+    get("/users/search/") {
+        val nick = call.request.queryParameters["nick"]
+        val users = if (nick != null) { userService.searchUserByNick(nick) } else { emptyList() }
+        call.respond(users)
     }
 }
 
