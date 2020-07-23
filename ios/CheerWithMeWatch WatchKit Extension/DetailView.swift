@@ -42,7 +42,7 @@ struct DetailView: View {
             Text(self.positionText)
             
             if (self.result == nil) {
-                ActivityIndicator(animating: true, style: .large)
+                ProgressView("Sending cheer").progressViewStyle(CircularProgressViewStyle())
             }
             if (self.result != nil) {
                 Text("Success!\n\(self.result)").color(.green)

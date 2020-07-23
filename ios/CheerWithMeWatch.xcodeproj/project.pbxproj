@@ -13,7 +13,6 @@
 		3D0F1E6822C52028007783E9 /* PushNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F1E6722C52028007783E9 /* PushNotificationManager.swift */; };
 		3D0F1E6A22C52660007783E9 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F1E6922C52660007783E9 /* MainView.swift */; };
 		3D0F1E6C22C56547007783E9 /* UserStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D0F1E6B22C56547007783E9 /* UserStore.swift */; };
-		3D2FBD6722CBF68A00B5B29F /* AuthenticationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D2FBD6622CBF68A00B5B29F /* AuthenticationController.swift */; };
 		3D879EE322BAC6A7003C00E3 /* CheerIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D879EE222BAC6A7003C00E3 /* CheerIcon.swift */; };
 		3DAE435122B1A29A0012B142 /* CheerWithMeWatch WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 3DAE435022B1A29A0012B142 /* CheerWithMeWatch WatchKit App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		3DAE435722B1A29A0012B142 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3DAE435522B1A29A0012B142 /* Interface.storyboard */; };
@@ -32,8 +31,8 @@
 		3DB59B4422BBE41E00766AD8 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB59B4322BBE41E00766AD8 /* Position.swift */; };
 		3DBEF85424C9B07A00A0D3B1 /* HTTPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF85324C9B07900A0D3B1 /* HTTPStatus.swift */; };
 		3DBEF85524C9B07A00A0D3B1 /* HTTPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF85324C9B07900A0D3B1 /* HTTPStatus.swift */; };
+		3DBEF85724C9CE4B00A0D3B1 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF85624C9CE4B00A0D3B1 /* App.swift */; };
 		3DC21FE322BC0A20005B6281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE222BC0A20005B6281 /* AppDelegate.swift */; };
-		3DC21FE522BC0A20005B6281 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE422BC0A20005B6281 /* SceneDelegate.swift */; };
 		3DC21FE722BC0A20005B6281 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE622BC0A20005B6281 /* ContentView.swift */; };
 		3DC21FE922BC0A24005B6281 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DC21FE822BC0A24005B6281 /* Assets.xcassets */; };
 		3DC21FEC22BC0A24005B6281 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DC21FEB22BC0A24005B6281 /* Preview Assets.xcassets */; };
@@ -47,8 +46,6 @@
 		3DC21FFD22BC0B6F005B6281 /* Cheer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DAE438322B1AB120012B142 /* Cheer.swift */; };
 		3DC21FFF22BC0F9D005B6281 /* BackendServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */; };
 		3DC2200022BC0F9D005B6281 /* BackendServices.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */; };
-		3DC2200222C134CB005B6281 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC2200122C134CB005B6281 /* ActivityIndicator.swift */; };
-		3DC2200322C134CB005B6281 /* ActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC2200122C134CB005B6281 /* ActivityIndicator.swift */; };
 		3DDFE05422E7952600FE5434 /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDFE05322E7952600FE5434 /* FriendsView.swift */; };
 		3DDFE05622E7AC3F00FE5434 /* CreateCheerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDFE05522E7AC3F00FE5434 /* CreateCheerView.swift */; };
 /* End PBXBuildFile section */
@@ -103,7 +100,6 @@
 		3D0F1E6722C52028007783E9 /* PushNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationManager.swift; sourceTree = "<group>"; };
 		3D0F1E6922C52660007783E9 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		3D0F1E6B22C56547007783E9 /* UserStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserStore.swift; sourceTree = "<group>"; };
-		3D2FBD6622CBF68A00B5B29F /* AuthenticationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationController.swift; sourceTree = "<group>"; };
 		3D879EE122BAC326003C00E3 /* CheerWithMeWatch WatchKit Extension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "CheerWithMeWatch WatchKit Extension.entitlements"; sourceTree = "<group>"; };
 		3D879EE222BAC6A7003C00E3 /* CheerIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheerIcon.swift; sourceTree = "<group>"; };
 		3DAE434C22B1A29A0012B142 /* CheerWithMeWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheerWithMeWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,9 +122,9 @@
 		3DB59B4122BBDD1B00766AD8 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		3DB59B4322BBE41E00766AD8 /* Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
 		3DBEF85324C9B07900A0D3B1 /* HTTPStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPStatus.swift; sourceTree = "<group>"; };
+		3DBEF85624C9CE4B00A0D3B1 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
 		3DC21FE022BC0A20005B6281 /* CheerWithMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheerWithMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DC21FE222BC0A20005B6281 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		3DC21FE422BC0A20005B6281 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		3DC21FE622BC0A20005B6281 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3DC21FE822BC0A24005B6281 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3DC21FEB22BC0A24005B6281 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -136,7 +132,6 @@
 		3DC21FF022BC0A24005B6281 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3DC21FF822BC0AB9005B6281 /* Font Awesome 5 Pro-Regular-400.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Font Awesome 5 Pro-Regular-400.otf"; sourceTree = "<group>"; };
 		3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendServices.swift; sourceTree = "<group>"; };
-		3DC2200122C134CB005B6281 /* ActivityIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicator.swift; sourceTree = "<group>"; };
 		3DDFE05322E7952600FE5434 /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
 		3DDFE05522E7AC3F00FE5434 /* CreateCheerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateCheerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -230,11 +225,9 @@
 			children = (
 				3D0F1E6022C175CB007783E9 /* CheerWithMe.entitlements */,
 				3DC21FE222BC0A20005B6281 /* AppDelegate.swift */,
-				3DC21FE422BC0A20005B6281 /* SceneDelegate.swift */,
 				3DC21FE622BC0A20005B6281 /* ContentView.swift */,
 				3D0F1E6322C17866007783E9 /* DetailView.swift */,
 				3DDFE05322E7952600FE5434 /* FriendsView.swift */,
-				3D2FBD6622CBF68A00B5B29F /* AuthenticationController.swift */,
 				3D0F1E6922C52660007783E9 /* MainView.swift */,
 				3DC21FE822BC0A24005B6281 /* Assets.xcassets */,
 				3DC21FED22BC0A24005B6281 /* LaunchScreen.storyboard */,
@@ -246,6 +239,7 @@
 				3D0F1E6722C52028007783E9 /* PushNotificationManager.swift */,
 				3D0F1E6B22C56547007783E9 /* UserStore.swift */,
 				3DDFE05522E7AC3F00FE5434 /* CreateCheerView.swift */,
+				3DBEF85624C9CE4B00A0D3B1 /* App.swift */,
 			);
 			path = CheerWithMe;
 			sourceTree = "<group>";
@@ -264,7 +258,6 @@
 				3DAE438222B1AAFD0012B142 /* Models */,
 				3DC21FF722BC0A99005B6281 /* Resources */,
 				3D879EE222BAC6A7003C00E3 /* CheerIcon.swift */,
-				3DC2200122C134CB005B6281 /* ActivityIndicator.swift */,
 				3DB59B4322BBE41E00766AD8 /* Position.swift */,
 				3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */,
 				3DBEF85324C9B07900A0D3B1 /* HTTPStatus.swift */,
@@ -454,7 +447,6 @@
 				3DC21FFF22BC0F9D005B6281 /* BackendServices.swift in Sources */,
 				3DAE436522B1A29C0012B142 /* ContentView.swift in Sources */,
 				3DAE436B22B1A29C0012B142 /* NotificationController.swift in Sources */,
-				3DC2200222C134CB005B6281 /* ActivityIndicator.swift in Sources */,
 				3DB59B4422BBE41E00766AD8 /* Position.swift in Sources */,
 				3DAE436922B1A29C0012B142 /* ExtensionDelegate.swift in Sources */,
 				3DAE436D22B1A29C0012B142 /* NotificationView.swift in Sources */,
@@ -473,12 +465,10 @@
 				3D0F1E6A22C52660007783E9 /* MainView.swift in Sources */,
 				3DDFE05422E7952600FE5434 /* FriendsView.swift in Sources */,
 				3DC21FE322BC0A20005B6281 /* AppDelegate.swift in Sources */,
-				3D2FBD6722CBF68A00B5B29F /* AuthenticationController.swift in Sources */,
-				3DC21FE522BC0A20005B6281 /* SceneDelegate.swift in Sources */,
 				3D0F1E6422C17866007783E9 /* DetailView.swift in Sources */,
 				3DB2AE6822F2340C0061193B /* MapView.swift in Sources */,
 				3D0F1E6222C17675007783E9 /* LoginView.swift in Sources */,
-				3DC2200322C134CB005B6281 /* ActivityIndicator.swift in Sources */,
+				3DBEF85724C9CE4B00A0D3B1 /* App.swift in Sources */,
 				3D0F1E6822C52028007783E9 /* PushNotificationManager.swift in Sources */,
 				3D0F1E6C22C56547007783E9 /* UserStore.swift in Sources */,
 				3DC21FF522BC0A75005B6281 /* CheerIcon.swift in Sources */,

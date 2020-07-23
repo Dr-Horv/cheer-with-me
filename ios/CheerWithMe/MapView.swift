@@ -6,20 +6,17 @@
 //  Copyright © 2019 Johan Lindskogen. All rights reserved.
 //
 
-import SwiftUI
 import MapKit
+import SwiftUI
 
-struct MapView: UIViewRepresentable {
-    func makeUIView(context: Context) -> MKMapView {
-        MKMapView(frame: .zero)
-    }
+let coordinate = CLLocationCoordinate2D(latitude: 57.7089, longitude: 11.9746)
+let span = MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
+
+struct MapView: View {
+    @State private var region = MKCoordinateRegion(center: coordinate, span: span)
     
-    func updateUIView(_ view: MKMapView, context: Context) {
-        let coordinate = CLLocationCoordinate2D(latitude: 57.7089, longitude: 11.9746)
-        let span = MKCoordinateSpan(latitudeDelta: 0.2, longitudeDelta: 0.2)
-        let region = MKCoordinateRegion(center: coordinate, span: span)
-        
-        view.setRegion(region, animated: true)
+    var body: some View {
+        Map(coordinateRegion: $region)
     }
 }
 
