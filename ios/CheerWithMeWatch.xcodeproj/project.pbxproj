@@ -30,6 +30,8 @@
 		3DB2AE6822F2340C0061193B /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB2AE6722F2340C0061193B /* MapView.swift */; };
 		3DB59B4222BBDD1B00766AD8 /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB59B4122BBDD1B00766AD8 /* DetailView.swift */; };
 		3DB59B4422BBE41E00766AD8 /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB59B4322BBE41E00766AD8 /* Position.swift */; };
+		3DBEF85424C9B07A00A0D3B1 /* HTTPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF85324C9B07900A0D3B1 /* HTTPStatus.swift */; };
+		3DBEF85524C9B07A00A0D3B1 /* HTTPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF85324C9B07900A0D3B1 /* HTTPStatus.swift */; };
 		3DC21FE322BC0A20005B6281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE222BC0A20005B6281 /* AppDelegate.swift */; };
 		3DC21FE522BC0A20005B6281 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE422BC0A20005B6281 /* SceneDelegate.swift */; };
 		3DC21FE722BC0A20005B6281 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE622BC0A20005B6281 /* ContentView.swift */; };
@@ -123,6 +125,7 @@
 		3DB2AE6722F2340C0061193B /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		3DB59B4122BBDD1B00766AD8 /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		3DB59B4322BBE41E00766AD8 /* Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
+		3DBEF85324C9B07900A0D3B1 /* HTTPStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPStatus.swift; sourceTree = "<group>"; };
 		3DC21FE022BC0A20005B6281 /* CheerWithMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheerWithMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DC21FE222BC0A20005B6281 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3DC21FE422BC0A20005B6281 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -264,6 +267,7 @@
 				3DC2200122C134CB005B6281 /* ActivityIndicator.swift */,
 				3DB59B4322BBE41E00766AD8 /* Position.swift */,
 				3DC21FFE22BC0F9C005B6281 /* BackendServices.swift */,
+				3DBEF85324C9B07900A0D3B1 /* HTTPStatus.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -361,9 +365,11 @@
 				TargetAttributes = {
 					3DAE434B22B1A29A0012B142 = {
 						CreatedOnToolsVersion = 11.0;
+						LastSwiftMigration = 1200;
 					};
 					3DAE434F22B1A29A0012B142 = {
 						CreatedOnToolsVersion = 11.0;
+						LastSwiftMigration = 1200;
 					};
 					3DAE435E22B1A29C0012B142 = {
 						CreatedOnToolsVersion = 11.0;
@@ -454,6 +460,7 @@
 				3DAE436D22B1A29C0012B142 /* NotificationView.swift in Sources */,
 				3DAE438422B1AB120012B142 /* Cheer.swift in Sources */,
 				3D879EE322BAC6A7003C00E3 /* CheerIcon.swift in Sources */,
+				3DBEF85524C9B07A00A0D3B1 /* HTTPStatus.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,6 +469,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3DC2200022BC0F9D005B6281 /* BackendServices.swift in Sources */,
+				3DBEF85424C9B07A00A0D3B1 /* HTTPStatus.swift in Sources */,
 				3D0F1E6A22C52660007783E9 /* MainView.swift in Sources */,
 				3DDFE05422E7952600FE5434 /* FriendsView.swift in Sources */,
 				3DC21FE322BC0A20005B6281 /* AppDelegate.swift in Sources */,
@@ -686,14 +694,21 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = RKHV3WZ9CR;
 				IBSC_MODULE = CheerWithMeWatch_WatchKit_Extension;
 				INFOPLIST_FILE = "CheerWithMeWatch WatchKit App/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMeWatch.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 6.0;
@@ -705,10 +720,16 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = RKHV3WZ9CR;
 				IBSC_MODULE = CheerWithMeWatch_WatchKit_Extension;
 				INFOPLIST_FILE = "CheerWithMeWatch WatchKit App/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMeWatch.watchkitapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -722,12 +743,19 @@
 		3DAE438022B1A29E0012B142 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RKHV3WZ9CR;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMeWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Debug;
@@ -735,9 +763,15 @@
 		3DAE438122B1A29E0012B142 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = RKHV3WZ9CR;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = dev.fredag.CheerWithMeWatch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
