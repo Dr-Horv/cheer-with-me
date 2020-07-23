@@ -29,18 +29,19 @@ class UserService {
         Users.selectAll().map(this::toUser)
     }
 
-    suspend fun upsertUserWithId(id: String,
-                                 nick: String,
+    suspend fun upsertUserWithId(nick: String,
                                  accessToken: String,
-                                 refreshToken: String? = null
+                                 refreshToken: String? = null,
+                                 googleId: String? = null,
+                                 appleId: String? = null
                                  ) {
-
-        val user = findUserByGoogleOrAppleId(id)
+        val user = findUserByGoogleOrAppleId(googleId ?: appleId ?: "")
         if (user == null) {
             userService.addUser(
                 newNick = nick,
                 accessToken = accessToken,
-                googleId = id,
+                googleId = googleId,
+                appleId = appleId,
                 refreshToken = refreshToken
             )
         } else {

@@ -13,15 +13,12 @@ class PushService(
     private val snsService: SnsService,
     private val userService: UserService) {
 
-    suspend fun registerDeviceToken(nick: String, registration: DeviceRegistration) {
-        val user = userService.findUserByNick(nick)
-        user ?: throw NotFoundException("No user with nick $nick")
-
-        val arn = snsService.registerWithSNS(registration, lookupArn(user.id))
+    suspend fun registerDeviceToken(userId: Long, registration: DeviceRegistration) {
+        val arn = snsService.registerWithSNS(registration, lookupArn(userId))
         Database.dbQuery {
             UserPushArns.insert {
                 it[UserPushArns.arn] = arn
-                it[userId] = user.id
+                it[UserPushArns.userId] = userId
             } get UserPushArns.id
         }
     }

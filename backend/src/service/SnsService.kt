@@ -1,6 +1,7 @@
 package dev.fredag.cheerwithme.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import dev.fredag.cheerwithme.logger
 import dev.fredag.cheerwithme.model.Platform
 import dev.fredag.cheerwithme.web.DeviceRegistration
 import software.amazon.awssdk.services.sns.SnsClient
@@ -12,19 +13,22 @@ import java.util.regex.Pattern
 
 class SnsService(
     private val snsClient: SnsClient) {
+    val log by logger();
 
-    //TODO: Move to somewhere more fitting
-    private val pushArnApple = "arn:aws:sns:eu-central-1:601851889032:app/APNS_SANDBOX/cheer-with-me"
-    private val pushArnAndroid = "arn:aws:sns:eu-central-1:601851889032:app/GCM/cheer-with-me"
+    private var pushArnIOS = ""
+    private var pushArnAndroid = ""
 
-    private var badgeNbr = 0
+    fun init(pushArnIOS: String, pushArnAndroid: String) {
+        this.pushArnIOS = pushArnIOS
+        this.pushArnAndroid = pushArnAndroid
+    }
 
     fun sendPush(arn: String, message: String) {
 
         val apnsSandbox = mapOf(
             "aps" to mapOf(
                 "alert" to message,
-                "badge" to badgeNbr++
+                "badge" to 1
             )
         )
 
@@ -35,13 +39,14 @@ class SnsService(
         )
 
         val messageJson = ObjectMapper().writeValueAsString(messageBody)
-        println(messageJson)
+        log.debug(messageJson)
 
         val publishRequest = PublishRequest.builder()
             .messageStructure("json")
             .message(messageJson)
             .targetArn(arn)
             .build()
+
 
         snsClient.publish(publishRequest)
     }
@@ -50,7 +55,7 @@ class SnsService(
         var endpointArn = previousEndpointArn
         var updateNeeded = false
         var createNeeded = null == endpointArn
-        var token = deviceRegistration.pushToken
+        val token = deviceRegistration.pushToken
 
         if (createNeeded) {
             // No platform endpoint ARN is stored; need to call createEndpoint.
@@ -58,7 +63,7 @@ class SnsService(
             createNeeded = false
         }
 
-        println("Retrieving platform endpoint data...")
+        log.debug("Retrieving platform endpoint data...")
         // Look up the platform endpoint and make sure the data in it is current, even if
         // it was just created.
         try {
@@ -79,12 +84,12 @@ class SnsService(
             createEndpoint(deviceRegistration)
         }
 
-        println("updateNeeded = $updateNeeded")
+        log.debug("updateNeeded = $updateNeeded")
 
         if (updateNeeded) {
             // The platform endpoint is out of sync with the current data;
             // update the token and enable it.
-            println("Updating platform endpoint " + endpointArn!!)
+            log.debug("Updating platform endpoint " + endpointArn!!)
             val attribs = HashMap<String, String>()
             attribs["Token"] = token
             attribs["Enabled"] = "true"
@@ -106,7 +111,7 @@ class SnsService(
         val (token, platform) = registration
         val pushArn = platformPushArn(platform)
         try {
-            println("Creating platform endpoint with token $token")
+            log.debug("Creating platform endpoint with token $token and pushArn $pushArn")
             val cpeReq = CreatePlatformEndpointRequest.builder()
                 .platformApplicationArn(pushArn)
                 .token(token)
@@ -116,7 +121,7 @@ class SnsService(
             endpointArn = cpeRes.endpointArn()
         } catch (ipe: InvalidParameterException) {
             val message = ipe.awsErrorDetails().errorMessage()
-            println("Exception message: $message")
+            log.debug("Exception message: $message")
             val p = Pattern
                 .compile(".*Endpoint (arn:aws:sns[^ ]+) already exists " + "with the same [Tt]oken.*")
             val m = p.matcher(message)
@@ -138,7 +143,7 @@ class SnsService(
     private fun platformPushArn(platform: Platform): String {
         return when(platform){
             Platform.ANDROID -> pushArnAndroid
-            Platform.APPLE -> pushArnApple
+            Platform.IOS -> pushArnIOS
         }
     }
 }

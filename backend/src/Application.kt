@@ -133,26 +133,19 @@ fun Application.module(testing: Boolean = false) {
 
     Database.init()
     authService.init()
+    snsService.init(
+        pushArnIOS = environment.config.property("push.pushArnIOS").getString(),
+        pushArnAndroid = environment.config.property("push.pushArnAndroid").getString()
+    )
     initAwsSdkClients()
     install(Routing) {
         get("/") {
             call.respondText("Cheers mate! :D", contentType = ContentType.Text.Plain)
         }
-
         get("/health") {
             call.respond(
                 mapOf("status" to "UP")
             )
-        }
-
-        post("/echo") {
-            val body = call.receive<Map<String, Any>>()
-            log.debug("$body")
-            call.respond(body)
-        }
-
-        get("/json/jackson") {
-            call.respond(mapOf("hello" to "world"))
         }
 
         authenticate("apple") {
@@ -171,7 +164,7 @@ fun Application.module(testing: Boolean = false) {
 
                 val principal = call.authentication.principal<JWTPrincipal>()!!
                 userService.upsertUserWithId(
-                    id = principal.payload.subject,
+                    appleId = principal.payload.subject,
                     nick = appleUserSignInRequest.nick,
                     accessToken = appleOauthResponse.access_token,
                     refreshToken = appleOauthResponse.refresh_token
@@ -179,10 +172,6 @@ fun Application.module(testing: Boolean = false) {
 
                 call.application.log.debug("RESPONSE $appleOauthResponse")
                 call.respond(mapOf("accessToken" to appleOauthResponse.access_token))
-
-                // TODO Store access token for user lookup
-                // Create and store user (use sub
-                // Implement custom auth lookup on access token
             }
         }
 
@@ -212,20 +201,19 @@ fun Application.module(testing: Boolean = false) {
                 log.debug(json);
                 log.debug(googleUser.toString())
                 userService.upsertUserWithId(
-                    id = id,
+                    googleId = id,
                     nick = googleUser.getValue("name"),
                     accessToken = googleOauthResponse.access_token
                 )
 
                 call.respond(mapOf("accessToken" to googleOauthResponse.access_token))
-                // TODO Store access token for user lookup
-                // Create and store user (use sub
-                // Implement custom auth lookup on access token
             }
         }
 
         authenticate("cheerWithMe") {
-            authenticatedRoutes()
+            userRouting(userService)
+            pushRouting(pushService)
+            friendRouting()
             get("/safe") {
                 call.respond(mapOf(
                     "secret" to "hello cheerWithMe",
@@ -234,14 +222,6 @@ fun Application.module(testing: Boolean = false) {
             }
         }
 
-    }
-}
-
-private fun Application.authenticatedRoutes() {
-    routing {
-        userRouting(userService)
-        pushRouting(pushService)
-        friendRouting()
     }
 }
 
