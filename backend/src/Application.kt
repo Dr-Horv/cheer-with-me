@@ -53,7 +53,7 @@ private val snsService: SnsService = SnsService(buildSnsClient())
 private val pushService: PushService = PushService(snsService, userService)
 private val oauth2Service: Oauth2Service = Oauth2Service()
 private val authService: AuthService = AuthService(userService)
-private val userFriendsService: UserFriendsService = UserFriendsService(userService)
+private val userFriendsService: UserFriendsService = UserFriendsService(userService, pushService)
 
 @KtorExperimentalAPI
 @Suppress("unused") // Referenced in application.conf
@@ -227,7 +227,7 @@ fun Application.module(testing: Boolean = false) {
     }
 }
 
-private fun buildSnsClient(): SnsClient {
+fun buildSnsClient(): SnsClient {
     return SnsClient
         .builder()
         .region(Region.EU_CENTRAL_1)
