@@ -28,3 +28,6 @@ DerivedData/
 !*.xcodeproj/xcshareddata/
 !*.xcworkspace/contents.xcworkspacedata
 /*.gcno
+
+
+Common/Resources/Font Awesome 5 Pro-Regular-400.otf
