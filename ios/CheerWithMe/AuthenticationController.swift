@@ -82,9 +82,6 @@ struct AuthenticationButton : UIViewRepresentable {
                 
                 BackendService.shared.token = identityToken
                 
-                guard let code = authorizationCode else {
-                    preconditionFailure("authorizationCode must be defined")
-                }
                 
                 self.provider.getCredentialState(forUserID: userIdentifier) { state, error in
                     if let error = error {
@@ -93,15 +90,6 @@ struct AuthenticationButton : UIViewRepresentable {
                         print("state \(state)")
                     }
                 }
-                
-                
-                
-                let _ = BackendService.shared.register(payload: .init(code: code)).sink(receiveCompletion: { completion in
-                    print(completion)
-                }, receiveValue: { response in
-                    print(response)
-                })
-                
             }
             
         }

@@ -89,17 +89,22 @@ struct UserPayload: Codable {
     let nick: String
 }
 
-struct UserResponse: Codable {
+struct UserResponse: Decodable {
     let id: Int
     let nick: String
 }
 
 struct AuthenticationPayload: Codable {
     let code: String
+    let nick: String
+}
+
+struct AuthenticationResponse: Decodable {
+    let accessToken: String
 }
 
 extension BackendService {
-    func register(payload: AuthenticationPayload) -> AnyPublisher<String, Error> {
+    func register(payload: AuthenticationPayload, completion: @escaping (AuthenticationResponse) -> ()) {
         
         guard let inputData = try? encoder.encode(payload) else {
             preconditionFailure("Payload cannot be serialized")
@@ -116,9 +121,18 @@ extension BackendService {
         request.addValue("Bearer \(token)", forHTTPHeaderField: "authorization")
         request.httpBody = inputData
         
-        return session.dataTaskPublisher(for: request)
-            .tryMap { String(data: $0.data, encoding: .utf8) ?? "" }
-            .eraseToAnyPublisher()
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            guard let data = data else {
+                print("Error no data")
+                return
+            }
+            
+            guard let authResponse = try? self.decoder.decode(AuthenticationResponse.self, from: data) else {
+                print("HTTP Error", error as Any)
+                return
+            }
+            completion(authResponse)
+        }.resume()
     }
 }
 
@@ -146,5 +160,35 @@ extension BackendService {
             .map { $0.data }
             .decode(type: PostPushTokenPayload.self, decoder: decoder)
             .eraseToAnyPublisher()
+    }
+}
+
+struct SafeResponse: Decodable {
+    let secret: String
+    let user: CLongLong
+}
+
+
+extension BackendService {
+    func safe(completion: @escaping (SafeResponse) -> ()) {
+        guard let token = self.token else {
+            preconditionFailure("Token not set")
+        }
+        
+        var request = URLRequest(url: URL(string: "\(host)/safe")!)
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "authorization")
+        
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            guard let data = data else {
+                print("Error no data")
+                return
+            }
+            
+            guard let authResponse = try? self.decoder.decode(SafeResponse.self, from: data) else {
+                print("HTTP Error", error as Any)
+                return
+            }
+            completion(authResponse)
+        }.resume()
     }
 }

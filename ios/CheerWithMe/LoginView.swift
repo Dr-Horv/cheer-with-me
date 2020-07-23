@@ -12,7 +12,7 @@ import AuthenticationServices
 struct LoginView : View {
     @State private var username: String = ""
     
-    var onPressSignIn: (String) -> Void
+    var setSignedIn: (Bool) -> Void
     
     var body: some View {
         VStack {
@@ -54,23 +54,17 @@ struct LoginView : View {
                                 preconditionFailure("authorizationCode must be defined")
                             }
                             
-                            let _ = BackendService.shared.register(payload: .init(code: code)).sink(receiveCompletion: { completion in
-                                print(completion)
-                            }, receiveValue: { response in
+                            BackendService.shared.register(payload: .init(code: code, nick: username)) { response in
                                 print(response)
-                            })
+                                BackendService.shared.token = response.accessToken
+                                self.setSignedIn(true)
+                            }
                         }
                     case .failure (let error):
                         print("Authorization failed: \(error.localizedDescription)")
                     }
                 }
             ).frame(width: 300, height: 50, alignment: .center).signInWithAppleButtonStyle(.white)
-            
-            Button(action: {
-                self.onPressSignIn(self.username)
-            }) {
-                Text("Sign in")
-            }
             
             Spacer()
         }
@@ -80,7 +74,7 @@ struct LoginView : View {
 #if DEBUG
 struct LoginView_Previews : PreviewProvider {
     static var previews: some View {
-        LoginView(onPressSignIn: { username in print(username) })
+        LoginView(setSignedIn: { signedIn in print(signedIn) })
     }
 }
 #endif
