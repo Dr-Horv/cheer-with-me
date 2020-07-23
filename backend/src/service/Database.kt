@@ -2,6 +2,7 @@ package dev.fredag.cheerwithme.service
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import dev.fredag.cheerwithme.buildSnsClient
 import dev.fredag.cheerwithme.model.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -16,11 +17,12 @@ import org.jetbrains.exposed.sql.transactions.transaction
 object Database {
     fun init() {
         val userService = UserService()
-        val userFriendsService = UserFriendsService(userService)
+        val userFriendsService = UserFriendsService(userService, pushService = PushService(SnsService(buildSnsClient()), userService))
 
         // Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
         Database.connect(hikari())
         transaction {
+            // drop(UserFriendsEvents)
             create(Users, UserPushArns, UserFriendsEvents)
             GlobalScope.launch {
                 userService.upsertUserWithId(
@@ -63,6 +65,8 @@ object Database {
                 )
                 userFriendsService.acceptFriendRequest(1, AcceptFriendRequest(38))
                 userFriendsService.sendFriendRequest(1, SendFriendRequest(36))
+                userFriendsService.sendFriendRequest(1, SendFriendRequest(37))
+                userFriendsService.acceptFriendRequest(37, AcceptFriendRequest(1))
             }
         }
     }

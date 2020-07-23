@@ -1,13 +1,16 @@
 package dev.fredag.cheerwithme.service
 
 import com.fasterxml.jackson.module.kotlin.readValue
+import dev.fredag.cheerwithme.logger
 import dev.fredag.cheerwithme.model.*
 import dev.fredag.cheerwithme.objectMapper
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.select
 
-class UserFriendsService(private val userService: UserService) {
+class UserFriendsService(private val userService: UserService,
+                         private val pushService: PushService) {
+    private val log by logger()
 
     private suspend fun addEvents(events: List<Event>) = Database.dbQuery {
         UserFriendsEvents.batchInsert(events) {
@@ -25,6 +28,7 @@ class UserFriendsService(private val userService: UserService) {
     suspend fun sendFriendRequest(userId: UserId, request: SendFriendRequest) {
         val aggregate = getUserFriendAggregate(userId)
         if (aggregate.friends.contains(request.userId) || aggregate.outgoingFriendRequests.contains(request.userId)) {
+            log.debug("$userId is already friends with or have outgoing request towards ${request.userId}")
             return
         }
 
@@ -34,11 +38,16 @@ class UserFriendsService(private val userService: UserService) {
                 FriendRequest(request.userId, requester = userId, receiver = request.userId)
             )
         )
+
+        userService.findUserById(userId)?.apply {
+            pushService.push(request.userId, "${this.nick} has requested to be your friend")
+        }
     }
 
     suspend fun acceptFriendRequest(userId: UserId, request: AcceptFriendRequest) {
         val aggregate = getUserFriendAggregate(userId)
         if (aggregate.friends.contains(request.userId) || !aggregate.incomingFriendRequests.contains(request.userId)) {
+            log.debug("$userId is already friends with or doesnt have an incoming friend request from ${request.userId}")
             return
         }
         addEvents(
@@ -47,6 +56,10 @@ class UserFriendsService(private val userService: UserService) {
                 FriendRequestAccepted(request.userId, requester = request.userId, receiver = userId)
             )
         )
+
+        userService.findUserById(userId)?.apply {
+            pushService.push(request.userId, "${this.nick} has accepted your friend request")
+        }
 
     }
 

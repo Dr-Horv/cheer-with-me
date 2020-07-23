@@ -76,18 +76,21 @@ class UserService {
         Users.select { Users.id.inList(userIds) }.map(this::toUser)
     }
 
+    suspend fun searchUserByNick(nick: String): List<User> = Database.dbQuery {
+        Users.select { Users.nick.lowerCase().like("%${nick.toLowerCase()}%") }.map(this::toUser)
+    }
+
+    suspend fun findUserById(userId: Long): User? = Database.dbQuery {
+        Users.select { Users.id.eq(userId) }.limit(1).map(this::toUser).firstOrNull()
+    }
+
     private fun toUserWithToken(row: ResultRow): UserWithToken = UserWithToken(
         id = row[Users.id],
         accessToken = row[Users.accessToken].orEmpty()
     )
 
-
     private fun toUser(row: ResultRow): User = User(
         id = row[Users.id],
         nick = row[Users.nick]
     )
-
-    suspend fun searchUserByNick(nick: String): List<User> = Database.dbQuery {
-        Users.select { Users.nick.lowerCase().like("%${nick.toLowerCase()}%") }.map(this::toUser)
-    }
 }
