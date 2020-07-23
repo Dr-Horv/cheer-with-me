@@ -1,5 +1,7 @@
 package dev.fredag.cheerwithme.model
 
+import dev.fredag.cheerwithme.model.Users.autoIncrement
+import dev.fredag.cheerwithme.model.Users.primaryKey
 import org.jetbrains.exposed.sql.Table
 
 object Users : Table() {
@@ -13,7 +15,8 @@ object Users : Table() {
 
 data class User(
     val id : Long,
-    val nick : String
+    val nick : String,
+    val avatarUrl: String? = null
 )
 
 data class UserWithToken(val id: Long, val accessToken: String)
@@ -29,4 +32,10 @@ data class UserPushArn(
     val userId: Long,
     val arn: String
 )
+
+object UserFriendsEvents: Table() {
+    val id = long("id").primaryKey().autoIncrement()
+    val userId = (long("user_id") references Users.id)
+    val eventData = text("event_data")
+}
 

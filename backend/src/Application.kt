@@ -33,6 +33,7 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
+import io.ktor.util.pipeline.PipelineContext
 import kotlinx.coroutines.Dispatchers
 import org.slf4j.event.Level
 import software.amazon.awssdk.regions.Region
@@ -47,11 +48,12 @@ val objectMapper = ObjectMapper().registerKotlinModule()
 
 
 //Dependency injection without magic? Instantiate service classes for insertion in "modules" (routes) here
-val userService: UserService = UserService()
-val snsService: SnsService = SnsService(buildSnsClient())
-val pushService: PushService = PushService(snsService, userService)
-val oauth2Service: Oauth2Service = Oauth2Service()
-val authService: AuthService = AuthService(userService)
+private val userService: UserService = UserService()
+private val snsService: SnsService = SnsService(buildSnsClient())
+private val pushService: PushService = PushService(snsService, userService)
+private val oauth2Service: Oauth2Service = Oauth2Service()
+private val authService: AuthService = AuthService(userService)
+private val userFriendsService: UserFriendsService = UserFriendsService(userService)
 
 @KtorExperimentalAPI
 @Suppress("unused") // Referenced in application.conf
@@ -213,7 +215,7 @@ fun Application.module(testing: Boolean = false) {
         authenticate("cheerWithMe") {
             userRouting(userService)
             pushRouting(pushService)
-            friendRouting()
+            friendRouting(userFriendsService)
             get("/safe") {
                 call.respond(mapOf(
                     "secret" to "hello cheerWithMe",
@@ -231,3 +233,6 @@ private fun buildSnsClient(): SnsClient {
         .region(Region.EU_CENTRAL_1)
         .build()
 }
+
+fun PipelineContext<Unit, ApplicationCall>.getUserId() =
+    call.principal<CheerWithMePrincipal>()!!.userId
