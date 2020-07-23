@@ -44,7 +44,7 @@ fun Authentication.Configuration.cheerWithMe(
                 it.complete()
             }
         } else {
-            val token = authHeader.substring(0, "bearer ".length)
+            val token = authHeader.substring("bearer ".length)
             val principal = verify(call, token)
             if (principal != null) {
                 context.principal(principal)

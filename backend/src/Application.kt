@@ -184,15 +184,6 @@ fun Application.module(testing: Boolean = false) {
                 // Create and store user (use sub
                 // Implement custom auth lookup on access token
             }
-
-            authenticatedRoutes()
-
-            get("/safe") {
-                call.respond(mapOf(
-                    "secret" to "hello apple",
-                    "user" to call.principal<CheerWithMePrincipal>()!!.userId
-                ))
-            }
         }
 
         authenticate("google") {
@@ -230,13 +221,6 @@ fun Application.module(testing: Boolean = false) {
                 // TODO Store access token for user lookup
                 // Create and store user (use sub
                 // Implement custom auth lookup on access token
-            }
-
-            //Put all other externally defined routes here (if they require authentication)
-            authenticatedRoutes()
-
-            get("/safe") {
-                call.respond(mapOf("secret" to "hello google"))
             }
         }
 
