@@ -16,6 +16,8 @@ data class User(
     val nick : String
 )
 
+data class UserWithToken(val id: Long, val accessToken: String)
+
 object UserPushArns : Table() {
     val id = long("id").primaryKey().autoIncrement()
     val userId = (long("user_id") references Users.id)

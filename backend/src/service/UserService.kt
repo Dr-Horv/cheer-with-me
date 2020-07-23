@@ -1,6 +1,7 @@
 package dev.fredag.cheerwithme.service
 
 import dev.fredag.cheerwithme.model.User
+import dev.fredag.cheerwithme.model.UserWithToken
 import dev.fredag.cheerwithme.model.Users
 import dev.fredag.cheerwithme.userService
 import org.jetbrains.exposed.sql.*
@@ -58,6 +59,19 @@ class UserService {
     suspend fun findUserByNick(nick: String): User? = Database.dbQuery {
         Users.select { Users.nick.eq(nick) }.limit(1).map(this::toUser).firstOrNull()
     }
+
+    suspend fun findUserByAccessToken(accessToken: String): UserWithToken? = Database.dbQuery {
+        Users.select { Users.accessToken.eq(accessToken) }.map(this::toUserWithToken).firstOrNull()
+    }
+
+    suspend fun findUsersWithAccessToken(): List<UserWithToken> = Database.dbQuery {
+        Users.select { Users.accessToken.isNotNull()}.map(this::toUserWithToken).toList()
+    }
+
+    private fun toUserWithToken(row: ResultRow): UserWithToken = UserWithToken(
+        id = row[Users.id],
+        accessToken = row[Users.accessToken].orEmpty()
+    )
 
     private fun toUser(row: ResultRow): User = User(
             id = row[Users.id],
