@@ -61,7 +61,7 @@ class BackendService {
 
 
 extension BackendService {
-    func postCheer(cheerInput: CheerInput) -> AnyPublisher<CheerInput, Error> {
+    func postCheer(cheerInput: CheerInput, completion: @escaping () -> ()) {
         
         guard let inputData = try? encoder.encode(cheerInput) else {
             preconditionFailure("cheerInput cannot be serialized")
@@ -75,13 +75,12 @@ extension BackendService {
         
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "content-type")
-        request.addValue("Nick \(token)", forHTTPHeaderField: "authorization")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "authorization")
         request.httpBody = inputData
-            
-        return session.dataTaskPublisher(for: request)
-            .map { $0.data }
-            .decode(type: CheerInput.self, decoder: decoder)
-            .eraseToAnyPublisher()
+        
+        session.dataTask(with: request) { (data, response, error) in
+            completion()
+        }.resume()
     }
 }
 
@@ -121,7 +120,7 @@ extension BackendService {
         request.addValue("Bearer \(token)", forHTTPHeaderField: "authorization")
         request.httpBody = inputData
         
-        URLSession.shared.dataTask(with: request) { (data, response, error) in
+        session.dataTask(with: request) { (data, response, error) in
             guard let data = data else {
                 print("Error no data")
                 return
@@ -142,8 +141,12 @@ struct PostPushTokenPayload: Codable {
 }
 
 extension BackendService {
-    func post(pushToken: String, withAuthentication token: String) -> AnyPublisher<PostPushTokenPayload, Error> {
-        let payload = PostPushTokenPayload(pushToken: pushToken, platform: "APPLE")
+    func registerDevicePushToken(pushToken: String, completion: @escaping (_ success: Bool) -> ()) {
+        let payload = PostPushTokenPayload(pushToken: pushToken, platform: "IOS")
+        
+        guard let token = self.token else {
+            preconditionFailure("Token not set")
+        }
         
         guard let inputData = try? encoder.encode(payload) else {
             preconditionFailure("Payload cannot be serialized")
@@ -153,13 +156,18 @@ extension BackendService {
         
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "content-type")
-        request.addValue("Nick \(token)", forHTTPHeaderField: "authorization")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "authorization")
         request.httpBody = inputData
         
-        return session.dataTaskPublisher(for: request)
-            .map { $0.data }
-            .decode(type: PostPushTokenPayload.self, decoder: decoder)
-            .eraseToAnyPublisher()
+        
+        session.dataTask(with: request) { (data, response, error) in
+            guard let response = response as? HTTPURLResponse else {
+                completion(false)
+                return
+            }
+            
+            completion(response.status != nil && response.status == .noContent)
+        }.resume()
     }
 }
 
@@ -178,7 +186,7 @@ extension BackendService {
         var request = URLRequest(url: URL(string: "\(host)/safe")!)
         request.addValue("Bearer \(token)", forHTTPHeaderField: "authorization")
         
-        URLSession.shared.dataTask(with: request) { (data, response, error) in
+        session.dataTask(with: request) { (data, response, error) in
             guard let data = data else {
                 print("Error no data")
                 return
