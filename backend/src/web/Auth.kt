@@ -6,6 +6,7 @@ import io.ktor.auth.*
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 
+data class CheerWithMePrincipal(val userId: Long): Principal
 
 class CheerWithMeAuthenticationProvider(configuration: Configuration) : AuthenticationProvider(configuration) {
     internal val authenticationFunction = configuration.authenticationFunction

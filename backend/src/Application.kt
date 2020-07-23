@@ -10,10 +10,7 @@ import dev.fredag.cheerwithme.model.AppleUserSignInRequest
 import dev.fredag.cheerwithme.model.GoogleOauthResponse
 import dev.fredag.cheerwithme.model.GoogleUserSignInRequest
 import dev.fredag.cheerwithme.service.*
-import dev.fredag.cheerwithme.web.cheerWithMe
-import dev.fredag.cheerwithme.web.friendRouting
-import dev.fredag.cheerwithme.web.pushRouting
-import dev.fredag.cheerwithme.web.userRouting
+import dev.fredag.cheerwithme.web.*
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.JWTPrincipal
@@ -36,6 +33,7 @@ import io.ktor.routing.get
 import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
+import kotlinx.coroutines.Dispatchers
 import org.slf4j.event.Level
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sns.SnsClient
@@ -53,7 +51,7 @@ val userService: UserService = UserService()
 val snsService: SnsService = SnsService(buildSnsClient())
 val pushService: PushService = PushService(snsService, userService)
 val oauth2Service: Oauth2Service = Oauth2Service()
-
+val authService: AuthService = AuthService(userService)
 
 @KtorExperimentalAPI
 @Suppress("unused") // Referenced in application.conf
@@ -126,7 +124,7 @@ fun Application.module(testing: Boolean = false) {
         cheerWithMe("cheerWithMe") {
             verifyToken {
                 when {
-                    it.isNotBlank() -> object: Principal {}
+                    it.isNotBlank() -> authService.verifyToken(it)
                     else -> null
                 }
             }
@@ -134,6 +132,7 @@ fun Application.module(testing: Boolean = false) {
     }
 
     Database.init()
+    authService.init()
     initAwsSdkClients()
     install(Routing) {
         get("/") {
@@ -179,7 +178,7 @@ fun Application.module(testing: Boolean = false) {
                 )
 
                 call.application.log.debug("RESPONSE $appleOauthResponse")
-                call.respond(mapOf("identityToken" to appleOauthResponse.id_token))
+                call.respond(mapOf("accessToken" to appleOauthResponse.access_token))
 
                 // TODO Store access token for user lookup
                 // Create and store user (use sub
@@ -189,7 +188,10 @@ fun Application.module(testing: Boolean = false) {
             authenticatedRoutes()
 
             get("/safe") {
-                call.respond(mapOf("secret" to "hello"))
+                call.respond(mapOf(
+                    "secret" to "hello",
+                    "user" to call.principal<CheerWithMePrincipal>()!!.userId
+                ))
             }
         }
 
@@ -224,7 +226,7 @@ fun Application.module(testing: Boolean = false) {
                     accessToken = googleOauthResponse.access_token
                 )
 
-                call.respond(mapOf("identityToken" to googleOauthResponse.id_token))
+                call.respond(mapOf("accessToken" to googleOauthResponse.access_token))
                 // TODO Store access token for user lookup
                 // Create and store user (use sub
                 // Implement custom auth lookup on access token
