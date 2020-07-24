@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import dev.fredag.cheerwithme.service.NotificationService
 import org.koin.android.ext.android.get
 
 class FirebaseNotificationReceiver : FirebaseMessagingService() {
