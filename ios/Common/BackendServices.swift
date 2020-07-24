@@ -8,6 +8,7 @@
 
 import SwiftUI
 import Combine
+import KeychainSwift
 
 let host = "http://192.168.1.71:8080"
 // let host = "http://cheer-with-me.fredag.dev"
@@ -47,13 +48,30 @@ class BackendService {
     private let session: URLSession
     private let encoder: JSONEncoder
     private let decoder: JSONDecoder
+    private let keychain = KeychainSwift()
     
-    var token: String? = nil
+    private var _token: String? = nil
+    
+    var token: String? {
+        set {
+            _token = newValue
+            if let value = newValue {
+                keychain.set(value, forKey: "cheer-with-me-token")
+            } else {
+                keychain.delete("cheer-with-me-token")
+            }
+            
+        }
+        get {
+            _token
+        }
+    }
     
     private init(session: URLSession = .shared, encoder: JSONEncoder = .init(), decoder: JSONDecoder = .init()) {
         self.session = session
         self.encoder = encoder
         self.decoder = decoder
+        self._token = keychain.get("cheer-with-me-token")
     }
     
     static let shared: BackendService = .init()
@@ -88,9 +106,10 @@ struct UserPayload: Codable {
     let nick: String
 }
 
-struct UserResponse: Decodable {
+struct UserResponse: Decodable, Identifiable {
     let id: Int
     let nick: String
+    let avatarUrl: String?
 }
 
 struct AuthenticationPayload: Codable {
@@ -197,6 +216,121 @@ extension BackendService {
                 return
             }
             completion(authResponse)
+        }.resume()
+    }
+}
+
+
+extension BackendService {
+    func searchUsers(_ input: String, completion: @escaping ([UserResponse]) -> Void) {
+        guard let token = self.token else {
+            preconditionFailure("Token not set")
+        }
+        
+        var request = URLRequest(url: URL(string: "\(host)/users/search?nick=\(input)")!)
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "authorization")
+        
+        session.dataTask(with: request) { (data, response, error) in
+            guard let data = data else {
+                print("Error no data")
+                return
+            }
+            
+            guard let users = try? self.decoder.decode([UserResponse].self, from: data) else {
+                print("HTTP Error", error as Any)
+                return
+            }
+            completion(users)
+        }.resume()
+    }
+}
+
+
+struct FriendRequestResponse: Decodable {
+    let friends: [UserResponse]
+    let incomingFriendRequests: [UserResponse]
+    let outgoingFriendRequests: [UserResponse]
+}
+
+// GET  /friends
+// POST /friends/sendFriendRequest { userId: 132 }
+// POST /friends/acceptFriendRequest { userId: 132 }
+
+extension BackendService {
+    func getOutstandingFriendRequests(completion: @escaping (FriendRequestResponse) -> Void) {
+        guard let token = self.token else {
+            preconditionFailure("Token not set")
+        }
+        
+        var request = URLRequest(url: URL(string: "\(host)/friends/")!)
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "authorization")
+        
+        session.dataTask(with: request) { (data, response, error) in
+            guard let data = data else {
+                print("Error no data")
+                return
+            }
+            
+            guard let friendsResponse = try? self.decoder.decode(FriendRequestResponse.self, from: data) else {
+                print("HTTP Error", error as Any)
+                return
+            }
+            completion(friendsResponse)
+        }.resume()
+    }
+}
+
+struct FriendRequestPayload: Codable {
+    let userId: Int
+}
+
+extension BackendService {
+    func acceptFriendRequest(userId: Int, completion: @escaping (Bool) -> Void) {
+        guard let token = self.token else {
+            preconditionFailure("Token not set")
+        }
+        
+        guard let inputData = try? encoder.encode(FriendRequestPayload(userId: userId)) else {
+            preconditionFailure("Payload cannot be serialized")
+        }
+        
+        var request = URLRequest(url: URL(string: "\(host)/friends/acceptFriendRequest")!)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "content-type")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "authorization")
+        request.httpBody = inputData
+        
+        session.dataTask(with: request) { (data, response, error) in
+            if error != nil {
+                completion(false)
+            }
+            completion(true)
+        }.resume()
+    }
+}
+
+
+extension BackendService {
+    func sendFriendRequest(userId: Int, completion: @escaping (Bool) -> Void) {
+        guard let token = self.token else {
+            preconditionFailure("Token not set")
+        }
+        
+        guard let inputData = try? encoder.encode(FriendRequestPayload(userId: userId)) else {
+            preconditionFailure("Payload cannot be serialized")
+        }
+        
+        var request = URLRequest(url: URL(string: "\(host)/friends/sendFriendRequest")!)
+        request.httpMethod = "POST"
+        request.addValue("application/json", forHTTPHeaderField: "content-type")
+        request.addValue("Bearer \(token)", forHTTPHeaderField: "authorization")
+        request.httpBody = inputData
+        
+        session.dataTask(with: request) { (data, response, error) in
+            if error != nil {
+                completion(false)
+            }
+            completion(true)
         }.resume()
     }
 }

@@ -37,7 +37,7 @@ struct MainView : View {
             .tabItem {
                 self.tabbarItem(icon: "calendar", text: "Events")
             }.tag(Tab.calendar)
-            FriendsView(friends: allFriends, requests: allRequests)
+            FriendsScreen()
                .tabItem {
                 self.tabbarItem(icon: "user-friends", text: "Friends")
            }.tag(Tab.friends)
