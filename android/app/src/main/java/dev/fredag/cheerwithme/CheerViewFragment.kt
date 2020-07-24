@@ -53,7 +53,7 @@ class CheerViewFragment: Fragment() {
         FontManager.markAsIconContainer(cheer_view_container, iconFont)
 
         val queue = Volley.newRequestQueue(get())
-        val url = "http://cheer-with-me.fredag.dev/"
+        val url = "http://192.168.0.113:8080/"
 
         for (child in icons_container.children) {
             if (child is Button) {

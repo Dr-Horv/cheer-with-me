@@ -7,9 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.AuthFailureError
 import com.android.volley.NetworkResponse
 import com.android.volley.Response
-import com.android.volley.toolbox.HttpHeaderParser
-import com.android.volley.toolbox.StringRequest
-import com.android.volley.toolbox.Volley
+import com.android.volley.toolbox.*
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -17,10 +15,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import dev.fredag.cheerwithme.service.BackendService
+import dev.fredag.cheerwithme.service.NotificationService
 import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONObject
 import org.koin.dsl.module
-import java.nio.charset.Charset
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.TimeoutException
 import kotlin.coroutines.suspendCoroutine
 
 
@@ -31,6 +32,9 @@ var notificationModule = module {
     single { NotificationService() }
 }
 
+data class GoogleLoginResponse(val accessToken: String)
+data class GoogleLoginRequest(val code: String)
+
 class MainActivity : AppCompatActivity() {
     val RC_SIGN_IN = 15
 
@@ -39,8 +43,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_main)
+        BackendService.getInstance(this.applicationContext)
 
         this.supportActionBar?.let {
             it.hide()
@@ -94,83 +98,36 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-        val context = this
         try {
-            completedTask.getResult(ApiException::class.java)?.let {
-                Log.d("Granted scopes", it.grantedScopes.toString())
-                Log.d("Requested scopes", it.requestedScopes.toString())
-                val result = it
-                Log.d(
-                    "GoogleLogin",
-                    "${result.displayName} ${result.email} '${result.grantedScopes}' ${result.id} ${result.idToken} ${result.serverAuthCode}"
-                )
-                login_status.text = "Hello, ${result.displayName}. Wait some more."
-                val jwt = result.idToken
-                val url = "http://192.168.0.113:8080/login/google"
+            val account = completedTask.getResult(ApiException::class.java)
+            if(account == null) {
+                Log.d("SignIn", "Failed to signin")
+                return
+            }
+            Log.d("Granted scopes", account.grantedScopes.toString())
+            Log.d("Requested scopes", account.requestedScopes.toString())
+            Log.d(
+                "GoogleLogin",
+                "${account.displayName} ${account.email} '${account.grantedScopes}' ${account.id} ${account.idToken} ${account.serverAuthCode}"
+            )
+            login_status.text = "Hello, ${account.displayName}. Wait some more."
 
+            val jwt = account.idToken
+            if(jwt !== null) {
+                BackendService.token = jwt
+            }
 
-                val jsonBody = JSONObject()
-                jsonBody.put("code", result.serverAuthCode)
-                val requestBody = jsonBody.toString()
-
-
-                val requestQueue = Volley.newRequestQueue(this)
-
-                val request = object : StringRequest(Method.POST, url,
-                    Response.Listener { response ->
-                        Log.i("VOLLEY", response)
-                        //cont.resume(response)
-
-                    },
-                    Response.ErrorListener { error ->
-                        error.printStackTrace()
-                        Log.e("VOLLEYerror", error.toString())
-                        //cont.resumeWithException(error)
-                    }) {
-                    override fun getBodyContentType(): String {
-                        return "application/json; charset=utf-8"
-                    }
-
-                    override fun getBody(): ByteArray {
-                        Log.d("GoogleLogin", "Body: $jsonBody");
-                         return requestBody.toByteArray(Charset.forName("utf-8"))
-                    }
-
-                    @Throws(AuthFailureError::class)
-                    override fun getHeaders(): Map<String, String> {
-                        return mapOf("Authorization" to "Bearer $jwt")
-                    }
-
-                    override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
-                        var responseString = ""
-                        if (response != null) {
-                            responseString = response.statusCode.toString()
-                            // can get more details such as response.headers
-                        }
-                        return Response.success(
-                            responseString,
-                            HttpHeaderParser.parseCacheHeaders(response)
-                        )
-                    }
+            BackendService.getInstance(this.applicationContext).post(
+                "login/google",
+                GoogleLoginRequest(code = account.serverAuthCode!!),
+                GoogleLoginResponse::class.java
+            ) {
+                if(it.isSuccess) {
+                    BackendService.token = it.getOrThrow().accessToken
+                    startApp()
+                } else {
+                    Log.d("GoogleLogin", "Failed")
                 }
-
-                requestQueue.add(request)
-
-//                MainScope().async {
-//                    try {
-//                        val resp = get(url, jwt)
-//                        Log.d("mainactivity", resp)
-//                        //login_status.text = "Success $resp"
-//                        //startApp()
-//
-//                    } catch (e: Error) {
-//                        login_status.text = e.toString()
-//                    }
-//                }
-
-                //this.runOnUiThread {
-                //    login_status.text = "Done waiting, welcome! $response"
-                // }
             }
         } catch (e: ApiException) {
 
@@ -178,47 +135,5 @@ class MainActivity : AppCompatActivity() {
             Log.d("GoogleLogin failed", e.statusCode.toString())
 
         }
-
-
-    }
-
-    suspend fun get(url: String, jwt: String?): String? = suspendCoroutine { cont ->
-
-        val requestQueue = Volley.newRequestQueue(this)
-
-        val request = object : StringRequest(Method.POST, url,
-            Response.Listener { response ->
-                Log.i("VOLLEY", response)
-                //cont.resume(response)
-
-            },
-            Response.ErrorListener { error ->
-                error.printStackTrace()
-                Log.e("VOLLEY", error.toString())
-                //cont.resumeWithException(error)
-            }) {
-            override fun getBodyContentType(): String {
-                return "application/json; charset=utf-8"
-            }
-
-            @Throws(AuthFailureError::class)
-            override fun getHeaders(): Map<String, String> {
-                return mapOf("Authorization" to "Bearer $jwt")
-            }
-
-            override fun parseNetworkResponse(response: NetworkResponse): Response<String> {
-                var responseString = ""
-                if (response != null) {
-                    responseString = response.statusCode.toString()
-                    // can get more details such as response.headers
-                }
-                return Response.success(
-                    responseString,
-                    HttpHeaderParser.parseCacheHeaders(response)
-                )
-            }
-        }
-
-        requestQueue.add(request)
     }
 }

@@ -67,6 +67,15 @@ object Database {
                 userFriendsService.sendFriendRequest(1, SendFriendRequest(36))
                 userFriendsService.sendFriendRequest(1, SendFriendRequest(37))
                 userFriendsService.acceptFriendRequest(37, AcceptFriendRequest(1))
+
+                userFriendsService.sendFriendRequest(66, SendFriendRequest(1))
+                userFriendsService.acceptFriendRequest(1, AcceptFriendRequest(66))
+
+                userFriendsService.sendFriendRequest(66, SendFriendRequest(38))
+                userFriendsService.acceptFriendRequest(38, AcceptFriendRequest(66))
+
+                userFriendsService.sendFriendRequest(66, SendFriendRequest(39))
+                userFriendsService.acceptFriendRequest(39, AcceptFriendRequest(66))
             }
         }
     }
