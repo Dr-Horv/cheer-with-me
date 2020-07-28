@@ -10,7 +10,7 @@ import androidx.ui.material.Surface
 import androidx.ui.tooling.preview.Preview
 import dev.fredag.cheerwithme.ui.CheerWithMeTheme
 
-class MainActivity : AppCompatActivity() {
+class MainActivityCompose : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
