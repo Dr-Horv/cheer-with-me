@@ -53,6 +53,8 @@ dependencies {
 
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
+
+    implementation("com.google.android.gms:play-services-auth:18.1.0")
 }
 
 android {
