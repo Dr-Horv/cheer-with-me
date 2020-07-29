@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         bottomNavigation.setupWithNavController(navController)
-        AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
         val that = this
         lifecycleScope.launchWhenStarted {
             UserState.loggedIn.observe(that) {
