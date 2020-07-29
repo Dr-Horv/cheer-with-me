@@ -2,24 +2,31 @@ package dev.fredag.cheerwithme.ui
 
 import android.util.Log
 import androidx.compose.Composable
+import androidx.ui.foundation.isSystemInDarkTheme
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.darkColorPalette
 import androidx.ui.material.lightColorPalette
 
 private val DarkColorPalette = darkColorPalette(
     background = dark,
+    surface = dark,
     primary = beerYellow,
     onPrimary = fontColor,
     onBackground = gray,
-    onSurface = fontColor,
-    primaryVariant = beerYellow,
+    onSurface = lightDark,
+    onSecondary = fontColor,
     secondary = gray,
 )
 
 private val LightColorPalette = lightColorPalette(
-    primary = purple500,
-    primaryVariant = purple700,
-    secondary = teal200,
+    background = dark,
+    surface = dark,
+    primary = beerYellow,
+    onPrimary = fontColor,
+    onBackground = gray,
+    onSurface = lightDark,
+    onSecondary = fontColor,
+    secondary = gray,
 
     /* Other default colors to override
 background = Color.White,
@@ -33,10 +40,10 @@ onSurface = Color.Black,
 
 @Composable
 fun CheerWithMeTheme(
-    darkTheme: Boolean = true,/*isSystemInDarkTheme()*/
+    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colors = if (darkTheme) {
+    val colors = if (false) {
         DarkColorPalette
     } else {
         LightColorPalette

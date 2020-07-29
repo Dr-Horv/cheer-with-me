@@ -12,16 +12,21 @@ import androidx.compose.Composable
 import androidx.compose.Recomposer
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import androidx.ui.core.Alignment
-import androidx.ui.core.ContextAmbient
-import androidx.ui.core.Modifier
-import androidx.ui.core.setContent
+import androidx.ui.core.*
+import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.currentTextStyle
+import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.*
 import androidx.ui.material.Button
 import androidx.ui.material.Surface
+import androidx.ui.res.vectorResource
+import androidx.ui.text.TextStyle
+import androidx.ui.text.font.font
+import androidx.ui.text.font.fontFamily
+import androidx.ui.text.style.TextAlign
+import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -95,24 +100,49 @@ fun handleLoginButtonPress(fragment: LoginFragment, context: Context) {
 
 @Composable
 fun Login(loginFragment: LoginFragment) = CheerWithMeTheme {
-    Log.d("Login", currentTextStyle().color.toString())
     Surface {
-        Column(modifier = Modifier.padding(20.dp)) {
-            Text(text = "Login Screen")
+        Column(modifier = Modifier.padding(20.dp, 30.dp)) {
+            Text(
+                text = "Welcome",
+                fontSize = TextUnit.Em(8),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
             Column(
                 modifier = Modifier.fillMaxWidth().fillMaxHeight(),
                 verticalArrangement = Arrangement.Center,
                 horizontalGravity = Alignment.CenterHorizontally
             ) {
                 val context = ContextAmbient.current
+                Image(
+                    asset = vectorResource(id = R.drawable.ic_cheer_with_me),
+                    modifier = Modifier.size(200.dp).clip(CircleShape)
+                )
+                Text(
+                    "Cheer With Me is a social app that requires you to have an account in order to connect with friends and share happenings.",
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(10.dp, 40.dp)
+                )
                 Button(
                     onClick = {
                         Log.d("Login", "ButtonClicked!")
                         handleLoginButtonPress(loginFragment, context)
                     },
                     backgroundColor = Color.White,
+                    disabledBackgroundColor = Color.Gray,
+                    padding = InnerPadding(8.dp, 0.dp, 8.dp, 0.dp)
                 ) {
-                    Text("Sign in with Google", color = Color.Black)
+                    Image(
+                        asset = vectorResource(id = R.drawable.ic_btn_google_light_normal),
+                        modifier = Modifier.size(50.dp)
+                    )
+                    Text(
+                        "Sign in with Google",
+                        color = Color.DarkGray,
+                        fontFamily = fontFamily(listOf(font(R.font.roboto_medium))),
+                        fontSize = TextUnit.Companion.Sp(14),
+                        modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp)
+                    )
                 }
             }
         }

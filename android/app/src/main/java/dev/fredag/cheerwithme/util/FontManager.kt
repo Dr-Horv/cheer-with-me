@@ -8,7 +8,7 @@ import android.view.ViewGroup
 
 object FontManager {
 
-    val ROOT = "fonts/"
+    val ROOT = "font/"
     val FONTAWESOME_REGULAR = ROOT + "Font Awesome 5 Pro-Regular-400.otf"
     val FONTAWESOME_SOLID = ROOT + "Font Awesome 5 Pro-Solid-900.otf"
 
