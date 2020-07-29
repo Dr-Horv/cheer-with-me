@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.packaging.createDefaultDebugStore
+
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -58,6 +60,15 @@ dependencies {
 }
 
 android {
+    signingConfigs {
+        getByName("debug") {
+            storeFile = file("../cheer_with_me_dev.keystore")
+            storePassword = "hello.world123"
+            keyPassword = "hello.world123"
+            keyAlias = "cheerwithmekey"
+        }
+    }
+
     compileSdkVersion(29)
     buildToolsVersion = "29.0.3"
 
