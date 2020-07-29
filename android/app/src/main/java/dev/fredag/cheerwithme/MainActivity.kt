@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.lifecycle.lifecycleScope
@@ -23,14 +24,12 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
         val that = this
         lifecycleScope.launchWhenStarted {
-            if(UserState.loggedIn.value != true) {
-                Log.d("LoggedIn", false.toString())
-                navController.navigate(R.id.action_global_loginFragment)
-            }
             UserState.loggedIn.observe(that) {
                 Log.d("LoggedIn", it.toString())
                 if(!it) {
                     navController.navigate(R.id.action_global_loginFragment)
+                } else {
+                    bottomNavigation.visibility = View.VISIBLE
                 }
             }
         }
