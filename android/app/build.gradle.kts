@@ -1,7 +1,7 @@
-import com.android.build.gradle.internal.packaging.createDefaultDebugStore
 
 plugins {
     id("com.android.application")
+    id("dagger.hilt.android.plugin")
     kotlin("android")
     kotlin("android.extensions")
     kotlin("kapt")
@@ -19,6 +19,9 @@ dependencies {
     implementation(kotlin("stdlib"))
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
+
+    implementation( "com.google.dagger:hilt-android:2.28.3-alpha")
+    kapt("com.google.dagger:hilt-android-compiler:2.28.3-alpha")
 
     implementation("com.google.android.material:material:1.1.0")
 
@@ -57,6 +60,14 @@ dependencies {
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
     implementation("com.google.android.gms:play-services-auth:18.1.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
+
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.11.1")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.11.1")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.11.1")
 }
 
 android {
@@ -74,7 +85,7 @@ android {
 
     defaultConfig {
         applicationId = "dev.fredag.cheerwithme"
-        minSdkVersion(21)
+        minSdkVersion(24)
         targetSdkVersion(29)
         versionCode = 1
         versionName = "1.0"
@@ -114,6 +125,10 @@ android {
     aaptOptions {
         noCompress("filamat", "ktx", "glb")
     }
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
