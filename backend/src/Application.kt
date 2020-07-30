@@ -3,6 +3,7 @@ package dev.fredag.cheerwithme
 import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dev.fredag.cheerwithme.model.AppleOauthResponse
@@ -44,7 +45,10 @@ import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-val objectMapper = ObjectMapper().registerKotlinModule()
+val objectMapper: ObjectMapper = ObjectMapper()
+    .registerKotlinModule()
+    .registerModule(JavaTimeModule())
+    .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 
 
 //Dependency injection without magic? Instantiate service classes for insertion in "modules" (routes) here

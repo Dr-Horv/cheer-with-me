@@ -1,22 +1,9 @@
 package dev.fredag.cheerwithme.data.backend
 
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-
-data class GoogleUserSignInRequest(val code: String)
-data class GoogleUserSignInResponse(val accessToken: String)
-
-data class User(
-    val id : Long,
-    val nick : String,
-    val avatarUrl: String? = null
-)
-
-data class UserFriends(val friends: List<User>,
-                  val incomingFriendRequests: List<User>,
-                  val outgoingFriendRequests: List<User>)
-
 
 interface BackendService {
     @POST("/login/google")
@@ -24,4 +11,10 @@ interface BackendService {
 
     @GET("/friends/")
     suspend fun friends(): UserFriends
+
+    @POST("/friends/sendFriendRequest/")
+    suspend fun sendFriendRequest(@Body acceptFriendRequest: SendFriendRequest): Response<Void>
+
+    @POST("/friends/acceptFriendRequest/")
+    suspend fun acceptFriendRequest(@Body acceptFriendRequest: AcceptFriendRequest): Response<Void>
 }

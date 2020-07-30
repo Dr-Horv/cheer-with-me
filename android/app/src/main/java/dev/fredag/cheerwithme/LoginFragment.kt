@@ -1,18 +1,23 @@
 package dev.fredag.cheerwithme
 
 import android.app.Activity
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.*
+import androidx.compose.Composable
+import androidx.compose.MutableState
+import androidx.compose.Recomposer
+import androidx.compose.state
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
-import androidx.ui.core.*
+import androidx.ui.core.Alignment
+import androidx.ui.core.Modifier
+import androidx.ui.core.clip
+import androidx.ui.core.setContent
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
 import androidx.ui.foundation.shape.corner.CircleShape
@@ -31,7 +36,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.fredag.cheerwithme.data.UserRepository
 import dev.fredag.cheerwithme.data.UserState
@@ -50,9 +54,6 @@ class LoginFragment: Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         val fragmentView = inflater.inflate(R.layout.fragment_login, container, false) as ViewGroup
-
-        val navBar: BottomNavigationView = requireActivity().findViewById(R.id.bottom_navigation)
-        navBar.visibility = View.GONE
 
         fragmentView.setContent(Recomposer.current()) {
             Login(this)

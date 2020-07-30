@@ -8,7 +8,7 @@ import software.amazon.awssdk.services.sns.SnsClient
 import software.amazon.awssdk.services.sns.model.*
 import java.util.*
 import java.util.regex.Pattern
-
+import kotlin.Exception
 
 
 class SnsService(
@@ -48,7 +48,12 @@ class SnsService(
             .build()
 
 
-        snsClient.publish(publishRequest)
+        try {
+            snsClient.publish(publishRequest)
+        } catch (e: Exception) {
+            log.error("Can't send Apple push notifications", e)
+        }
+
     }
 
     fun registerWithSNS(deviceRegistration: DeviceRegistration, previousEndpointArn: String?): String {

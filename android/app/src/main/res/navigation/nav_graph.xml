@@ -6,7 +6,7 @@
     app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/friendsFragment"
-        android:name="dev.fredag.cheerwithme.FriendsFragment"
+        android:name="dev.fredag.cheerwithme.friends.FriendsFragment"
         android:label="fragment_friends"
         tools:layout="@layout/fragment_friends" />
     <fragment

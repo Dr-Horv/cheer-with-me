@@ -1,6 +1,7 @@
 package dev.fredag.cheerwithme.model
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import java.time.Instant
 
 typealias UserId = Long
 
@@ -8,9 +9,9 @@ typealias UserId = Long
     use = JsonTypeInfo.Id.NAME,
     include = JsonTypeInfo.As.PROPERTY,
     property = "type")
-sealed class Event(val userId: UserId)
-class FriendRequest(userId: UserId, val requester: UserId, val receiver: UserId): Event(userId)
-class FriendRequestAccepted(userId: UserId, val requester: UserId, val receiver: UserId): Event(userId)
+sealed class Event(val userId: UserId, val timestamp: Instant)
+class FriendRequest(userId: UserId, timestamp: Instant, val requester: UserId, val receiver: UserId): Event(userId, timestamp)
+class FriendRequestAccepted(userId: UserId, timestamp: Instant, val requester: UserId, val receiver: UserId): Event(userId, timestamp)
 
 class SendFriendRequest(val userId: UserId)
 class AcceptFriendRequest(val userId: UserId)
