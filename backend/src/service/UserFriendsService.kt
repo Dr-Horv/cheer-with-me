@@ -5,24 +5,32 @@ import dev.fredag.cheerwithme.logger
 import dev.fredag.cheerwithme.model.*
 import dev.fredag.cheerwithme.objectMapper
 import org.jetbrains.exposed.sql.ResultRow
+import org.jetbrains.exposed.sql.SortOrder
 import org.jetbrains.exposed.sql.batchInsert
 import org.jetbrains.exposed.sql.select
+import org.joda.time.DateTime
 
-class UserFriendsService(private val userService: UserService,
-                         private val pushService: PushService) {
+class UserFriendsService(
+    private val userService: UserService,
+    private val pushService: PushService
+) {
     private val log by logger()
 
     private suspend fun addEvents(events: List<Event>) = Database.dbQuery {
         UserFriendsEvents.batchInsert(events) {
             this[UserFriendsEvents.userId] = it.userId
+            this[UserFriendsEvents.timestamp] = DateTime(it.timestamp.toEpochMilli())
             this[UserFriendsEvents.eventData] = objectMapper.writeValueAsString(it)
         }
     }
 
     private suspend fun readEvents(userId: UserId): List<Event> = Database.dbQuery {
-        UserFriendsEvents.select { UserFriendsEvents.userId.eq(userId) }.map { row: ResultRow ->
-            objectMapper.readValue<Event>(row[UserFriendsEvents.eventData])
-        }
+        UserFriendsEvents.select { UserFriendsEvents.userId.eq(userId) }
+            .orderBy(UserFriendsEvents.timestamp to SortOrder.ASC)
+            .map { row: ResultRow ->
+                log.debug(row[UserFriendsEvents.timestamp].toString())
+                objectMapper.readValue<Event>(row[UserFriendsEvents.eventData])
+            }
     }
 
     suspend fun sendFriendRequest(userId: UserId, request: SendFriendRequest) {
@@ -34,8 +42,8 @@ class UserFriendsService(private val userService: UserService,
 
         addEvents(
             listOf(
-                FriendRequest(userId, requester = userId, receiver = request.userId),
-                FriendRequest(request.userId, requester = userId, receiver = request.userId)
+                FriendRequest(userId, now(), requester = userId, receiver = request.userId),
+                FriendRequest(request.userId, now(), requester = userId, receiver = request.userId)
             )
         )
 
@@ -52,8 +60,8 @@ class UserFriendsService(private val userService: UserService,
         }
         addEvents(
             listOf(
-                FriendRequestAccepted(userId, requester = request.userId, receiver = userId),
-                FriendRequestAccepted(request.userId, requester = request.userId, receiver = userId)
+                FriendRequestAccepted(userId, now(), requester = request.userId, receiver = userId),
+                FriendRequestAccepted(request.userId, now(), requester = request.userId, receiver = userId)
             )
         )
 
@@ -62,6 +70,8 @@ class UserFriendsService(private val userService: UserService,
         }
 
     }
+
+
 
     private suspend fun getUserFriendAggregate(userId: UserId): UserFriendsAggregate {
         val userEvents = readEvents(userId)

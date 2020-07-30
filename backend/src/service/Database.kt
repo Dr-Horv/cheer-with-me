@@ -12,7 +12,10 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils.create
 import org.jetbrains.exposed.sql.SchemaUtils.drop
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
+fun now(): Instant = Instant.now()
 
 object Database {
     fun init() {
@@ -22,7 +25,7 @@ object Database {
         // Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
         Database.connect(hikari())
         transaction {
-            // drop(UserFriendsEvents)
+            drop(UserFriendsEvents)
             create(Users, UserPushArns, UserFriendsEvents)
             GlobalScope.launch {
                 userService.upsertUserWithId(
@@ -76,6 +79,8 @@ object Database {
 
                 userFriendsService.sendFriendRequest(66, SendFriendRequest(39))
                 userFriendsService.acceptFriendRequest(39, AcceptFriendRequest(66))
+
+                userFriendsService.sendFriendRequest(37, SendFriendRequest(66))
             }
         }
     }

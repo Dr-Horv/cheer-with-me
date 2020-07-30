@@ -30,6 +30,11 @@ object BackendModule {
         }
     }
 
+    fun hasAccessKey(context: Context): Boolean {
+        val preferences = context.getSharedPreferences(BACKEND_PREFERENCES, Context.MODE_PRIVATE)
+        return preferences.getString(ACCESS_KEY_PREFERENCE_KEY, "")?.isNotBlank() ?: false
+    }
+
     @Provides
     @Singleton
     fun objectMapper(): ObjectMapper = ObjectMapper().registerKotlinModule()

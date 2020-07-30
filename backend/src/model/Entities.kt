@@ -3,6 +3,8 @@ package dev.fredag.cheerwithme.model
 import dev.fredag.cheerwithme.model.Users.autoIncrement
 import dev.fredag.cheerwithme.model.Users.primaryKey
 import org.jetbrains.exposed.sql.Table
+import org.joda.time.DateTime
+import java.time.Instant
 
 object Users : Table() {
     val id = long("id").primaryKey().autoIncrement()
@@ -35,6 +37,7 @@ data class UserPushArn(
 
 object UserFriendsEvents: Table() {
     val id = long("id").primaryKey().autoIncrement()
+    val timestamp = datetime("timestamp")
     val userId = (long("user_id") references Users.id)
     val eventData = text("event_data")
 }

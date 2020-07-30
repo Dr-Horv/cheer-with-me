@@ -10,6 +10,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.fredag.cheerwithme.data.UserState
+import dev.fredag.cheerwithme.data.backend.BackendModule
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -19,11 +20,12 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         bottomNavigation.setupWithNavController(navController)
-        val that = this
+        UserState.loggedIn.postValue(BackendModule.hasAccessKey(applicationContext))
         lifecycleScope.launchWhenStarted {
-            UserState.loggedIn.observe(that) {
+            UserState.loggedIn.observe(this@MainActivity) {
                 Log.d("LoggedIn", it.toString())
                 if(!it) {
+                    bottomNavigation.visibility = View.GONE
                     navController.navigate(R.id.action_global_loginFragment)
                 } else {
                     bottomNavigation.visibility = View.VISIBLE
