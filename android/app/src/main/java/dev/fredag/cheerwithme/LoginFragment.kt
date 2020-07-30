@@ -87,10 +87,10 @@ fun handleLoginSuccess(
 
 fun handleLoginButtonPress(
     fragment: LoginFragment,
-    context: Context,
     loading: MutableState<Boolean>
 ) {
     loading.value = true
+    val context = fragment.requireContext()
     val oauthServerClientId = context.getString(R.string.oauth_server_client_id)
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(oauthServerClientId)
@@ -141,7 +141,6 @@ fun Login(loginFragment: LoginFragment) = CheerWithMeTheme {
                 verticalArrangement = Arrangement.Center,
                 horizontalGravity = Alignment.CenterHorizontally
             ) {
-                val context = ContextAmbient.current
                 Image(
                     asset = vectorResource(id = R.drawable.ic_cheer_with_me),
                     modifier = Modifier.size(200.dp).clip(CircleShape)
@@ -154,7 +153,7 @@ fun Login(loginFragment: LoginFragment) = CheerWithMeTheme {
                 Button(
                     onClick = {
                         Log.d("Login", "ButtonClicked!")
-                        handleLoginButtonPress(loginFragment, context, loading)
+                        handleLoginButtonPress(loginFragment, loading)
                     },
                     backgroundColor = Color.White,
                     disabledBackgroundColor = Color.Gray,
