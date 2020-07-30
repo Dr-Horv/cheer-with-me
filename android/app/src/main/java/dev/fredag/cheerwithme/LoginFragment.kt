@@ -8,21 +8,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.Composable
-import androidx.compose.Recomposer
+import androidx.compose.*
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.Navigation
 import androidx.ui.core.*
 import androidx.ui.foundation.Image
 import androidx.ui.foundation.Text
-import androidx.ui.foundation.currentTextStyle
 import androidx.ui.foundation.shape.corner.CircleShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.*
 import androidx.ui.material.Button
+import androidx.ui.material.CircularProgressIndicator
 import androidx.ui.material.Surface
 import androidx.ui.res.vectorResource
-import androidx.ui.text.TextStyle
 import androidx.ui.text.font.font
 import androidx.ui.text.font.fontFamily
 import androidx.ui.text.style.TextAlign
@@ -33,11 +32,17 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import dagger.hilt.android.AndroidEntryPoint
+import dev.fredag.cheerwithme.data.UserRepository
 import dev.fredag.cheerwithme.data.UserState
 import dev.fredag.cheerwithme.ui.CheerWithMeTheme
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
+class LoginFragment: Fragment() {
 
-class LoginFragment : Fragment() {
+    @Inject lateinit var userRepository: UserRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,15 +62,35 @@ class LoginFragment : Fragment() {
     }
 }
 
-fun handleLoginSuccess(fragment: LoginFragment, account: GoogleSignInAccount) {
-    UserState.loggedIn.postValue(true)
-    val navController = Navigation.findNavController(fragment.requireView())
-    Log.d("Login", "navigating to startDestination")
-    navController.navigate(navController.graph.startDestination)
+fun handleLoginSuccess(
+    fragment: LoginFragment,
+    account: GoogleSignInAccount,
+    loading: MutableState<Boolean>
+) {
+    fragment.lifecycleScope.launch {
+        fragment.userRepository.loginWithGoogle(account.serverAuthCode!!, account.idToken!!)
+        Log.d("Login", "Login with google complete")
+
+    }.invokeOnCompletion {
+        loading.value = false
+        if(it !== null) {
+            TODO("Error handle")
+        }
+        UserState.loggedIn.postValue(true)
+        val navController = Navigation.findNavController(fragment.requireView())
+        Log.d("Login", "navigating to startDestination")
+        navController.navigate(navController.graph.startDestination)
+    }
+
 
 }
 
-fun handleLoginButtonPress(fragment: LoginFragment, context: Context) {
+fun handleLoginButtonPress(
+    fragment: LoginFragment,
+    context: Context,
+    loading: MutableState<Boolean>
+) {
+    loading.value = true
     val oauthServerClientId = context.getString(R.string.oauth_server_client_id)
     val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestIdToken(oauthServerClientId)
@@ -91,7 +116,9 @@ fun handleLoginButtonPress(fragment: LoginFragment, context: Context) {
                     "Login",
                     "${account.displayName} ${account.email} '${account.grantedScopes}' ${account.id} ${account.idToken} ${account.serverAuthCode}"
                 )
-                handleLoginSuccess(fragment, account)
+                handleLoginSuccess(fragment, account, loading)
+            } else {
+                loading.value = false
             }
         }
     Log.d("Login", "Starting signInIntent")
@@ -100,6 +127,7 @@ fun handleLoginButtonPress(fragment: LoginFragment, context: Context) {
 
 @Composable
 fun Login(loginFragment: LoginFragment) = CheerWithMeTheme {
+    val loading = state { false }
     Surface {
         Column(modifier = Modifier.padding(20.dp, 30.dp)) {
             Text(
@@ -126,11 +154,12 @@ fun Login(loginFragment: LoginFragment) = CheerWithMeTheme {
                 Button(
                     onClick = {
                         Log.d("Login", "ButtonClicked!")
-                        handleLoginButtonPress(loginFragment, context)
+                        handleLoginButtonPress(loginFragment, context, loading)
                     },
                     backgroundColor = Color.White,
                     disabledBackgroundColor = Color.Gray,
-                    padding = InnerPadding(8.dp, 0.dp, 8.dp, 0.dp)
+                    padding = InnerPadding(8.dp, 0.dp, 8.dp, 0.dp),
+                    enabled = !loading.value,
                 ) {
                     Image(
                         asset = vectorResource(id = R.drawable.ic_btn_google_light_normal),
@@ -142,6 +171,11 @@ fun Login(loginFragment: LoginFragment) = CheerWithMeTheme {
                         fontFamily = fontFamily(listOf(font(R.font.roboto_medium))),
                         fontSize = TextUnit.Companion.Sp(14),
                         modifier = Modifier.padding(8.dp, 0.dp, 8.dp, 0.dp)
+                    )
+                }
+                if(loading.value) {
+                    CircularProgressIndicator(
+                        Modifier.padding(0.dp, 24.dp)
                     )
                 }
             }

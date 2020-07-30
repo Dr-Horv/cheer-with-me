@@ -10,12 +10,15 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
+        android:name=".Application"
         android:allowBackup="true"
         android:icon="@drawable/ic_cheer_with_me"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CheerWithMe">
+        android:theme="@style/Theme.CheerWithMe"
+        android:networkSecurityConfig="@xml/network_security_config"
+        >
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
