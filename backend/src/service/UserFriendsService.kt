@@ -28,7 +28,6 @@ class UserFriendsService(
         UserFriendsEvents.select { UserFriendsEvents.userId.eq(userId) }
             .orderBy(UserFriendsEvents.timestamp to SortOrder.ASC)
             .map { row: ResultRow ->
-                log.debug(row[UserFriendsEvents.timestamp].toString())
                 objectMapper.readValue<Event>(row[UserFriendsEvents.eventData])
             }
     }
