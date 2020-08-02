@@ -89,7 +89,7 @@ class HappeningService(
             ).groupBy { it.id }
 
             val attendees = aggregate.attendees.flatMap { users.getValue(it) }
-            val awaiting = aggregate.attendees.flatMap { users.getValue(it) }
+            val awaiting = aggregate.awaiting.flatMap { users.getValue(it) }
             val admin = users.getValue(aggregate.adminId).first()
 
             Happening(
@@ -106,6 +106,9 @@ class HappeningService(
 
     private suspend fun getHappeningAggregate(happeningId: HappeningId): HappeningAggregate? {
         val events = happeningEventsRepository.readEvents(happeningId)
+        if(events.isEmpty()) {
+            return null
+        }
         val aggregate = MutableHappeningAggregate(happeningId, -1L, "", "", Instant.now())
 
         for (e in events) when (e) {
@@ -120,7 +123,10 @@ class HappeningService(
             is HappeningDescriptionChanged -> aggregate.description = e.description
             is HappeningTimeChanged -> aggregate.time = e.time
             is HappeningLocationChanged -> aggregate.location = e.location
-            is UserInvitedToHappening -> aggregate.awaiting.add(e.invited)
+            is UserInvitedToHappening -> {
+                log.debug("Invited event found: ${e.invited}")
+                aggregate.awaiting.add(e.invited)
+            }
             is UserAcceptedHappeningInvite -> {
                 aggregate.awaiting.remove(e.userId)
                 aggregate.attendees.add(e.userId)

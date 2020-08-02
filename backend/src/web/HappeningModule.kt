@@ -47,7 +47,7 @@ fun Route.happeningRouting(happeningService: HappeningService) {
         call.respond(HttpStatusCode.NoContent)
     }
 
-    put("/happenings/inviteUsers") {
+    put("/happenings/inviteUsers/") {
         val inviteUsersRequest = call.receive<InviteUsersToHappening>()
         val happening = happeningService.inviteUsers(getUserId(), inviteUsersRequest)
         if(happening == null) {
@@ -57,7 +57,7 @@ fun Route.happeningRouting(happeningService: HappeningService) {
         call.respond(HttpStatusCode.Accepted, happening)
     }
 
-    post("/happenings/acceptHappeningInvite") {
+    post("/happenings/acceptHappeningInvite/") {
         val acceptHappeningInviteRequest = call.receive<AcceptHappeningInvite>()
         val happening = happeningService.acceptHappeningInvite(getUserId(), acceptHappeningInviteRequest)
         if(happening == null) {
@@ -67,7 +67,7 @@ fun Route.happeningRouting(happeningService: HappeningService) {
         call.respond(HttpStatusCode.Accepted, happening)
     }
 
-    post("/happenings/rejectHappeningInvite") {
+    post("/happenings/rejectHappeningInvite/") {
         val rejectHappeningInviteRequest = call.receive<RejectHappeningInvite>()
         val happening = happeningService.rejectHappeningInvite(getUserId(), rejectHappeningInviteRequest)
         if(happening == null) {

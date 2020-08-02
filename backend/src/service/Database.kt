@@ -86,7 +86,7 @@ object Database {
 
 
                 happeningService.createHappening(66, CreateHappening("Discode!", "Kod & Vin",
-                    Instant.now().plus(1, ChronoUnit.DAYS), null, listOf(1)))
+                    Instant.now().plus(1, ChronoUnit.DAYS), null, listOf(1, 38)))
 
             }
         }
