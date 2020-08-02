@@ -11,7 +11,7 @@ import io.ktor.routing.*
 
 fun Route.happeningRouting(happeningService: HappeningService) {
 
-    get("/happenings/{happeningId}") {
+    get("/happenings/{happeningId}/") {
         val happeningId = call.parameters["happeningId"]
         if(happeningId == null) {
             call.respond(HttpStatusCode.BadRequest, "Missing happeningId from path")
