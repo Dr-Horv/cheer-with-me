@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -32,6 +32,12 @@
 		3DBEF85424C9B07A00A0D3B1 /* HTTPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF85324C9B07900A0D3B1 /* HTTPStatus.swift */; };
 		3DBEF85524C9B07A00A0D3B1 /* HTTPStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF85324C9B07900A0D3B1 /* HTTPStatus.swift */; };
 		3DBEF85724C9CE4B00A0D3B1 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF85624C9CE4B00A0D3B1 /* App.swift */; };
+		3DBEF85924C9DEC500A0D3B1 /* FriendsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF85824C9DEC500A0D3B1 /* FriendsScreen.swift */; };
+		3DBEF85D24C9ED1600A0D3B1 /* SearchBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF85C24C9ED1600A0D3B1 /* SearchBar.swift */; };
+		3DBEF85F24CA28BD00A0D3B1 /* UserSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF85E24CA28BD00A0D3B1 /* UserSearchView.swift */; };
+		3DBEF86224CA31F200A0D3B1 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3DBEF86124CA31F200A0D3B1 /* KeychainSwift */; };
+		3DBEF86524CA3DDA00A0D3B1 /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 3DBEF86424CA3DDA00A0D3B1 /* URLImage */; };
+		3DBEF86724CAEB7100A0D3B1 /* BeerTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DBEF86624CAEB7100A0D3B1 /* BeerTimer.swift */; };
 		3DC21FE322BC0A20005B6281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE222BC0A20005B6281 /* AppDelegate.swift */; };
 		3DC21FE722BC0A20005B6281 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DC21FE622BC0A20005B6281 /* ContentView.swift */; };
 		3DC21FE922BC0A24005B6281 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DC21FE822BC0A24005B6281 /* Assets.xcassets */; };
@@ -123,6 +129,10 @@
 		3DB59B4322BBE41E00766AD8 /* Position.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
 		3DBEF85324C9B07900A0D3B1 /* HTTPStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPStatus.swift; sourceTree = "<group>"; };
 		3DBEF85624C9CE4B00A0D3B1 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		3DBEF85824C9DEC500A0D3B1 /* FriendsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsScreen.swift; sourceTree = "<group>"; };
+		3DBEF85C24C9ED1600A0D3B1 /* SearchBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBar.swift; sourceTree = "<group>"; };
+		3DBEF85E24CA28BD00A0D3B1 /* UserSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserSearchView.swift; sourceTree = "<group>"; };
+		3DBEF86624CAEB7100A0D3B1 /* BeerTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeerTimer.swift; sourceTree = "<group>"; };
 		3DC21FE022BC0A20005B6281 /* CheerWithMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CheerWithMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DC21FE222BC0A20005B6281 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3DC21FE622BC0A20005B6281 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -148,6 +158,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DBEF86524CA3DDA00A0D3B1 /* URLImage in Frameworks */,
+				3DBEF86224CA31F200A0D3B1 /* KeychainSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,8 +238,11 @@
 				3D0F1E6022C175CB007783E9 /* CheerWithMe.entitlements */,
 				3DC21FE222BC0A20005B6281 /* AppDelegate.swift */,
 				3DC21FE622BC0A20005B6281 /* ContentView.swift */,
+				3DBEF85C24C9ED1600A0D3B1 /* SearchBar.swift */,
+				3DBEF86624CAEB7100A0D3B1 /* BeerTimer.swift */,
 				3D0F1E6322C17866007783E9 /* DetailView.swift */,
 				3DDFE05322E7952600FE5434 /* FriendsView.swift */,
+				3DBEF85E24CA28BD00A0D3B1 /* UserSearchView.swift */,
 				3D0F1E6922C52660007783E9 /* MainView.swift */,
 				3DC21FE822BC0A24005B6281 /* Assets.xcassets */,
 				3DC21FED22BC0A24005B6281 /* LaunchScreen.storyboard */,
@@ -240,6 +255,7 @@
 				3D0F1E6B22C56547007783E9 /* UserStore.swift */,
 				3DDFE05522E7AC3F00FE5434 /* CreateCheerView.swift */,
 				3DBEF85624C9CE4B00A0D3B1 /* App.swift */,
+				3DBEF85824C9DEC500A0D3B1 /* FriendsScreen.swift */,
 			);
 			path = CheerWithMe;
 			sourceTree = "<group>";
@@ -342,6 +358,10 @@
 			dependencies = (
 			);
 			name = CheerWithMe;
+			packageProductDependencies = (
+				3DBEF86124CA31F200A0D3B1 /* KeychainSwift */,
+				3DBEF86424CA3DDA00A0D3B1 /* URLImage */,
+			);
 			productName = CheerWithMe;
 			productReference = 3DC21FE022BC0A20005B6281 /* CheerWithMe.app */;
 			productType = "com.apple.product-type.application";
@@ -382,6 +402,8 @@
 			);
 			mainGroup = 3DAE434522B1A29A0012B142;
 			packageReferences = (
+				3DBEF86024CA31F200A0D3B1 /* XCRemoteSwiftPackageReference "keychain-swift" */,
+				3DBEF86324CA3DDA00A0D3B1 /* XCRemoteSwiftPackageReference "url-image" */,
 			);
 			productRefGroup = 3DAE434D22B1A29A0012B142 /* Products */;
 			projectDirPath = "";
@@ -463,17 +485,21 @@
 				3DC2200022BC0F9D005B6281 /* BackendServices.swift in Sources */,
 				3DBEF85424C9B07A00A0D3B1 /* HTTPStatus.swift in Sources */,
 				3D0F1E6A22C52660007783E9 /* MainView.swift in Sources */,
+				3DBEF85F24CA28BD00A0D3B1 /* UserSearchView.swift in Sources */,
 				3DDFE05422E7952600FE5434 /* FriendsView.swift in Sources */,
 				3DC21FE322BC0A20005B6281 /* AppDelegate.swift in Sources */,
+				3DBEF85924C9DEC500A0D3B1 /* FriendsScreen.swift in Sources */,
 				3D0F1E6422C17866007783E9 /* DetailView.swift in Sources */,
 				3DB2AE6822F2340C0061193B /* MapView.swift in Sources */,
 				3D0F1E6222C17675007783E9 /* LoginView.swift in Sources */,
 				3DBEF85724C9CE4B00A0D3B1 /* App.swift in Sources */,
+				3DBEF86724CAEB7100A0D3B1 /* BeerTimer.swift in Sources */,
 				3D0F1E6822C52028007783E9 /* PushNotificationManager.swift in Sources */,
 				3D0F1E6C22C56547007783E9 /* UserStore.swift in Sources */,
 				3DC21FF522BC0A75005B6281 /* CheerIcon.swift in Sources */,
 				3DDFE05622E7AC3F00FE5434 /* CreateCheerView.swift in Sources */,
 				3DC21FF622BC0A78005B6281 /* Position.swift in Sources */,
+				3DBEF85D24C9ED1600A0D3B1 /* SearchBar.swift in Sources */,
 				3D0F1E6622C178C0007783E9 /* CheersListView.swift in Sources */,
 				3DC21FE722BC0A20005B6281 /* ContentView.swift in Sources */,
 				3DC21FFD22BC0B6F005B6281 /* Cheer.swift in Sources */,
@@ -862,6 +888,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3DBEF86024CA31F200A0D3B1 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 19.0.0;
+			};
+		};
+		3DBEF86324CA3DDA00A0D3B1 /* XCRemoteSwiftPackageReference "url-image" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dmytro-anokhin/url-image.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.19;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3DBEF86124CA31F200A0D3B1 /* KeychainSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3DBEF86024CA31F200A0D3B1 /* XCRemoteSwiftPackageReference "keychain-swift" */;
+			productName = KeychainSwift;
+		};
+		3DBEF86424CA3DDA00A0D3B1 /* URLImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3DBEF86324CA3DDA00A0D3B1 /* XCRemoteSwiftPackageReference "url-image" */;
+			productName = URLImage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3DAE434622B1A29A0012B142 /* Project object */;
 }

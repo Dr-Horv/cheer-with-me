@@ -10,7 +10,7 @@ import SwiftUI
 import Combine
 
 struct ContentView : View {
-    @State var signedIn: Bool = false
+    @State var signedIn: Bool = BackendService.shared.token != nil
     
     func setSignedIn(signedIn: Bool) {
         self.signedIn = signedIn

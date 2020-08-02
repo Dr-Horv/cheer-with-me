@@ -75,4 +75,6 @@ enum FontIcon: String {
     case user = "\u{f007}"
     case times = "\u{f00d}"
     case check = "\u{f00c}"
+    case plus = "\u{f067}"
+    case userPlus = "\u{f234}"
 }
