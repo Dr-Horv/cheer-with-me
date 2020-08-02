@@ -57,7 +57,8 @@ private val snsService: SnsService = SnsService(buildSnsClient())
 private val pushService: PushService = PushService(snsService, userService)
 private val oauth2Service: Oauth2Service = Oauth2Service()
 private val authService: AuthService = AuthService(userService)
-private val userFriendsService: UserFriendsService = UserFriendsService(userService, pushService)
+private val userFriendsService: UserFriendsService = UserFriendsService(userService, pushService = pushService)
+private val happeningService: HappeningService = HappeningService(userService = userService, pushService = pushService)
 
 @KtorExperimentalAPI
 @Suppress("unused") // Referenced in application.conf
@@ -220,6 +221,7 @@ fun Application.module(testing: Boolean = false) {
             userRouting(userService)
             pushRouting(pushService)
             friendRouting(userFriendsService)
+            happeningRouting(happeningService)
             get("/safe") {
                 call.respond(mapOf(
                     "secret" to "hello cheerWithMe",

@@ -1,36 +1,15 @@
 package dev.fredag.cheerwithme.service
 
-import com.fasterxml.jackson.module.kotlin.readValue
 import dev.fredag.cheerwithme.logger
 import dev.fredag.cheerwithme.model.*
-import dev.fredag.cheerwithme.objectMapper
-import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.batchInsert
-import org.jetbrains.exposed.sql.select
-import org.joda.time.DateTime
+import dev.fredag.cheerwithme.repository.UserFriendsEventsRepository
 
 class UserFriendsService(
     private val userService: UserService,
+    private val userFriendsEventsRepository: UserFriendsEventsRepository = UserFriendsEventsRepository(),
     private val pushService: PushService
 ) {
     private val log by logger()
-
-    private suspend fun addEvents(events: List<Event>) = Database.dbQuery {
-        UserFriendsEvents.batchInsert(events) {
-            this[UserFriendsEvents.userId] = it.userId
-            this[UserFriendsEvents.timestamp] = DateTime(it.timestamp.toEpochMilli())
-            this[UserFriendsEvents.eventData] = objectMapper.writeValueAsString(it)
-        }
-    }
-
-    private suspend fun readEvents(userId: UserId): List<Event> = Database.dbQuery {
-        UserFriendsEvents.select { UserFriendsEvents.userId.eq(userId) }
-            .orderBy(UserFriendsEvents.timestamp to SortOrder.ASC)
-            .map { row: ResultRow ->
-                objectMapper.readValue<Event>(row[UserFriendsEvents.eventData])
-            }
-    }
 
     suspend fun sendFriendRequest(userId: UserId, request: SendFriendRequest) {
         val aggregate = getUserFriendAggregate(userId)
@@ -39,7 +18,7 @@ class UserFriendsService(
             return
         }
 
-        addEvents(
+        userFriendsEventsRepository.addEvents(
             listOf(
                 FriendRequest(userId, now(), requester = userId, receiver = request.userId),
                 FriendRequest(request.userId, now(), requester = userId, receiver = request.userId)
@@ -57,7 +36,7 @@ class UserFriendsService(
             log.debug("$userId is already friends with or doesnt have an incoming friend request from ${request.userId}")
             return
         }
-        addEvents(
+        userFriendsEventsRepository.addEvents(
             listOf(
                 FriendRequestAccepted(userId, now(), requester = request.userId, receiver = userId),
                 FriendRequestAccepted(request.userId, now(), requester = request.userId, receiver = userId)
@@ -71,23 +50,20 @@ class UserFriendsService(
     }
 
 
-
     private suspend fun getUserFriendAggregate(userId: UserId): UserFriendsAggregate {
-        val userEvents = readEvents(userId)
+        val userEvents = userFriendsEventsRepository.readEvents(userId)
         val myFriends = mutableListOf<UserId>()
         val myRequests = mutableListOf<UserId>()
         val myIncomingRequests = mutableListOf<UserId>()
-        for (e in userEvents) {
-            when (e) {
-                is FriendRequest -> handleFriendRequest(e, userId, myIncomingRequests, myRequests, myFriends)
-                is FriendRequestAccepted -> handleFriendRequestAccepted(
-                    e,
-                    userId,
-                    myFriends,
-                    myRequests,
-                    myIncomingRequests
-                )
-            }
+        for (e in userEvents) when (e) {
+            is FriendRequest -> handleFriendRequest(e, userId, myIncomingRequests, myRequests, myFriends)
+            is FriendRequestAccepted -> handleFriendRequestAccepted(
+                e,
+                userId,
+                myFriends,
+                myRequests,
+                myIncomingRequests
+            )
         }
 
         return UserFriendsAggregate(myFriends, myIncomingRequests, myRequests)

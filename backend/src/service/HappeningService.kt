@@ -1,0 +1,270 @@
+package dev.fredag.cheerwithme.service
+
+import dev.fredag.cheerwithme.logger
+import dev.fredag.cheerwithme.model.*
+import dev.fredag.cheerwithme.repository.HappeningEventsRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.TextStyle
+import java.util.*
+
+data class HappeningAggregate(
+    val happeningId: HappeningId,
+    val adminId: UserId,
+    val name: String,
+    val description: String,
+    val time: Instant,
+    val location: Location?,
+    val attendees: List<UserId>,
+    val awaiting: List<UserId>,
+    val cancelled: Boolean
+)
+
+data class MutableHappeningAggregate(
+    var happeningId: HappeningId,
+    var adminId: UserId,
+    var name: String,
+    var description: String,
+    var time: Instant,
+    var location: Location? = null,
+    val attendees: MutableList<UserId> = mutableListOf(),
+    val awaiting: MutableList<UserId> = mutableListOf(),
+    var cancelled: Boolean = false
+)
+
+fun MutableHappeningAggregate.toHappeningAggregate() =
+    HappeningAggregate(happeningId, adminId, name, description, time, location, attendees, awaiting, cancelled)
+
+class HappeningService(
+    private val happeningEventsRepository: HappeningEventsRepository = HappeningEventsRepository(),
+    private val userService: UserService,
+    private val pushService: PushService
+) {
+    private val log by logger()
+
+    suspend fun createHappening(
+        userId: UserId,
+        createHappeningRequest: CreateHappening
+    ): Happening {
+        val happeningId = UUID.randomUUID().toString()
+        val happeningCreated = HappeningCreated(
+            Instant.now(),
+            userId,
+            happeningId,
+            createHappeningRequest.name,
+            createHappeningRequest.description,
+            createHappeningRequest.time,
+            createHappeningRequest.location
+        )
+
+        val inviteEvents =
+            createHappeningRequest.usersToInvite.map { UserInvitedToHappening(userId, Instant.now(), happeningId, it) }
+                .toList()
+        
+        happeningEventsRepository.addEvents(listOf(happeningCreated) + inviteEvents)
+        val happening = getHappening(happeningId)!!
+        sendInvitePushToUsers(createHappeningRequest.usersToInvite, happening)
+
+        return happening
+    }
+
+    private suspend fun sendInvitePushToUsers(
+        usersToInvite: List<UserId>,
+        happening: Happening
+    ) {
+        withContext(Dispatchers.IO) {
+            for (invitedId in usersToInvite) {
+                launch { notifyUserOfInvite(happening, invitedId) }
+            }
+        }
+    }
+
+    suspend fun getHappening(happeningId: HappeningId): Happening? =
+        getHappeningAggregate(happeningId)?.let { aggregate ->
+            val users = userService.findUsersWithIds(
+                listOf(aggregate.adminId) + aggregate.attendees + aggregate.awaiting
+            ).groupBy { it.id }
+
+            val attendees = aggregate.attendees.flatMap { users.getValue(it) }
+            val awaiting = aggregate.attendees.flatMap { users.getValue(it) }
+            val admin = users.getValue(aggregate.adminId).first()
+
+            Happening(
+                aggregate.happeningId,
+                admin,
+                aggregate.name,
+                aggregate.description,
+                aggregate.time,
+                aggregate.location,
+                attendees,
+                awaiting
+            )
+        }
+
+    private suspend fun getHappeningAggregate(happeningId: HappeningId): HappeningAggregate? {
+        val events = happeningEventsRepository.readEvents(happeningId)
+        val aggregate = MutableHappeningAggregate(happeningId, -1L, "", "", Instant.now())
+
+        for (e in events) when (e) {
+            is HappeningCreated -> {
+                aggregate.adminId = e.userId
+                aggregate.name = e.name
+                aggregate.description = e.description
+                aggregate.time = e.time
+                aggregate.location = e.location
+            }
+            is HappeningNameChanged -> aggregate.name = e.name
+            is HappeningDescriptionChanged -> aggregate.description = e.description
+            is HappeningTimeChanged -> aggregate.time = e.time
+            is HappeningLocationChanged -> aggregate.location = e.location
+            is UserInvitedToHappening -> aggregate.awaiting.add(e.invited)
+            is UserAcceptedHappeningInvite -> {
+                aggregate.awaiting.remove(e.userId)
+                aggregate.attendees.add(e.userId)
+            }
+            is UserRejectedHappeningInvite -> {
+                aggregate.attendees.remove(e.userId)
+                aggregate.awaiting.remove(e.userId)
+            }
+            is HappeningCancelled -> aggregate.cancelled = true
+        }
+
+        return aggregate.toHappeningAggregate()
+    }
+
+    private suspend fun notifyUserOfInvite(happening: Happening, invited: UserId) {
+        pushService.push(
+            invited,
+            "${happening.admin.nick} would like you to tag along on " +
+                    "${happening.name} on ${happening.time.atZone(ZoneId.of("UTC")).dayOfWeek.getDisplayName(
+                        TextStyle.FULL,
+                        Locale.ENGLISH
+                    )}"
+        )
+    }
+
+    suspend fun updateHappening(
+        userId: UserId,
+        updateHappening: UpdateHappening
+    ): Happening? {
+        val updates = mutableListOf<HappeningEvent>()
+        val now = Instant.now()
+        updateHappening.name?.apply {
+            updates.add(
+                HappeningNameChanged(
+                    userId,
+                    now,
+                    updateHappening.happeningId,
+                    name = this
+                )
+            )
+        }
+        updateHappening.description?.apply {
+            updates.add(
+                HappeningDescriptionChanged(
+                    userId,
+                    now,
+                    updateHappening.happeningId,
+                    description = this
+                )
+            )
+        }
+        updateHappening.time?.apply {
+            updates.add(
+                HappeningTimeChanged(
+                    userId,
+                    now,
+                    updateHappening.happeningId,
+                    time = this
+                )
+            )
+        }
+        updateHappening.location?.apply {
+            updates.add(
+                HappeningLocationChanged(
+                    userId,
+                    now,
+                    updateHappening.happeningId,
+                    location = this
+                )
+            )
+        }
+
+        happeningEventsRepository.addEvents(updates)
+        return getHappening(updateHappening.happeningId)
+    }
+
+    suspend fun cancelHappening(
+        userId: UserId,
+        cancelHappeningRequest: CancelHappening
+    ) {
+        val aggregate = getHappeningAggregate(cancelHappeningRequest.happeningId)
+        if (aggregate?.adminId == userId) {
+            val cancelHappening = HappeningCancelled(
+                userId,
+                Instant.now(),
+                cancelHappeningRequest.happeningId,
+                cancelHappeningRequest.reason ?: ""
+            )
+            happeningEventsRepository.addEvents(listOf(cancelHappening))
+        }
+    }
+
+    suspend fun inviteUsers(
+        userId: UserId,
+        inviteUsersRequest: InviteUsersToHappening
+    ): Happening? {
+        return getHappening(inviteUsersRequest.happeningId)?.let {
+            val inviteEvents =
+                inviteUsersRequest.usersToInvite.map {
+                    UserInvitedToHappening(
+                        userId,
+                        Instant.now(),
+                        inviteUsersRequest.happeningId,
+                        it
+                    )
+                }
+                    .toList()
+            happeningEventsRepository.addEvents(inviteEvents)
+            val happening = getHappening(inviteUsersRequest.happeningId)!!
+            sendInvitePushToUsers(inviteUsersRequest.usersToInvite, happening)
+
+            happening
+        }
+    }
+
+    suspend fun acceptHappeningInvite(
+        userId: UserId,
+        acceptHappeningInviteRequest: AcceptHappeningInvite
+    ): Happening? {
+        return getHappening(acceptHappeningInviteRequest.happeningId)?.let {
+            val accepted = UserAcceptedHappeningInvite(userId, Instant.now(), acceptHappeningInviteRequest.happeningId)
+            happeningEventsRepository.addEvents(listOf(accepted))
+            withContext(Dispatchers.IO) {
+                val user = userService.findUserById(userId)!!
+                pushService.push(it.admin.id, "${user.nick} is tagging along on ${it.name}")
+            }
+
+            getHappening(acceptHappeningInviteRequest.happeningId)!!
+        }
+    }
+
+    suspend fun rejectHappeningInvite(
+        userId: UserId,
+        rejectHappeningInviteRequest: RejectHappeningInvite
+    ): Happening? {
+        return getHappening(rejectHappeningInviteRequest.happeningId)?.let {
+            val rejected = UserRejectedHappeningInvite(userId, Instant.now(), rejectHappeningInviteRequest.happeningId)
+            happeningEventsRepository.addEvents(listOf(rejected))
+            withContext(Dispatchers.IO) {
+                val user = userService.findUserById(userId)!!
+                pushService.push(it.admin.id, "${user.nick} won't come to ${it.name}")
+            }
+
+            getHappening(rejectHappeningInviteRequest.happeningId)!!
+        }
+    }
+}
