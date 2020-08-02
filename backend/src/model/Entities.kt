@@ -1,8 +1,15 @@
 package dev.fredag.cheerwithme.model
 
+import dev.fredag.cheerwithme.model.UserFriendsEvents.autoIncrement
+import dev.fredag.cheerwithme.model.UserFriendsEvents.primaryKey
+import dev.fredag.cheerwithme.model.UserFriendsEvents.references
+import dev.fredag.cheerwithme.model.UserPushArns.userId
 import dev.fredag.cheerwithme.model.Users.autoIncrement
 import dev.fredag.cheerwithme.model.Users.primaryKey
+import dev.fredag.cheerwithme.objectMapper
+import dev.fredag.cheerwithme.service.Database
 import org.jetbrains.exposed.sql.Table
+import org.jetbrains.exposed.sql.batchInsert
 import org.joda.time.DateTime
 import java.time.Instant
 
@@ -39,6 +46,14 @@ object UserFriendsEvents: Table() {
     val id = long("id").primaryKey().autoIncrement()
     val timestamp = datetime("timestamp")
     val userId = (long("user_id") references Users.id)
+    val eventData = text("event_data")
+}
+
+object HappeningEvents: Table() {
+    val id = long("id").primaryKey().autoIncrement()
+    val timestamp = datetime("timestamp")
+    val userId = (long("user_id") references Users.id)
+    val happeningId = varchar("happening_id", 256)
     val eventData = text("event_data")
 }
 
