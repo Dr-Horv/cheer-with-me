@@ -123,10 +123,7 @@ class HappeningService(
             is HappeningDescriptionChanged -> aggregate.description = e.description
             is HappeningTimeChanged -> aggregate.time = e.time
             is HappeningLocationChanged -> aggregate.location = e.location
-            is UserInvitedToHappening -> {
-                log.debug("Invited event found: ${e.invited}")
-                aggregate.awaiting.add(e.invited)
-            }
+            is UserInvitedToHappening -> aggregate.awaiting.add(e.invited)
             is UserAcceptedHappeningInvite -> {
                 aggregate.awaiting.remove(e.userId)
                 aggregate.attendees.add(e.userId)
