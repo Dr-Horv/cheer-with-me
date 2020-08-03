@@ -27,4 +27,19 @@ class HappeningEventsRepository {
                 objectMapper.readValue<HappeningEvent>(row[HappeningEvents.eventData])
             }
     }
+
+    suspend fun readUserEvents(userId: UserId): List<HappeningEvent> = Database.dbQuery {
+        val happeningIds = HappeningEvents.select { HappeningEvents.userId.eq(userId) }
+            .orderBy(HappeningEvents.timestamp to SortOrder.ASC)
+            .distinct()
+            .map { row: ResultRow ->
+                row[HappeningEvents.happeningId]
+            }
+
+        HappeningEvents.select { HappeningEvents.happeningId.inList(happeningIds) }
+            .orderBy(HappeningEvents.timestamp to SortOrder.ASC)
+            .map { row: ResultRow ->
+                objectMapper.readValue<HappeningEvent>(row[HappeningEvents.eventData])
+            }
+    }
 }

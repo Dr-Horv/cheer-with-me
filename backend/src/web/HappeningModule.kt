@@ -11,6 +11,12 @@ import io.ktor.routing.*
 
 fun Route.happeningRouting(happeningService: HappeningService) {
 
+    get("/happenings/") {
+        val happenings= happeningService.getHappenings(getUserId())
+        call.respond(HttpStatusCode.OK, happenings)
+    }
+
+
     get("/happenings/{happeningId}/") {
         val happeningId = call.parameters["happeningId"]
         if(happeningId == null) {

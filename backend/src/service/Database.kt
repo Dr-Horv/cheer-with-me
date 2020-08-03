@@ -88,6 +88,10 @@ object Database {
                 happeningService.createHappening(66, CreateHappening("Discode!", "Kod & Vin",
                     Instant.now().plus(1, ChronoUnit.DAYS), null, listOf(1, 38)))
 
+                val happening = happeningService.createHappening(38, CreateHappening("Happidyhaps!", ":D",
+                    Instant.now().plus(1, ChronoUnit.DAYS), null, listOf(66, 38)))
+                happeningService.acceptHappeningInvite(1, AcceptHappeningInvite(happening.happeningId))
+
             }
         }
     }

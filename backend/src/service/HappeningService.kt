@@ -61,7 +61,7 @@ class HappeningService(
         )
 
         val inviteEvents =
-            createHappeningRequest.usersToInvite.map { UserInvitedToHappening(userId, Instant.now(), happeningId, it) }
+            createHappeningRequest.usersToInvite.map { UserInvitedToHappening(it, Instant.now(), happeningId, it) }
                 .toList()
         
         happeningEventsRepository.addEvents(listOf(happeningCreated) + inviteEvents)
@@ -82,33 +82,62 @@ class HappeningService(
         }
     }
 
+    suspend fun getHappenings(userId: UserId): List<Happening> {
+        val aggregates = happeningEventsRepository.readUserEvents(userId)
+            .groupBy { it.happeningId }
+            .map { eventsToAggregate(it.key, it.value) }
+
+        val userIds = aggregates.flatMap {
+            listOf(it.adminId) + it.attendees + it.awaiting
+        }.toSet()
+
+        val users = userService.findUsersWithIds(userIds).groupBy { it.id }
+
+        return aggregates.map { toHappening(it, users) }
+    }
+
     suspend fun getHappening(happeningId: HappeningId): Happening? =
         getHappeningAggregate(happeningId)?.let { aggregate ->
             val users = userService.findUsersWithIds(
                 listOf(aggregate.adminId) + aggregate.attendees + aggregate.awaiting
             ).groupBy { it.id }
 
-            val attendees = aggregate.attendees.flatMap { users.getValue(it) }
-            val awaiting = aggregate.awaiting.flatMap { users.getValue(it) }
-            val admin = users.getValue(aggregate.adminId).first()
-
-            Happening(
-                aggregate.happeningId,
-                admin,
-                aggregate.name,
-                aggregate.description,
-                aggregate.time,
-                aggregate.location,
-                attendees,
-                awaiting
-            )
+            toHappening(aggregate, users)
         }
+
+    private fun toHappening(
+        aggregate: HappeningAggregate,
+        users: Map<Long, List<User>>
+    ): Happening {
+        val attendees = aggregate.attendees.flatMap { users.getValue(it) }
+        val awaiting = aggregate.awaiting.flatMap { users.getValue(it) }
+        val admin = users.getValue(aggregate.adminId).first()
+
+        return Happening(
+            aggregate.happeningId,
+            admin,
+            aggregate.name,
+            aggregate.description,
+            aggregate.time,
+            aggregate.location,
+            attendees,
+            awaiting,
+            aggregate.cancelled
+        )
+    }
 
     private suspend fun getHappeningAggregate(happeningId: HappeningId): HappeningAggregate? {
         val events = happeningEventsRepository.readEvents(happeningId)
         if(events.isEmpty()) {
             return null
         }
+        return eventsToAggregate(happeningId, events)
+    }
+
+    private fun eventsToAggregate(
+        happeningId: HappeningId,
+        events: List<HappeningEvent>
+    ): HappeningAggregate {
         val aggregate = MutableHappeningAggregate(happeningId, -1L, "", "", Instant.now())
 
         for (e in events) when (e) {
@@ -153,51 +182,78 @@ class HappeningService(
         userId: UserId,
         updateHappening: UpdateHappening
     ): Happening? {
-        val updates = mutableListOf<HappeningEvent>()
-        val now = Instant.now()
-        updateHappening.name?.apply {
-            updates.add(
-                HappeningNameChanged(
-                    userId,
-                    now,
-                    updateHappening.happeningId,
-                    name = this
+        return getHappening(updateHappening.happeningId)?.let { originalHappening ->
+            val updates = mutableListOf<HappeningEvent>()
+            val updatedProperties = mutableListOf<String>()
+            val now = Instant.now()
+            updateHappening.name?.apply {
+                updates.add(
+                    HappeningNameChanged(
+                        userId,
+                        now,
+                        updateHappening.happeningId,
+                        name = this
+                    )
                 )
-            )
-        }
-        updateHappening.description?.apply {
-            updates.add(
-                HappeningDescriptionChanged(
-                    userId,
-                    now,
-                    updateHappening.happeningId,
-                    description = this
+                updatedProperties.add("name")
+            }
+            updateHappening.description?.apply {
+                updates.add(
+                    HappeningDescriptionChanged(
+                        userId,
+                        now,
+                        updateHappening.happeningId,
+                        description = this
+                    )
                 )
-            )
-        }
-        updateHappening.time?.apply {
-            updates.add(
-                HappeningTimeChanged(
-                    userId,
-                    now,
-                    updateHappening.happeningId,
-                    time = this
+                updatedProperties.add("description")
+            }
+            updateHappening.time?.apply {
+                updates.add(
+                    HappeningTimeChanged(
+                        userId,
+                        now,
+                        updateHappening.happeningId,
+                        time = this
+                    )
                 )
-            )
-        }
-        updateHappening.location?.apply {
-            updates.add(
-                HappeningLocationChanged(
-                    userId,
-                    now,
-                    updateHappening.happeningId,
-                    location = this
+                updatedProperties.add("time")
+            }
+            updateHappening.location?.apply {
+                updates.add(
+                    HappeningLocationChanged(
+                        userId,
+                        now,
+                        updateHappening.happeningId,
+                        location = this
+                    )
                 )
-            )
-        }
+                updatedProperties.add("location")
+            }
 
-        happeningEventsRepository.addEvents(updates)
-        return getHappening(updateHappening.happeningId)
+            happeningEventsRepository.addEvents(updates)
+            val happening = getHappening(updateHappening.happeningId)!!
+            withContext(Dispatchers.IO) {
+                val updateMsg = "${originalHappening.name} got " + when {
+                    updates.size > 2 -> {
+                        "updates for " + updatedProperties.subList(0, updatedProperties.lastIndex).joinToString(", ") + " and " + updatedProperties.last()
+                    }
+                    updates.size == 2 -> {
+                        "updates for " + updatedProperties.joinToString(" and ")
+                    }
+                    else -> {
+                        "updated " + updatedProperties.first()
+                    }
+                }
+
+                for (user in happening.attendees) {
+                    launch {
+                        pushService.push(user.id, updateMsg)
+                    }
+                }
+            }
+            happening
+        }
     }
 
     suspend fun cancelHappening(
@@ -224,7 +280,7 @@ class HappeningService(
             val inviteEvents =
                 inviteUsersRequest.usersToInvite.map {
                     UserInvitedToHappening(
-                        userId,
+                        it,
                         Instant.now(),
                         inviteUsersRequest.happeningId,
                         it
