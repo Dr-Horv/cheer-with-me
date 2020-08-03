@@ -72,7 +72,7 @@ class UserService {
         Users.select { Users.accessToken.isNotNull() }.map(this::toUserWithToken).toList()
     }
 
-    suspend fun findUsersWithIds(userIds: List<UserId>): List<User> = Database.dbQuery {
+    suspend fun findUsersWithIds(userIds: Iterable<UserId>): List<User> = Database.dbQuery {
         Users.select { Users.id.inList(userIds) }.map(this::toUser)
     }
 

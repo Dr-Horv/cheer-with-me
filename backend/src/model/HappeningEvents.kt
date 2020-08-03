@@ -93,5 +93,6 @@ data class Happening(
     val time: Instant,
     val location: Location?,
     val attendees: List<User>,
-    val awaiting: List<User>
+    val awaiting: List<User>,
+    val cancelled: Boolean
 )
