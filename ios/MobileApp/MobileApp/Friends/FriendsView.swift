@@ -4,21 +4,23 @@ import URLImage
 let AVATAR_HEIGHT = 40.0
 
 struct FriendsView: View {
-    let viewModel = FriendsViewModel()
+    @ObservedObject var viewModel = FriendsViewModel()
     
     var body: some View {
         List {
             Section(header: Text("FRIEND REQUESTS")) {
                 ForEach(viewModel.waitingFriends) { friend in
                     friendItem(friend: friend,
-                               showButtons: true)
+                               showButtons: true,
+                               viewModel: viewModel)
                 }
             }
             
             Section(header: Text("FRIENDS")) {
                 ForEach(viewModel.friends) { friend in
                     friendItem(friend: friend,
-                               showButtons: false)
+                               showButtons: false,
+                               viewModel: viewModel)
                 }
             }.listStyle(GroupedListStyle())
         }
@@ -28,6 +30,7 @@ struct FriendsView: View {
 private struct friendItem: View {
     let friend: Friend
     let showButtons: Bool
+    @State var viewModel: FriendsViewModel
 
     var body: some View {
         HStack {
@@ -43,8 +46,15 @@ private struct friendItem: View {
             if showButtons {
                 Spacer()
 
-                CircleButton(color: Color.gray, icon: .cross)
-                CircleButton(color: Color.orange, icon: .check)
+                CircleButton(color: Color.gray,
+                             icon: .cross) {
+                    viewModel.befriend(person: friend)
+                    print("CLICK")
+                }
+                CircleButton(color: Color.orange, icon: .check) {
+                    self.viewModel.befriend(person: friend)
+                    print("CLICK")
+                }
             }
         }
     }
@@ -58,6 +68,7 @@ private enum CircleButtonType {
 private struct CircleButton: View {
     let color: Color
     let icon: CircleButtonType
+    let action: () -> Void
 
     var typeString: String {
         switch icon {
@@ -69,9 +80,7 @@ private struct CircleButton: View {
     }
 
     var body: some View {
-        Button(action: {
-            print("CLICK \(self.typeString)")
-        }) {
+        Button(action: action) {
             Image(systemName: typeString)
                 .resizable()
                 .padding(5)
