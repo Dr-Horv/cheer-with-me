@@ -20,12 +20,14 @@ struct ProfileView: View {
                     Text(friend.name)
                     Spacer()
                 }
+                Section {
+                    Button("Sign out") {
+                        GIDSignIn.sharedInstance.signOut()
+                        viewModel.isLoggedIn = false
+                    }
+                    .foregroundColor(.red)
+                }
             }
-            Button("Sign out") {
-                GIDSignIn.sharedInstance.signOut()
-                viewModel.isLoggedIn = false
-            }
-            .foregroundColor(.red)
         }
     }
 }
