@@ -7,7 +7,7 @@ struct MobileApp: App {
     var body: some Scene {
         WindowGroup {
             if viewModel.isLoggedIn {
-                ContentView()
+                ContentView(viewModel: viewModel)
             } else {
                 LoginView(viewModel: viewModel)
             }

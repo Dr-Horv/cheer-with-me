@@ -6,6 +6,11 @@ class MainViewModel: ObservableObject {
     @Published var isSigningIn = false
 
     func logIn() {
-        isLoggedIn = true
+        isSigningIn = true
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
+            self.isSigningIn = false
+            self.isLoggedIn = true
+        }
     }
 }

@@ -4,42 +4,6 @@ import AuthenticationServices
 struct LoginView : View {
     @ObservedObject var viewModel: MainViewModel
 
-//    func handleAuthResult(_ result: Result<ASAuthorization, Error>) -> Void {
-//        self.signingIn = true
-//
-//        switch result {
-//        case .success (let authResult):
-//            print("Authorization successful.")
-//            print(authResult)
-//            if let appleIDCredential = authResult.credential as? ASAuthorizationAppleIDCredential {
-//                let userIdentifier = appleIDCredential.user
-//                let fullName = appleIDCredential.fullName
-//                let email = appleIDCredential.email
-//
-//                let identityToken = appleIDCredential.identityToken.flatMap { String(data: $0, encoding: .utf8) }
-//                let authorizationCode = appleIDCredential.authorizationCode.flatMap { String(data: $0, encoding: .utf8) }
-//
-//                print(userIdentifier, fullName as Any, email as Any, identityToken as Any, authorizationCode as Any)
-//
-//                BackendService.shared.token = identityToken
-//
-//                guard let code = authorizationCode else {
-//                    preconditionFailure("authorizationCode must be defined")
-//                }
-//
-//                BackendService.shared.register(payload: .init(code: code, nick: username)) { response in
-//                    print(response)
-//                    BackendService.shared.token = response.accessToken
-//                    self.signingIn = false
-//                    self.setSignedIn(true)
-//                }
-//            }
-//        case .failure (let error):
-//            self.signingIn = false
-//            print("Authorization failed: \(error.localizedDescription)")
-//        }
-//    }
-
     var body: some View {
         VStack {
             Spacer()
@@ -63,8 +27,7 @@ struct LoginView : View {
                         request.requestedScopes = []
                     },
                     onCompletion: { result in
-//                        self.handleAuthResult(result)
-                    viewModel.logIn()
+                        viewModel.logIn()
                     }
                 ).frame(width: 300, height: 50, alignment: .center).signInWithAppleButtonStyle(.white)
             }
