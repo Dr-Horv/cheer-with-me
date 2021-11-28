@@ -2,7 +2,8 @@ import SwiftUI
 
 @main
 struct MobileApp: App {
-    @ObservedObject var viewModel = MainViewModel()
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+    @ObservedObject var viewModel = SingletonState.shared.mainViewModel
 
     var body: some Scene {
         WindowGroup {

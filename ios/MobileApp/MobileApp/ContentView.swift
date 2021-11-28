@@ -1,12 +1,21 @@
 import MapKit
 import SwiftUI
+import GoogleSignIn
+
 
 struct ContentView: View {
     @ObservedObject var viewModel: MainViewModel
 
     var body: some View {
         TabView {
-            Text("Cheers 🍻")
+            VStack {
+                Text("Cheers 🍻")
+                Button("Sign out", action: {
+                    GIDSignIn.sharedInstance.signOut()
+                    viewModel.isLoggedIn = false
+                })
+            }
+
                 .tabItem {
                     Image(systemName: "cup.and.saucer.fill")
                     Text("Cheers")
