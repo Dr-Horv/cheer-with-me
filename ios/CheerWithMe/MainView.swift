@@ -24,7 +24,7 @@ struct MainView : View {
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            CreateCheerView().tabItem {
+            CreateCheerView(location: nil).tabItem {
                 self.tabbarItem(icon: "beer", text: "Cheer")
             }.tag(Tab.cheer)
             MapView()

@@ -39,12 +39,18 @@ struct UserPlaceholder: View {
     }
 }
 
+
+
 struct UserRow: View {
     let username: String
     let avatarUrl: String?
 
     func getUrl() -> URL? {
-        avatarUrl.flatMap { URL(string: $0) } ?? URL(string: "https://api.adorable.io/avatars/44/\(username).png")!
+        avatarUrl.flatMap { URL(string: $0) }
+    }
+    
+    func getUserInitials() -> String? {
+        username.first.map { String($0) }
     }
 
     var body: some View {
@@ -52,7 +58,7 @@ struct UserRow: View {
             if let url = getUrl() {
                 UserAvatar(url: url, size: 44.0)
             } else {
-                UserPlaceholder()
+                UserInitialsPlaceholder(initials: getUserInitials() ?? "")
             }
 
 
@@ -116,10 +122,7 @@ struct FriendsView: View {
         }.padding()
         .navigationBarItems(trailing:
             Button(action: {
-                BackendService.shared.searchUsers("query") { users in
-                    print("Add friend")
-                    showSearch = true
-                }
+                showSearch = true
             }) {
                 Image(systemName: "plus.circle")
             }

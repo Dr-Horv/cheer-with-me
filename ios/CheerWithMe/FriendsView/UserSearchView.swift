@@ -15,15 +15,17 @@ struct UserSearchView: View {
     
     var body: some View {
         VStack {
-            SearchBar(text: $searchQuery, placeholder: "Search users") { query in
+            SearchBar(text: $searchQuery, placeholder: "Search users",
+                      onPressSearch: { query in
                 loading = true
                 BackendService.shared.searchUsers(query) { users in
                     results = users
                     loading = false
                 }
+                      }
+            )
                 
-            }
-            if loading {
+                if loading {
                 ProgressView("Fetching users...")
             }
             ForEach(results) { user in

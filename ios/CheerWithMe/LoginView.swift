@@ -10,7 +10,7 @@ import SwiftUI
 import AuthenticationServices
 
 struct LoginView : View {
-    @State private var username: String = ""
+    @State private var username: String = "Nrussian"
     @State private var signingIn: Bool = false
     
     var setSignedIn: (Bool) -> Void

@@ -24,6 +24,7 @@ struct ContentView : View {
     }
     
     var body: some View {
+        // BeerTimer()
         if self.signedIn {
             return AnyView(MainView())
         } else {

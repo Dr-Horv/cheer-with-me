@@ -10,7 +10,8 @@ import SwiftUI
 import Combine
 import KeychainSwift
 
-let host = "http://192.168.1.71:8080"
+let host = "http://horv.se:8081"
+// let host = "http://192.168.1.13:8080"
 // let host = "http://cheer-with-me.fredag.dev"
 
 class RequestStatus<T>: ObservableObject {
@@ -257,7 +258,7 @@ struct FriendRequestResponse: Decodable {
 // POST /friends/acceptFriendRequest { userId: 132 }
 
 extension BackendService {
-    func getOutstandingFriendRequests(completion: @escaping (FriendRequestResponse) -> Void) {
+    func getOutstandingFriendRequests(completion: @escaping (FriendRequestResponse?) -> Void) {
         guard let token = self.token else {
             preconditionFailure("Token not set")
         }
@@ -268,11 +269,13 @@ extension BackendService {
         session.dataTask(with: request) { (data, response, error) in
             guard let data = data else {
                 print("Error no data")
+                completion(nil)
                 return
             }
             
             guard let friendsResponse = try? self.decoder.decode(FriendRequestResponse.self, from: data) else {
                 print("HTTP Error", error as Any)
+                completion(nil)
                 return
             }
             completion(friendsResponse)

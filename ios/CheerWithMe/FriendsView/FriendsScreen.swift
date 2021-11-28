@@ -30,9 +30,11 @@ struct FriendsScreen: View {
         print("appear!")
         self.loading = true
         BackendService.shared.getOutstandingFriendRequests { response in
-            print("response!")
-            self.friends = response.friends
-            self.requests = response.incomingFriendRequests
+            if let response = response {
+                print("response!")
+                self.friends = response.friends
+                self.requests = response.incomingFriendRequests
+            }
             self.loading = false
         }
     }
