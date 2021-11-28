@@ -1,10 +1,12 @@
 package dev.fredag.cheerwithme.ui
 
-import androidx.ui.graphics.Color
+import androidx.compose.ui.graphics.Color
+
 
 val dark = Color(0xFF202124)
 val lightDark = Color(0xFF2D2E31)
 val gray = Color(0xFF9AA0A6)
+val white = Color(0xFFFFFFFF)
 val fontColor = Color.White
 val beerYellow = Color(0xFFF9AB02)
 

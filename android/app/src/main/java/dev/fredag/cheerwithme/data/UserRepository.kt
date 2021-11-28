@@ -7,7 +7,9 @@ import dev.fredag.cheerwithme.data.backend.BackendModule
 import dev.fredag.cheerwithme.data.backend.BackendService
 import dev.fredag.cheerwithme.data.backend.GoogleUserSignInRequest
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class UserRepository @Inject constructor(
     @ApplicationContext private val context: Context,
     private val backendService: BackendService

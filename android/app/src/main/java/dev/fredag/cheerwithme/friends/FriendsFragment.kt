@@ -1,74 +1,54 @@
 package dev.fredag.cheerwithme.friends
 
-import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.compose.Composable
-import androidx.compose.Recomposer
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.core.clip
-import androidx.ui.core.setContent
-import androidx.ui.foundation.Image
-import androidx.ui.foundation.ScrollableColumn
-import androidx.ui.foundation.Text
-import androidx.ui.foundation.drawBackground
-import androidx.ui.foundation.shape.corner.CircleShape
-import androidx.ui.graphics.Color
-import androidx.ui.graphics.ColorFilter
-import androidx.ui.layout.*
-import androidx.ui.livedata.observeAsState
-import androidx.ui.material.IconButton
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Surface
-import androidx.ui.res.vectorResource
-import androidx.ui.unit.dp
-import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.fredag.cheerwithme.R
 import dev.fredag.cheerwithme.data.backend.User
 import dev.fredag.cheerwithme.data.backend.UserId
 import dev.fredag.cheerwithme.ui.CheerWithMeTheme
 import dev.fredag.cheerwithme.ui.beerYellow
+import kotlinx.coroutines.FlowPreview
 import java.util.*
 
-@AndroidEntryPoint
-class FriendsFragment : Fragment() {
-    val friendsViewModel: FriendsViewModel by viewModels()
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        val fragmentView =
-            inflater.inflate(R.layout.fragment_friends, container, false) as ViewGroup
-        fragmentView.setContent(Recomposer.current()) {
-            Friends(this)
-        }
-
-        return fragmentView
-    }
-}
-
+@OptIn(FlowPreview::class)
 @Composable
-fun Friends(fragment: FriendsFragment) = CheerWithMeTheme {
+fun Friends(friendsViewModel: FriendsViewModel) = CheerWithMeTheme {
     Surface {
         Column(modifier = Modifier.padding(20.dp, 16.dp)) {
-            ScrollableColumn(
-                modifier = Modifier.fillMaxWidth(),
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.Center,
-                horizontalGravity = Alignment.Start
-            ) {
-                val friends = fragment.friendsViewModel.friends.observeAsState()
+                horizontalAlignment = Alignment.Start,
+
+                ) {
+                val friends = friendsViewModel.friends.observeAsState()
                 Log.d("Friends", friends.value.toString())
                 if (friends.value?.incomingFriendRequests?.isNotEmpty() == true) {
                     FriendRequestsList(
                         friends.value?.incomingFriendRequests ?: emptyList(),
-                        onAcceptFriendRequest = fragment.friendsViewModel::acceptFriendRequest
+                        onAcceptFriendRequest = friendsViewModel::acceptFriendRequest
                     )
                 }
                 FriendsList(friends.value?.friends ?: emptyList())
@@ -84,8 +64,10 @@ fun FriendsList(friends: List<User> = listOf()) {
     friends.sortedBy { it.nick }.forEach {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalGravity = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().height(50.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp),
         ) {
             UserWithIcon(it)
         }
@@ -102,8 +84,10 @@ private fun FriendRequestsList(
     requests.forEach {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalGravity = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().height(60.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
         ) {
             UserWithIcon(it)
             Row {
@@ -114,9 +98,10 @@ private fun FriendRequestsList(
                     )
                 }) {
                     Image(
-                        asset = vectorResource(id = R.drawable.ic_times_circle),
+                        painter = painterResource(R.drawable.ic_times_circle),
                         colorFilter = ColorFilter.tint(MaterialTheme.colors.secondary),
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier.size(40.dp),
+                        contentDescription = ""
 
                     )
                 }
@@ -128,9 +113,10 @@ private fun FriendRequestsList(
                     onAcceptFriendRequest(it.id)
                 }) {
                     Image(
-                        asset = vectorResource(id = R.drawable.ic_check_circle),
+                        painter = painterResource(R.drawable.ic_check_circle),
                         colorFilter = ColorFilter.tint(MaterialTheme.colors.primary),
-                        modifier = Modifier.size(40.dp)
+                        modifier = Modifier.size(40.dp),
+                        contentDescription = ""
                     )
                 }
             }
@@ -145,17 +131,19 @@ private fun UserWithIcon(
     val img = if (it.avatarUrl !== null && false) {
         TODO("Fetch image from internet for avatar here")
     } else {
-        vectorResource(id = R.drawable.ic_profile_black_24dp)
+        painterResource(id = R.drawable.ic_profile_black_24dp)
     }
     Row(
-        verticalGravity = Alignment.CenterVertically,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Image(
-            asset = img,
-            modifier = Modifier.size(32.dp)
-                .drawBackground(beerYellow, CircleShape)
+            painter = img,
+            modifier = Modifier
+                .size(32.dp)
+                .background(beerYellow, CircleShape)
                 .clip(CircleShape),
-            colorFilter = ColorFilter.tint(Color.White)
+            colorFilter = ColorFilter.tint(Color.White),
+            contentDescription = ""
         )
         Text(
             it.nick,

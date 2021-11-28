@@ -1,11 +1,11 @@
 package dev.fredag.cheerwithme.friends
 
 import android.util.Log
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.fredag.cheerwithme.data.FriendsRepository
 import dev.fredag.cheerwithme.data.backend.UserFriends
 import dev.fredag.cheerwithme.data.backend.UserId
@@ -14,10 +14,12 @@ import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.mapLatest
+import javax.inject.Inject
 
 @FlowPreview
 @OptIn(ExperimentalCoroutinesApi::class)
-class FriendsViewModel @ViewModelInject constructor(private val friendsRepository: FriendsRepository) :
+@HiltViewModel
+class FriendsViewModel @Inject constructor(private val friendsRepository: FriendsRepository) :
     ViewModel() {
     private val friendsChannel = ConflatedBroadcastChannel(UserFriends())
     private var _currentRefresh: Job? = null

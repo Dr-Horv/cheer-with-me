@@ -1,44 +1,66 @@
 
 plugins {
     id("com.android.application")
-    id("dagger.hilt.android.plugin")
     kotlin("android")
-    kotlin("android.extensions")
     kotlin("kapt")
     id("kotlin-android")
+    id("dagger.hilt.android.plugin")
 }
 
-val composeVersion = "0.1.0-dev15"
+val composeVersion = "1.1.0-beta01"
 val coroutinesVersion = "1.3.8-1.4.0-rc"
 val roomVersion = "2.2.5"
 val archLifecycleVersion = "2.2.0"
 val filamentVersion = "1.8.0"
 val navigationVersion = "2.3.0"
+val hiltVersion = "2.40"
 
 dependencies {
     implementation(kotlin("stdlib"))
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
 
-    implementation( "com.google.dagger:hilt-android:2.28.3-alpha")
-    kapt("com.google.dagger:hilt-android-compiler:2.28.3-alpha")
-    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02")
-    kapt ("androidx.hilt:hilt-compiler:1.0.0-alpha02")
+// Dagger Core
+    implementation ("com.google.dagger:dagger:$hiltVersion")
+    kapt ("com.google.dagger:dagger-compiler:$hiltVersion")
 
-    implementation("com.google.android.material:material:1.1.0")
+// Dagger Android
+    api ("com.google.dagger:dagger-android:$hiltVersion")
+    api ("com.google.dagger:dagger-android-support:$hiltVersion")
+    kapt ("com.google.dagger:dagger-android-processor:$hiltVersion")
 
-    implementation("androidx.core:core-ktx:1.3.1")
-    implementation("androidx.appcompat:appcompat:1.1.0")
+// Dagger - Hilt
+    implementation ("com.google.dagger:hilt-android:$hiltVersion")
+    kapt ("com.google.dagger:hilt-android-compiler:$hiltVersion")
+
+    // injection in navigation
+    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0-beta01")
+
+    // Dagger & Hilt
+    //  implementation("androidx.hilt:hilt-common:1.0.0")
+    // not needed bacuase android-compiler kapt("androidx.hilt:hilt-compiler:1.0.0")
+    // might be needed if we do nav injection? implementation("androidx.hilt:hilt-navigation-fragment:1.0.0")
+    // implementation("androidx.hilt:hilt-work:1.0.0")
+
+    implementation("com.google.android.material:material:1.4.0")
+
+    implementation("androidx.core:core-ktx:1.7.0")
+    implementation("androidx.appcompat:appcompat:1.4.0")
 
     implementation("androidx.room:room-runtime:$roomVersion")
     implementation("androidx.room:room-ktx:$roomVersion")
-    implementation("androidx.constraintlayout:constraintlayout:1.1.3")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.2")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
-    implementation("com.google.android.gms:play-services-maps:17.0.0")
-    implementation("androidx.annotation:annotation:1.1.0")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.2.0")
+    implementation("com.google.android.gms:play-services-maps:18.0.0")
+    implementation("androidx.annotation:annotation:1.3.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
     kapt("androidx.room:room-compiler:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
+    implementation ("androidx.activity:activity-compose:1.4.0")
+    implementation ("androidx.navigation:navigation-compose:2.4.0-beta02")
+
+
+    kapt("androidx.room:room-compiler:$roomVersion")
 
     implementation("androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion")
     kapt("androidx.lifecycle:lifecycle-common-java8:$archLifecycleVersion")
@@ -52,7 +74,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime:$composeVersion")
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
-    implementation("androidx.ui:ui-tooling:$composeVersion")
+    implementation ("androidx.compose.ui:ui-tooling-preview:$composeVersion")
 
     implementation("com.google.android.filament:filament-android:$filamentVersion")
     implementation("com.google.android.filament:filament-utils-android:$filamentVersion")
@@ -61,15 +83,15 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$navigationVersion")
     implementation("androidx.navigation:navigation-ui-ktx:$navigationVersion")
 
-    implementation("com.google.android.gms:play-services-auth:18.1.0")
+    implementation("com.google.android.gms:play-services-auth:19.2.0")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.11.1")
-    implementation("com.fasterxml.jackson.core:jackson-core:2.11.1")
-    implementation("com.fasterxml.jackson.core:jackson-annotations:2.11.1")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.11.1")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
+    implementation("com.fasterxml.jackson.core:jackson-core:2.13.0")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:2.13.0")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.0")
 }
 
 android {
@@ -82,8 +104,8 @@ android {
         }
     }
 
-    compileSdkVersion(29)
-    buildToolsVersion = "29.0.3"
+    compileSdkVersion(31)
+    buildToolsVersion = "31.0.0"
 
     defaultConfig {
         applicationId = "dev.fredag.cheerwithme"
@@ -107,24 +129,25 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     buildFeatures {
         compose = true
+        viewBinding = true
     }
 
     composeOptions {
-        kotlinCompilerVersion = "1.4.0-dev-withExperimentalGoogleExtensions-20200720"
         kotlinCompilerExtensionVersion = composeVersion
     }
 
     packagingOptions {
-        exclude("META-INF/atomicfu.kotlin_module")
+        resources.excludes.add("META-INF/atomicfu.kotlin_module")
     }
 
-    aaptOptions {
+
+    androidResources {
         noCompress("filamat", "ktx", "glb")
     }
 }
@@ -135,7 +158,7 @@ kapt {
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JavaVersion.VERSION_11.toString()
         freeCompilerArgs = listOf("-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check")
     }
 }
