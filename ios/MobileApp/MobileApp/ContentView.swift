@@ -8,14 +8,7 @@ struct ContentView: View {
 
     var body: some View {
         TabView {
-            VStack {
-                Text("Cheers 🍻")
-                Button("Sign out", action: {
-                    GIDSignIn.sharedInstance.signOut()
-                    viewModel.isLoggedIn = false
-                })
-            }
-
+            CheerView()
                 .tabItem {
                     Image(systemName: "cup.and.saucer.fill")
                     Text("Cheers")

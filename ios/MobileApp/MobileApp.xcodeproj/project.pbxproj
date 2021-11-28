@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		26708E542753CA74007093E9 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26708E532753CA74007093E9 /* LoginView.swift */; };
+		2682B6F227541B6600216590 /* CheerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2682B6F127541B6500216590 /* CheerView.swift */; };
 		26AB043A27539FCD00C646F8 /* MobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AB043927539FCD00C646F8 /* MobileApp.swift */; };
 		26AB043C27539FCD00C646F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AB043B27539FCD00C646F8 /* ContentView.swift */; };
 		26AB043E27539FD000C646F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26AB043D27539FD000C646F8 /* Assets.xcassets */; };
@@ -15,7 +16,6 @@
 		26AB044B27539FD000C646F8 /* MobileAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AB044A27539FD000C646F8 /* MobileAppTests.swift */; };
 		26AB045527539FD000C646F8 /* MobileAppUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AB045427539FD000C646F8 /* MobileAppUITests.swift */; };
 		26AB045727539FD000C646F8 /* MobileAppUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AB045627539FD000C646F8 /* MobileAppUITestsLaunchTests.swift */; };
-		26AB04652753B1A400C646F8 /* NavigationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AB04642753B1A400C646F8 /* NavigationView.swift */; };
 		26AB04672753BAD000C646F8 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AB04662753BAD000C646F8 /* MainViewModel.swift */; };
 		3D1C4BD12753CBFC00D11CBA /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1C4BD02753CBFC00D11CBA /* FriendsView.swift */; };
 		3D1C4BD32753CC0A00D11CBA /* FriendsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D1C4BD22753CC0A00D11CBA /* FriendsViewModel.swift */; };
@@ -46,6 +46,7 @@
 
 /* Begin PBXFileReference section */
 		26708E532753CA74007093E9 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		2682B6F127541B6500216590 /* CheerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheerView.swift; sourceTree = "<group>"; };
 		26AB043627539FCD00C646F8 /* MobileApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26AB043927539FCD00C646F8 /* MobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileApp.swift; sourceTree = "<group>"; };
 		26AB043B27539FCD00C646F8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -57,7 +58,6 @@
 		26AB045427539FD000C646F8 /* MobileAppUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppUITests.swift; sourceTree = "<group>"; };
 		26AB045627539FD000C646F8 /* MobileAppUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileAppUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		26AB04632753AE1300C646F8 /* MobileApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MobileApp.entitlements; sourceTree = "<group>"; };
-		26AB04642753B1A400C646F8 /* NavigationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationView.swift; sourceTree = "<group>"; };
 		26AB04662753BAD000C646F8 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		3D1C4BD02753CBFC00D11CBA /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
 		3D1C4BD22753CC0A00D11CBA /* FriendsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewModel.swift; sourceTree = "<group>"; };
@@ -103,6 +103,14 @@
 			path = Login;
 			sourceTree = "<group>";
 		};
+		2682B6F027541B5000216590 /* Cheers */ = {
+			isa = PBXGroup;
+			children = (
+				2682B6F127541B6500216590 /* CheerView.swift */,
+			);
+			path = Cheers;
+			sourceTree = "<group>";
+		};
 		26AB042D27539FCD00C646F8 = {
 			isa = PBXGroup;
 			children = (
@@ -126,6 +134,7 @@
 		26AB043827539FCD00C646F8 /* MobileApp */ = {
 			isa = PBXGroup;
 			children = (
+				2682B6F027541B5000216590 /* Cheers */,
 				3DEED03C275415FA004BD5F7 /* Info.plist */,
 				3D1C4BD92753E31800D11CBA /* Profile */,
 				3D1C4BCF2753CBEB00D11CBA /* Friends */,
@@ -134,7 +143,6 @@
 				3DEED03D27541761004BD5F7 /* AppDelegate.swift */,
 				26AB04662753BAD000C646F8 /* MainViewModel.swift */,
 				26AB043927539FCD00C646F8 /* MobileApp.swift */,
-				26AB04642753B1A400C646F8 /* NavigationView.swift */,
 				26AB043B27539FCD00C646F8 /* ContentView.swift */,
 				26AB043D27539FD000C646F8 /* Assets.xcassets */,
 				26AB043F27539FD000C646F8 /* Preview Content */,
@@ -330,10 +338,10 @@
 				26AB043C27539FCD00C646F8 /* ContentView.swift in Sources */,
 				3DEED03E27541761004BD5F7 /* AppDelegate.swift in Sources */,
 				3D1C4BD32753CC0A00D11CBA /* FriendsViewModel.swift in Sources */,
-				26AB04652753B1A400C646F8 /* NavigationView.swift in Sources */,
 				26AB043A27539FCD00C646F8 /* MobileApp.swift in Sources */,
 				26708E542753CA74007093E9 /* LoginView.swift in Sources */,
 				26AB04672753BAD000C646F8 /* MainViewModel.swift in Sources */,
+				2682B6F227541B6600216590 /* CheerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
