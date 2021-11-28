@@ -29,7 +29,7 @@ class FriendsViewModel: ObservableObject {
         Friend(id: 2, name: "Ndushierino", avatarUrl: "https://randomuser.me/api/portraits/men/90.jpg")
     ]
 
-    public func befriend(person: Friend) {
+    func befriend(person: Friend) {
         let isWaiting = waitingFriends.contains(person)
 
         guard isWaiting else { return }
@@ -40,5 +40,15 @@ class FriendsViewModel: ObservableObject {
 
         friends.append(person)
         friends.sort()
+    }
+
+    func ignore(person: Friend) {
+        let isWaiting = waitingFriends.contains(person)
+
+        guard isWaiting else { return }
+
+        waitingFriends.removeAll(where: { dude in
+            dude.id == person.id
+        })
     }
 }

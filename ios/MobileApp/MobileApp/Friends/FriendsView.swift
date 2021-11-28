@@ -49,13 +49,13 @@ private struct friendItem: View {
                 CircleButton(color: Color.gray,
                              icon: .cross) {
                     withAnimation {
-                        viewModel.befriend(person: friend)
+                        viewModel.ignore(person: friend)
                     }
                     print("CLICK")
                 }
                 CircleButton(color: Color.orange, icon: .check) {
                     withAnimation {
-                        self.viewModel.befriend(person: friend)
+                        viewModel.befriend(person: friend)
                     }
                     print("CLICK")
                 }
