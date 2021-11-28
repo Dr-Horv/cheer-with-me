@@ -12,6 +12,12 @@ extension Friend: Equatable {
     }
 }
 
+extension Friend: Comparable {
+    static func < (lhs: Friend, rhs: Friend) -> Bool {
+        lhs.name < rhs.name
+    }
+}
+
 class FriendsViewModel: ObservableObject {
     @Published var waitingFriends: [Friend] = [
         Friend(id: 3, name: "Horvrino", avatarUrl: "https://randomuser.me/api/portraits/men/56.jpg"),
@@ -33,5 +39,6 @@ class FriendsViewModel: ObservableObject {
         })
 
         friends.append(person)
+        friends.sort()
     }
 }
