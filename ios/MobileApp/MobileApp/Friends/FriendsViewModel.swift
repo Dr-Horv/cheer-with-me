@@ -6,6 +6,12 @@ struct Friend: Identifiable {
     let avatarUrl: String
 }
 
+extension Friend: Equatable {
+    static func == (lhs: Friend, rhs: Friend) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
 class FriendsViewModel: ObservableObject {
     @Published var waitingFriends: [Friend] = [
         Friend(id: 3, name: "Horvrino", avatarUrl: "https://randomuser.me/api/portraits/men/56.jpg"),
@@ -18,9 +24,7 @@ class FriendsViewModel: ObservableObject {
     ]
 
     public func befriend(person: Friend) {
-        let isWaiting = waitingFriends.contains(where: { waiter in
-            waiter.id == person.id
-        })
+        let isWaiting = waitingFriends.contains(person)
 
         guard isWaiting else { return }
 
