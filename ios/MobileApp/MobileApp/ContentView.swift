@@ -1,7 +1,5 @@
 import MapKit
 import SwiftUI
-import GoogleSignIn
-
 
 struct ContentView: View {
     @ObservedObject var viewModel: MainViewModel
@@ -28,7 +26,7 @@ struct ContentView: View {
                     Image(systemName: "person.2.fill")
                     Text("Friends")
                 }
-            ProfileView()
+            ProfileView(viewModel: viewModel)
                 .tabItem {
                     Image(systemName: "person.crop.circle")
                     Text(viewModel.username)
