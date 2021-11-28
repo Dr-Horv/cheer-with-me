@@ -194,7 +194,7 @@ fun Application.module(testing: Boolean = false) {
                     Oauth2Parameters(
                         grantType = "authorization_code",
                         code = googleUserSignInRequest.code,
-                        redirectUri = "",
+                        redirectUri = "https://cheerwithme.fredag.dev/login",
                         clientId = application.environment.config.property("oauth.google.client_id").getString(),
                         clientSecret = application.environment.config.property("oauth.google.client_secret").getString()
                     )

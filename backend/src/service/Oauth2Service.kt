@@ -25,8 +25,7 @@ class Oauth2Service {
             append("code", parameters.code)
             parameters.redirectUri?.apply { append("redirect_uri", parameters.redirectUri) }
             append("client_id", parameters.clientId)
-            append("client_secret", parameters.clientSecret
-            )
+            append("client_secret", parameters.clientSecret)
         }
 
 
