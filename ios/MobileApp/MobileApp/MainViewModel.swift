@@ -14,3 +14,7 @@ class MainViewModel: ObservableObject {
         }
     }
 }
+
+extension MainViewModel {
+    static var example = MainViewModel()
+}
