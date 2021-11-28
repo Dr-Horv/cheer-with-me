@@ -1,6 +1,8 @@
 import SwiftUI
 import URLImage
 
+let AVATAR_HEIGHT = 40.0
+
 struct FriendsView: View {
     let viewModel = FriendsViewModel()
     
@@ -13,7 +15,7 @@ struct FriendsView: View {
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                        }.frame(width: 60, height: 60)
+                        }.frame(width: AVATAR_HEIGHT, height: AVATAR_HEIGHT)
                             .clipShape(Circle()).padding([.trailing], 20)
                         
                         Text(friend.name)
@@ -21,11 +23,11 @@ struct FriendsView: View {
                         
                         Spacer()
                         
-                        Circle().stroke(Color.gray, lineWidth: 2).frame(width: 60, height: 60).onTapGesture {
+                        Circle().stroke(Color.gray, lineWidth: 2).frame(width: AVATAR_HEIGHT, height: AVATAR_HEIGHT).onTapGesture {
                             print("CLICK 2")
                         }
                         
-                        Circle().stroke(Color.orange, lineWidth: 2).frame(width: 60, height: 60).onTapGesture {
+                        Circle().stroke(Color.orange, lineWidth: 2).frame(width: AVATAR_HEIGHT, height: AVATAR_HEIGHT).onTapGesture {
                             print("CLICK")
                         }
                     }
@@ -39,7 +41,7 @@ struct FriendsView: View {
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                        }.frame(width: 60, height: 60)
+                        }.frame(width: AVATAR_HEIGHT, height: AVATAR_HEIGHT)
                             .clipShape(Circle()).padding([.trailing], 20)
                         
                         Text(friend.name)

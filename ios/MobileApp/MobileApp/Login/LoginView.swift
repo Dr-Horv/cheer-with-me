@@ -22,11 +22,7 @@ struct LoginView : View {
                 }
                 .padding()
 
-                SignInWithAppleButton(.signIn,
-                    onRequest: { request in
-                        request.requestedScopes = []
-                    },
-                    onCompletion: { result in
+                Button("Sign in with Apple", action: {
                         viewModel.logIn()
                     }
                 ).frame(width: 300, height: 50, alignment: .center).signInWithAppleButtonStyle(.white)
