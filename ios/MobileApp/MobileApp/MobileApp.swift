@@ -2,14 +2,14 @@ import SwiftUI
 
 @main
 struct MobileApp: App {
-    let viewModel = MainViewModel()
+    @ObservedObject var viewModel = MainViewModel()
 
     var body: some Scene {
         WindowGroup {
             if viewModel.isLoggedIn {
                 ContentView()
             } else {
-                Text("Not logged in")
+                LoginView(viewModel: viewModel)
             }
         }
     }

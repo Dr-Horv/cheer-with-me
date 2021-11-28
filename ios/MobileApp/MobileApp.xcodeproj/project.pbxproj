@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		26708E542753CA74007093E9 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26708E532753CA74007093E9 /* LoginView.swift */; };
 		26AB043A27539FCD00C646F8 /* MobileApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AB043927539FCD00C646F8 /* MobileApp.swift */; };
 		26AB043C27539FCD00C646F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26AB043B27539FCD00C646F8 /* ContentView.swift */; };
 		26AB043E27539FD000C646F8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26AB043D27539FD000C646F8 /* Assets.xcassets */; };
@@ -40,6 +41,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		26708E532753CA74007093E9 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		26AB043627539FCD00C646F8 /* MobileApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26AB043927539FCD00C646F8 /* MobileApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileApp.swift; sourceTree = "<group>"; };
 		26AB043B27539FCD00C646F8 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -84,6 +86,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		26708E522753CA66007093E9 /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				26708E532753CA74007093E9 /* LoginView.swift */,
+			);
+			path = Login;
+			sourceTree = "<group>";
+		};
 		26AB042D27539FCD00C646F8 = {
 			isa = PBXGroup;
 			children = (
@@ -108,6 +118,7 @@
 			isa = PBXGroup;
 			children = (
 				3D1C4BCF2753CBEB00D11CBA /* Friends */,
+				26708E522753CA66007093E9 /* Login */,
 				26AB04632753AE1300C646F8 /* MobileApp.entitlements */,
 				26AB04662753BAD000C646F8 /* MainViewModel.swift */,
 				26AB043927539FCD00C646F8 /* MobileApp.swift */,
@@ -295,6 +306,7 @@
 				3D1C4BD32753CC0A00D11CBA /* FriendsViewModel.swift in Sources */,
 				26AB04652753B1A400C646F8 /* NavigationView.swift in Sources */,
 				26AB043A27539FCD00C646F8 /* MobileApp.swift in Sources */,
+				26708E542753CA74007093E9 /* LoginView.swift in Sources */,
 				26AB04672753BAD000C646F8 /* MainViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
