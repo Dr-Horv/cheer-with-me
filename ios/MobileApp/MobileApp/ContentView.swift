@@ -26,7 +26,7 @@ struct ContentView: View {
                     Image(systemName: "person.2.fill")
                     Text("Friends")
                 }
-            Text("You are \(viewModel.username)!")
+            ProfileView()
                 .tabItem {
                     Image(systemName: "person.crop.circle")
                     Text(viewModel.username)
