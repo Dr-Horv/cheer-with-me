@@ -48,11 +48,15 @@ private struct friendItem: View {
 
                 CircleButton(color: Color.gray,
                              icon: .cross) {
-                    viewModel.befriend(person: friend)
+                    withAnimation {
+                        viewModel.befriend(person: friend)
+                    }
                     print("CLICK")
                 }
                 CircleButton(color: Color.orange, icon: .check) {
-                    self.viewModel.befriend(person: friend)
+                    withAnimation {
+                        self.viewModel.befriend(person: friend)
+                    }
                     print("CLICK")
                 }
             }
