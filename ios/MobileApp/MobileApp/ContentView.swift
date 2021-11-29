@@ -1,6 +1,7 @@
 import MapKit
 import SwiftUI
 
+
 struct ContentView: View {
     @ObservedObject var viewModel: MainViewModel
 
@@ -16,7 +17,7 @@ struct ContentView: View {
                     Image(systemName: "map.fill")
                     Text("Map")
                 }
-            Text("List of all the events!")
+            EventsView()
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Events")

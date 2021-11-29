@@ -26,6 +26,8 @@ class SingletonState {
     
     let signInConfig: GIDConfiguration;
     
+    var token: String!
+    
     let mainViewModel = MainViewModel()
     
     private init() {

@@ -4,18 +4,23 @@ import GoogleSignIn
 import UIKit
 import Alamofire
 
+
+struct AccessTokenResponse: Codable {
+    let accessToken: String
+}
+
 struct LoginView : View {
     @ObservedObject var viewModel: MainViewModel
-
+    
     var body: some View {
         VStack {
             Spacer()
-
+            
             VStack {
                 Text("🎉").font(.largeTitle)
                 Text("CheerWithMe").font(.largeTitle)
             }
-
+            
             if viewModel.isSigningIn {
                 ProgressView("Signing in...").progressViewStyle(CircularProgressViewStyle())
             } else {
@@ -48,32 +53,29 @@ struct LoginView : View {
                                 "Accept": "application/json"
                             ]
                             
-                            AF.request("http://192.168.1.127:8080/login/google", method: .post, parameters: params, encoder: JSONParameterEncoder.default, headers: headers).response {
+                            AF.request("http://192.168.1.127:8080/login/google", method: .post, parameters: params, encoder: JSONParameterEncoder.default, headers: headers).responseDecodable(of: AccessTokenResponse.self) {
                                 response in
                                 
-                                viewModel.isSigningIn = false
-                                
-                                switch response.result {
-                                case .success:
+                                if let tokenResponse = response.value {
                                     viewModel.isLoggedIn = true
-                                case let .failure(error):
-                                    print(error)
+                                    SingletonState.shared.token = tokenResponse.accessToken
                                 }
                                 
+                                viewModel.isSigningIn = false
                             }
                             
                         }
                         
                     }
-
+                    
                 })
-
+                
                 Button("Sign in with Apple", action: {
-                        viewModel.logIn()
-                    }
+                    viewModel.logIn()
+                }
                 ).frame(width: 300, height: 50, alignment: .center).signInWithAppleButtonStyle(.white)
             }
-
+            
             Spacer()
         }
     }
