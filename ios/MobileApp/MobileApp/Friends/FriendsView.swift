@@ -8,11 +8,13 @@ struct FriendsView: View {
     
     var body: some View {
         List {
-            Section(header: Text("FRIEND REQUESTS")) {
-                ForEach(viewModel.waitingFriends) { friend in
-                    friendItem(friend: friend,
-                               showButtons: true,
-                               viewModel: viewModel)
+            if !viewModel.waitingFriends.isEmpty {
+                Section(header: Text("FRIEND REQUESTS")) {
+                    ForEach(viewModel.waitingFriends) { friend in
+                        friendItem(friend: friend,
+                                   showButtons: true,
+                                   viewModel: viewModel)
+                    }
                 }
             }
             
