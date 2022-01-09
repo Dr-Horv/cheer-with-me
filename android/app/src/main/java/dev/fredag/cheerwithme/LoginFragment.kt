@@ -78,13 +78,15 @@ private fun createGoogleLoginIntent(context: Context): Intent {
 
 @Composable
 fun Login(
-    loginViewModel: LoginViewModel
+    loginViewModel: LoginViewModel,
+    loginSuccess: () -> Unit,
+    loginFailed: () -> Unit,
 ) = CheerWithMeTheme {
 
     val launcher =
         rememberLauncherForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
-            loginViewModel.handleLoginResult()
+            loginViewModel.handleLoginResult(loginSuccess, loginFailed)
         )
     val context = LocalContext.current
 
@@ -157,7 +159,7 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
     val loading = mutableStateOf(false)
 
-    fun handleLoginResult(): (ActivityResult) -> Unit {
+    fun handleLoginResult(loginSuccess: () -> Unit, loginFailed: () -> Unit): (ActivityResult) -> Unit {
         return inner@{
             Log.d("Login", "Got login result: ${it.resultCode}")
             Log.d("Login", "Got login result: $it")
@@ -181,8 +183,9 @@ class LoginViewModel @Inject constructor(
                     "Login",
                     "${account.displayName} ${account.email} '${account.grantedScopes}' ${account.id} ${account.idToken} ${account.serverAuthCode}"
                 )
-                handleLoginSuccess(account)
+                handleLoginSuccess(account, loginSuccess)
             } else {
+                loginFailed()
                 loading.value = false
             }
 
@@ -192,6 +195,7 @@ class LoginViewModel @Inject constructor(
 
     private fun handleLoginSuccess(
         account: GoogleSignInAccount,
+        loginSuccess: () -> Unit
     ) {
         viewModelScope.launch {
             userRepository.loginWithGoogle(account.serverAuthCode!!, account.idToken!!)
@@ -205,7 +209,7 @@ class LoginViewModel @Inject constructor(
             UserState.loggedIn.postValue(true)
             //val navController = Navigation.findNavController(fragment.requireView())
             // TODO navigate to home, login done
-            Log.d("Login", "navigating to startDestination")
+            loginSuccess()
             // navController.navigate(navController.graph.startDestination) TODO
         }
 
