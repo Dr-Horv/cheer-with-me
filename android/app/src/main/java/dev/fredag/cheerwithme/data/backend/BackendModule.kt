@@ -30,6 +30,14 @@ object BackendModule {
         }
     }
 
+    fun clearAccessKey(context: Context) {
+        val preferences = context.getSharedPreferences(BACKEND_PREFERENCES, Context.MODE_PRIVATE)
+        with (preferences.edit()) {
+            remove(ACCESS_KEY_PREFERENCE_KEY)
+            commit()
+        }
+    }
+
     fun hasAccessKey(context: Context): Boolean {
         val preferences = context.getSharedPreferences(BACKEND_PREFERENCES, Context.MODE_PRIVATE)
         return preferences.getString(ACCESS_KEY_PREFERENCE_KEY, "")?.isNotBlank() ?: false

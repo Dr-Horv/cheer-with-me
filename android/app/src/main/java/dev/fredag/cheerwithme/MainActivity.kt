@@ -1,5 +1,6 @@
 package dev.fredag.cheerwithme
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -115,7 +116,7 @@ fun Router(navController: NavHostController) {
                 composable(AuthenticatedScreen.FindFriend.route) { FindFriend() }
                 composable(AuthenticatedScreen.Checkin.route) { Happening() }
                 composable(AuthenticatedScreen.Calendar.route) { Calendar() }
-                composable(AuthenticatedScreen.Profile.route) { Profile() }
+                composable(AuthenticatedScreen.Profile.route) { Profile(navController) }
                 composable(AuthenticatedScreen.Login.route) {
                     Login(hiltViewModel(), {
                         navController.navigate(AuthenticatedScreen.Checkin.route)
@@ -142,8 +143,38 @@ fun FindFriend() {
 }
 
 @Composable
-fun FakeLogin() {
-    Text(text = "FakeLogin")
+fun Happening() {
+    Text("Checkin")
+}
+
+@Composable
+fun Map() {
+    Text("map")
+}
+
+@Composable
+fun Profile(navController: NavHostController) {
+    val context = LocalContext.current
+    Column() {
+        Text("profile")
+        Button(onClick = {
+            clearAccessToken(context)
+            navController.navigate(AuthenticatedScreen.Login.route)
+        }) {
+            Text(text = "Logout")
+
+        }
+    }
+
+}
+
+fun clearAccessToken(context: Context) {
+    BackendModule.clearAccessKey(context )
+}
+
+@Composable
+fun Calendar() {
+    Text("calendar")
 }
 
 @Composable
