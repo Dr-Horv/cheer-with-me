@@ -55,7 +55,7 @@ class UserService {
             Database.dbQuery {
                 Users.update({ Users.id.eq(user.id) }) {
                     it[Users.accessToken] = accessToken
-                    avatarUrl?.apply { it[Users.accessToken] = avatarUrl }
+                    avatarUrl?.apply { it[Users.avatarUrl] = avatarUrl }
                 }
             }
         }
@@ -81,8 +81,10 @@ class UserService {
         Users.select { Users.id.inList(userIds) }.map(this::toUser)
     }
 
-    suspend fun searchUserByNick(nick: String): List<User> = Database.dbQuery {
-        Users.select { Users.nick.lowerCase().like("%${nick.toLowerCase()}%") }.map(this::toUser)
+    suspend fun searchUserByNick(nick: String, exclude: List<UserId>? = emptyList()): List<User> = Database.dbQuery {
+        Users.select { Users.nick.lowerCase().like("%${nick.toLowerCase()}%") }
+            .map(this::toUser)
+            .filter { exclude?.contains(it.id)?.not() ?: true }
     }
 
     suspend fun findUserById(userId: Long): User? = Database.dbQuery {

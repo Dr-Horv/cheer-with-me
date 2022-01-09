@@ -36,6 +36,7 @@ import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.pipeline.PipelineContext
 import kotlinx.coroutines.Dispatchers
+import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sns.SnsClient
@@ -59,12 +60,14 @@ private val oauth2Service: Oauth2Service = Oauth2Service()
 private val authService: AuthService = AuthService(userService)
 private val userFriendsService: UserFriendsService = UserFriendsService(userService, pushService = pushService)
 private val happeningService: HappeningService = HappeningService(userService = userService, pushService = pushService)
+private val searchService: SearchService = SearchService(userService, friendsService = userFriendsService)
+
+private val logger = LoggerFactory.getLogger("Application.kt")
 
 @KtorExperimentalAPI
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
-    val log by logger();
 
     install(ContentNegotiation) {
         jackson {
@@ -108,9 +111,9 @@ fun Application.module(testing: Boolean = false) {
                 "https://accounts.google.com"
             )
             validate { credentials ->
-                log.debug("$credentials")
-                log.debug("${credentials.payload}")
-                log.debug(objectMapper.writeValueAsString(credentials))
+                logger.debug("$credentials")
+                logger.debug("${credentials.payload}")
+                logger.debug(objectMapper.writeValueAsString(credentials))
                 JWTPrincipal(credentials.payload)
             }
         }
@@ -124,9 +127,9 @@ fun Application.module(testing: Boolean = false) {
                 "https://appleid.apple.com"
             )
             validate { credentials ->
-                log.debug("$credentials")
-                log.debug("${credentials.payload}")
-                log.debug(objectMapper.writeValueAsString(credentials))
+                logger.debug("$credentials")
+                logger.debug("${credentials.payload}")
+                logger.debug(objectMapper.writeValueAsString(credentials))
                 JWTPrincipal(credentials.payload)
             }
 
@@ -189,7 +192,7 @@ fun Application.module(testing: Boolean = false) {
         authenticate("google") {
             post("/login/google") {
                 val googleUserSignInRequest = call.receive<GoogleUserSignInRequest>()
-                log.debug("Code ${googleUserSignInRequest.code}")
+                logger.debug("Code ${googleUserSignInRequest.code}")
 
                 val googleOauthResponse = oauth2Service.authenticate<GoogleOauthResponse>(
                     "https://oauth2.googleapis.com/token",
@@ -209,12 +212,13 @@ fun Application.module(testing: Boolean = false) {
 
                 val googleUser = objectMapper.readValue<Map<String, String>>(json)
                 val id = googleUser.getValue("id")
-                log.debug(json);
-                log.debug(googleUser.toString())
+                logger.debug(json);
+                logger.debug(googleUser.toString())
                 userService.upsertUserWithId(
                     googleId = id,
                     nick = googleUser.getValue("name"),
-                    accessToken = googleOauthResponse.access_token
+                    accessToken = googleOauthResponse.access_token,
+                    avatarUrl = googleUser["picture"]
                 )
 
                 call.respond(mapOf("accessToken" to googleOauthResponse.access_token))
@@ -222,7 +226,7 @@ fun Application.module(testing: Boolean = false) {
         }
 
         authenticate("cheerWithMe") {
-            userRouting(userService)
+            userRouting(userService, searchService)
             pushRouting(pushService)
             friendRouting(userFriendsService)
             happeningRouting(happeningService)

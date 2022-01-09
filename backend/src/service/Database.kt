@@ -28,6 +28,7 @@ object Database {
         Database.connect(hikari())
         transaction {
             drop(UserFriendsEvents)
+            drop(HappeningEvents)
             create(Users, UserPushArns, UserFriendsEvents, HappeningEvents)
             GlobalScope.launch {
                 userService.upsertUserWithId(
@@ -98,13 +99,14 @@ object Database {
                 userFriendsService.acceptFriendRequest(KALIOR_ID, AcceptFriendRequest(MEDDAN_ID))
 
                 userFriendsService.sendFriendRequest(TEJP_ID, SendFriendRequest(MEDDAN_ID))
+                userFriendsService.sendFriendRequest(JUICE_ID, SendFriendRequest(TEJP_ID))
 
 
                 happeningService.createHappening(HORV_ID, CreateHappening("Discode!", "Kod & Vin",
                     Instant.now().plus(1, ChronoUnit.DAYS), null, listOf(MALM_ID, NDUSHI_ID)))
 
                 val happening = happeningService.createHappening(TEJP_ID, CreateHappening("Happidyhaps!", ":D",
-                    Instant.now().plus(1, ChronoUnit.DAYS), null, listOf(HORV_ID, NDUSHI_ID)))
+                    Instant.now().plus(1, ChronoUnit.DAYS), Location(Coordinate(58.298584, 12.961619)), listOf(HORV_ID, NDUSHI_ID)))
                 happeningService.acceptHappeningInvite(HORV_ID, AcceptHappeningInvite(happening.happeningId))
 
             }
