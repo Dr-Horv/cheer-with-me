@@ -7,7 +7,7 @@ plugins {
     id("dagger.hilt.android.plugin")
 }
 
-val composeVersion = "1.1.0-beta01"
+val composeVersion = "1.1.0-rc01"
 val coroutinesVersion = "1.3.8-1.4.0-rc"
 val roomVersion = "2.2.5"
 val archLifecycleVersion = "2.2.0"

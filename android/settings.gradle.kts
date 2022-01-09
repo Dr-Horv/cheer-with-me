@@ -1,20 +1,14 @@
 rootProject.name = "Cheer With Me"
 
-include(":app")
-
-pluginManagement {
+dependencyResolutionManagement() {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        maven(url = "https://dl.bintray.com/kotlin/kotlin-eap/")
+        google()
+        //maven(url = "https://dl.bintray.com/kotlin/kotlin-eap/")
+        mavenCentral()
         gradlePluginPortal()
         jcenter()
-        google()
-    }
-
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "com.android.application") {
-                useModule("com.android.tools.build:gradle:${requested.version}")
-            }
-        }
     }
 }
+
+include(":app")
