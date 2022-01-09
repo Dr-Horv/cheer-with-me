@@ -3,35 +3,31 @@ package dev.fredag.cheerwithme
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
-import androidx.navigation.Navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.fredag.cheerwithme.data.UserState
 import dev.fredag.cheerwithme.data.backend.BackendModule
 import dev.fredag.cheerwithme.friends.Friends
-import dev.fredag.cheerwithme.friends.FriendsList
-import dev.fredag.cheerwithme.friends.FriendsViewModel
 import dev.fredag.cheerwithme.ui.CheerWithMeTheme
 import kotlinx.coroutines.FlowPreview
 
@@ -54,7 +50,6 @@ class MainActivity : ComponentActivity() {
 //        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
 //        val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
 //        bottomNavigation.setupWithNavController(navController)
-//        UserState.loggedIn.postValue(BackendModule.hasAccessKey(applicationContext))
 
 //        lifecycleScope.launchWhenStarted {
 //            UserState.loggedIn.observe(this@MainActivity) {
