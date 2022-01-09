@@ -10,10 +10,7 @@ import dev.fredag.cheerwithme.data.FriendsRepository
 import dev.fredag.cheerwithme.data.backend.UserFriends
 import dev.fredag.cheerwithme.data.backend.UserId
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @FlowPreview
@@ -21,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FriendsViewModel @Inject constructor(private val friendsRepository: FriendsRepository) :
     ViewModel() {
-    private val friendsChannel = ConflatedBroadcastChannel(UserFriends())
+    private val friendsChannel = MutableStateFlow(UserFriends())
     private var _currentRefresh: Job? = null
 
     init {
@@ -33,13 +30,13 @@ class FriendsViewModel @Inject constructor(private val friendsRepository: Friend
         _currentRefresh = viewModelScope.launch(Dispatchers.IO) {
             friendsRepository.getFriends().collect {
                 Log.d("FriendsViewModel", it.toString())
-                friendsChannel.offer(it)
+                friendsChannel.value = it
                 Log.d("FriendsViewModel", "Offer done")
             }
         }
     }
 
-    val friends: LiveData<UserFriends> = friendsChannel.asFlow().mapLatest {
+    val friends: LiveData<UserFriends> = friendsChannel.mapLatest {
         Log.d("FriendsViewModel", "Inside friends flow $it")
         it
     }.asLiveData()
