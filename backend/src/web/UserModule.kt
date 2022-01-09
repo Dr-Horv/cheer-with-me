@@ -1,7 +1,9 @@
 package dev.fredag.cheerwithme.web
 
+import dev.fredag.cheerwithme.getUserId
 import dev.fredag.cheerwithme.service.UserService
 import io.ktor.application.call
+import io.ktor.http.*
 import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Route
@@ -13,6 +15,16 @@ import io.ktor.routing.post
 //Use for development purposes and whatnot.
 
 fun Route.userRouting(userService: UserService, testing: Boolean = false){
+
+    get("/user/me") {
+        val user = userService.findUserById(getUserId());
+        if(user == null) {
+            call.respond(HttpStatusCode.NotFound)
+            return@get
+        }
+
+        call.respond(HttpStatusCode.OK, user)
+    }
 
     get("/users/"){
         call.respond(userService.getUsers())
