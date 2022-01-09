@@ -5,26 +5,31 @@ import Alamofire
 
 struct ProfileView: View {
     @ObservedObject var viewModel: MainViewModel
-    let friend = Friend(id: 2, name: "Ndushierino", avatarUrl: "https://randomuser.me/api/portraits/men/90.jpg")
+    @State var friend: User? = nil
     
     var body: some View {
         VStack {
             List {
                 HStack {
-                    if let avatarUrl = friend.avatarUrl {
-                        URLImage(URL(string: avatarUrl)!) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        }.frame(width: AVATAR_HEIGHT, height: AVATAR_HEIGHT)
-                            .clipShape(Circle()).padding([.trailing], 20)
+                    if let friend = friend {
+                        if let avatarUrl = friend.avatarUrl {
+                            URLImage(URL(string: avatarUrl)!) { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                            }.frame(width: AVATAR_HEIGHT, height: AVATAR_HEIGHT)
+                                .clipShape(Circle()).padding([.trailing], 20)
+                        } else {
+                            Circle()
+                                .frame(width: AVATAR_HEIGHT, height: AVATAR_HEIGHT)
+                                .clipShape(Circle()).padding([.trailing], 20)
+                        }
+                        Text(friend.nick)
+                        Spacer()
+                        
                     } else {
-                        Circle()
-                            .frame(width: AVATAR_HEIGHT, height: AVATAR_HEIGHT)
-                            .clipShape(Circle()).padding([.trailing], 20)
+                        ProgressView().progressViewStyle(.circular)
                     }
-                    Text(friend.name)
-                    Spacer()
                 }
                 Section {
                     Button("Sign out") {
