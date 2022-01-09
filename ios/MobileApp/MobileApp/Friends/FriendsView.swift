@@ -1,12 +1,17 @@
 import SwiftUI
 import URLImage
+import Alamofire
 
 let AVATAR_HEIGHT = 40.0
 
 struct FriendsView: View {
     @ObservedObject var viewModel = FriendsViewModel()
-    
+    @State var isLoading: Bool = false
+
     var body: some View {
+        if isLoading {
+            ProgressView().progressViewStyle(.circular)
+        }
         List {
             if !viewModel.waitingFriends.isEmpty {
                 Section(header: Text("FRIEND REQUESTS")) {
@@ -17,7 +22,7 @@ struct FriendsView: View {
                     }
                 }
             }
-            
+
             Section(header: Text("FRIENDS")) {
                 ForEach(viewModel.friends) { friend in
                     friendItem(friend: friend,
@@ -25,25 +30,41 @@ struct FriendsView: View {
                                viewModel: viewModel)
                 }
             }.listStyle(GroupedListStyle())
+        }.onAppear {
+            isLoading = true
+
+            AF.request("\(BACKEND_URL)/friends", headers: SingletonState.shared.authHeaders()).responseDecodable(of: FriendsResponse.self) { response in
+                isLoading = false
+
+                if let friendResponse = response.value {
+                    viewModel.friends = friendResponse.friends
+                    viewModel.waitingFriends = friendResponse.incomingFriendRequests
+                }
+            }
         }
     }
 }
 
 private struct friendItem: View {
-    let friend: Friend
+    let friend: User
     let showButtons: Bool
     @State var viewModel: FriendsViewModel
 
     var body: some View {
         HStack {
-            URLImage(URL(string: friend.avatarUrl)!) { image in
-                image
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-            }.frame(width: AVATAR_HEIGHT, height: AVATAR_HEIGHT)
-                .clipShape(Circle()).padding([.trailing], 20)
+            if let avatarUrl = friend.avatarUrl {
+                URLImage(URL(string: avatarUrl)!) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                }.frame(width: AVATAR_HEIGHT, height: AVATAR_HEIGHT)
+                    .clipShape(Circle()).padding([.trailing], 20)
+            } else {
+                Circle().frame(width: AVATAR_HEIGHT, height: AVATAR_HEIGHT)
+                    .clipShape(Circle()).padding([.trailing], 20)
+            }
 
-            Text(friend.name)
+            Text(friend.nick)
 
             if showButtons {
                 Spacer()

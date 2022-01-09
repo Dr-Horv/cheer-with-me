@@ -1,35 +1,29 @@
 import Foundation
 
-struct Friend: Identifiable {
-    let id: Int
-    let name: String
-    let avatarUrl: String
-}
-
-extension Friend: Equatable {
-    static func == (lhs: Friend, rhs: Friend) -> Bool {
+extension User: Equatable {
+    static func == (lhs: User, rhs: User) -> Bool {
         lhs.id == rhs.id
     }
 }
 
-extension Friend: Comparable {
-    static func < (lhs: Friend, rhs: Friend) -> Bool {
-        lhs.name < rhs.name
+extension User: Comparable {
+    static func < (lhs: User, rhs: User) -> Bool {
+        lhs.nick < rhs.nick
     }
 }
 
 class FriendsViewModel: ObservableObject {
-    @Published var waitingFriends: [Friend] = [
-        Friend(id: 3, name: "Horvrino", avatarUrl: "https://randomuser.me/api/portraits/men/56.jpg"),
-        Friend(id: 4, name: "Tejperino", avatarUrl: "https://randomuser.me/api/portraits/men/74.jpg"),
+    @Published var waitingFriends: [User] = [
+//        User(id: 3, nick: "Horvrino", avatarUrl: "https://randomuser.me/api/portraits/men/56.jpg"),
+//        User(id: 4, nick: "Tejperino", avatarUrl: "https://randomuser.me/api/portraits/men/74.jpg"),
     ]
     
-    @Published var friends: [Friend] = [
-        Friend(id: 1, name: "Malmerino", avatarUrl: "https://randomuser.me/api/portraits/men/25.jpg"),
-        Friend(id: 2, name: "Ndushierino", avatarUrl: "https://randomuser.me/api/portraits/men/90.jpg")
+    @Published var friends: [User] = [
+//        User(id: 1, nick: "Malmerino", avatarUrl: "https://randomuser.me/api/portraits/men/25.jpg"),
+//        User(id: 2, nick: "Ndushierino", avatarUrl: "https://randomuser.me/api/portraits/men/90.jpg")
     ]
 
-    func befriend(person: Friend) {
+    func befriend(person: User) {
         let isWaiting = waitingFriends.contains(person)
 
         guard isWaiting else { return }
@@ -42,7 +36,7 @@ class FriendsViewModel: ObservableObject {
         friends.sort()
     }
 
-    func ignore(person: Friend) {
+    func ignore(person: User) {
         let isWaiting = waitingFriends.contains(person)
 
         guard isWaiting else { return }

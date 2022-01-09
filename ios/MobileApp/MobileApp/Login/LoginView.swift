@@ -53,7 +53,7 @@ struct LoginView : View {
                                 "Accept": "application/json"
                             ]
                             
-                            AF.request("http://192.168.1.127:8080/login/google", method: .post, parameters: params, encoder: JSONParameterEncoder.default, headers: headers).responseDecodable(of: AccessTokenResponse.self) {
+                            AF.request("\(BACKEND_URL)/login/google", method: .post, parameters: params, encoder: JSONParameterEncoder.default, headers: headers).responseDecodable(of: AccessTokenResponse.self) {
                                 response in
                                 
                                 if let tokenResponse = response.value {
