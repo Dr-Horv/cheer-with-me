@@ -38,11 +38,11 @@ fun Authentication.Configuration.cheerWithMe(
     provider.pipeline.intercept(AuthenticationPipeline.CheckAuthentication) { context ->
         val authHeader = context.call.request.headers["authorization"]
         if (authHeader == null || !authHeader.contains("bearer ", true)) {
-            call.respond(HttpStatusCode.Unauthorized)
             context.challenge("cheerWithMeAuth", AuthenticationFailedCause.NoCredentials) {
                 call.respond(UnauthorizedResponse())
                 it.complete()
             }
+            call.respond(HttpStatusCode.Unauthorized)
         } else {
             val token = authHeader.substring("bearer ".length)
             val principal = verify(call, token)

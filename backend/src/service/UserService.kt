@@ -12,7 +12,8 @@ class UserService {
         accessToken: String,
         googleId: String? = null,
         appleId: String? = null,
-        refreshToken: String? = null
+        refreshToken: String? = null,
+        avatarUrl: String? = null
     ): User {
         var newId = 0L
         Database.dbQuery {
@@ -22,9 +23,10 @@ class UserService {
                 googleId?.apply { it[Users.googleId] = googleId }
                 appleId?.apply { it[Users.appleId] = appleId }
                 refreshToken?.apply { it[Users.refreshToken] = refreshToken }
+                avatarUrl?.apply { it[Users.avatarUrl] = avatarUrl }
             } get Users.id
         }
-        return User(newId, newNick)
+        return User(newId, newNick, avatarUrl)
     }
 
     suspend fun getUsers(): List<User> = Database.dbQuery {
@@ -36,7 +38,8 @@ class UserService {
         accessToken: String,
         refreshToken: String? = null,
         googleId: String? = null,
-        appleId: String? = null
+        appleId: String? = null,
+        avatarUrl: String? = null
     ) {
         val user = findUserByGoogleOrAppleId(googleId ?: appleId ?: "")
         if (user == null) {
@@ -45,12 +48,14 @@ class UserService {
                 accessToken = accessToken,
                 googleId = googleId,
                 appleId = appleId,
-                refreshToken = refreshToken
+                refreshToken = refreshToken,
+                avatarUrl = avatarUrl
             )
         } else {
             Database.dbQuery {
                 Users.update({ Users.id.eq(user.id) }) {
                     it[Users.accessToken] = accessToken
+                    avatarUrl?.apply { it[Users.accessToken] = avatarUrl }
                 }
             }
         }
@@ -91,6 +96,7 @@ class UserService {
 
     private fun toUser(row: ResultRow): User = User(
         id = row[Users.id],
-        nick = row[Users.nick]
+        nick = row[Users.nick],
+        avatarUrl = row[Users.avatarUrl]
     )
 }

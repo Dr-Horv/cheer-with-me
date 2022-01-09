@@ -20,6 +20,7 @@ object Users : Table() {
     val accessToken = varchar("access_token", 255).nullable()
     val refreshToken = varchar("refresh_token", 255).nullable()
     val nick = varchar("nick", 255)
+    val avatarUrl = varchar("avatar_url", 1024).nullable()
 }
 
 data class User(
