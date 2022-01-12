@@ -10,9 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Modifier
+ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
@@ -27,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.fredag.cheerwithme.data.UserState
 import dev.fredag.cheerwithme.data.backend.BackendModule
+import dev.fredag.cheerwithme.friends.FindFriendView
 import dev.fredag.cheerwithme.friends.Friends
 import dev.fredag.cheerwithme.happening.Happenings
 import dev.fredag.cheerwithme.ui.CheerWithMeTheme
@@ -109,7 +108,7 @@ fun Router(navController: NavHostController) {
                     }
                 }
                 composable(AuthenticatedScreen.Map.route) { Map() }
-                composable(AuthenticatedScreen.FindFriend.route) { FindFriend() }
+                composable(AuthenticatedScreen.FindFriend.route) { FindFriendView(navController, hiltViewModel()) }
                 composable(AuthenticatedScreen.Checkin.route) { Happening() }
                 composable(AuthenticatedScreen.Calendar.route) { Happenings(hiltViewModel()) {
                     TODO()
@@ -126,18 +125,6 @@ fun Router(navController: NavHostController) {
 
         }
     }
-}
-
-@Composable
-fun FindFriend() {
-    val searchName = remember { mutableStateOf("") }
-    TextField(value = searchName.value, onValueChange = { searchName.value = it })
-    Button(onClick = {
-
-    }) {
-        Text("Send friend request")
-    }
-
 }
 
 @Composable
@@ -168,11 +155,6 @@ fun Profile(navController: NavHostController) {
 
 fun clearAccessToken(context: Context) {
     BackendModule.clearAccessKey(context )
-}
-
-@Composable
-fun Calendar() {
-    Text("calendar")
 }
 
 @Composable
