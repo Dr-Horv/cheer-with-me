@@ -28,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.fredag.cheerwithme.data.UserState
 import dev.fredag.cheerwithme.data.backend.BackendModule
 import dev.fredag.cheerwithme.friends.Friends
+import dev.fredag.cheerwithme.happening.Happenings
 import dev.fredag.cheerwithme.ui.CheerWithMeTheme
 import kotlinx.coroutines.FlowPreview
 
@@ -110,7 +111,9 @@ fun Router(navController: NavHostController) {
                 composable(AuthenticatedScreen.Map.route) { Map() }
                 composable(AuthenticatedScreen.FindFriend.route) { FindFriend() }
                 composable(AuthenticatedScreen.Checkin.route) { Happening() }
-                composable(AuthenticatedScreen.Calendar.route) { Calendar() }
+                composable(AuthenticatedScreen.Calendar.route) { Happenings(hiltViewModel()) {
+                    TODO()
+                } }
                 composable(AuthenticatedScreen.Profile.route) { Profile(navController) }
                 composable(AuthenticatedScreen.Login.route) {
                     Login(hiltViewModel(), {
