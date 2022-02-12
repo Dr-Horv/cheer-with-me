@@ -45,7 +45,7 @@ object Database {
                 userService.upsertUserWithId(
                     "Kalior",
                     "Kalior",
-                    googleId = "Kalior"
+                    googleId = "115646818689177376948"
                 )
                 userService.upsertUserWithId(
                     "Juice",
@@ -65,7 +65,7 @@ object Database {
                 userService.upsertUserWithId(
                     "Malm",
                     "Malm",
-                    appleId = "Malm"
+                    googleId = "115376636967137060774"
                 )
 
                 val HORV_ID = 1L
