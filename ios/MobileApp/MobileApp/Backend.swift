@@ -7,4 +7,4 @@
 
 
 
-let BACKEND_URL = "http://192.168.1.203:8080"
+let BACKEND_URL = "https://cheerwithme.fredag.dev"
