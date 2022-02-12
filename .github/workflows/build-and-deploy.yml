@@ -1,0 +1,46 @@
+name: Build & Deploy Docker Image
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push Specific Tag to Container Registry
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/fredagsdeploy/cheer-with-me-backend:${{ github.sha }}
+          context: backend
+      - name: Push Latest Tag to Container Registry
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ghcr.io/fredagsdeploy/cheer-with-me-backend:latest
+          context: backend
+
+  deploy:
+    name: Deploy Backend
+    runs-on: ubuntu-18.04
+    needs: [build]
+    environment:
+      name: Production
+      url: https://cheerwithme.fredag.dev/
+    steps:
+      - name: Workflow Webhook Action
+        uses: distributhor/workflow-webhook@v1.0.2
+        env:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
+          data: '{ "built": "fredagsdeploy/cheer-with-me-backend:latest" }'
+
