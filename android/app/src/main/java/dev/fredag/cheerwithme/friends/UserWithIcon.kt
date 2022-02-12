@@ -25,7 +25,8 @@ public fun UserWithIcon(
 ) {
 
     val img = if (it.avatarUrl !== null) {
-        TODO("Fetch image from internet for avatar here")
+        // TODO("Fetch image from internet for avatar here")
+        painterResource(id = R.drawable.ic_profile_black_24dp)
     } else {
         painterResource(id = R.drawable.ic_profile_black_24dp)
     }
