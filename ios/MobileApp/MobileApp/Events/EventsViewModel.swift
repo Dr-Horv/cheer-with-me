@@ -100,41 +100,25 @@ extension EventsViewModel {
 }
 
 private func exampleHappenings() -> [Happening] {
-    let malt = User(id: 5, nick: "Malt", avatarUrl: randomProfileImage())
-    let horv = User(id: 6,
-                    nick: "Alkohorv",
-                    avatarUrl: randomProfileImage(gender: .lego))
     let oneDay = TimeInterval(12*60*60)
     let codeParty = Happening(happeningId: "theCoding",
-                              admin: malt,
+                              admin: .malt,
                               name: "Do the code",
                               description: "Code code, drink beer",
                               time: Date(timeIntervalSinceNow: TimeInterval(5*oneDay)),
                               location: nil,
-                              attendees: [malt, horv],
+                              attendees: [.malt, .horv],
                               awaiting: [],
                               cancelled: false)
 
     let beerParty = Happening(happeningId: "beerOClock",
-                              admin: horv,
+                              admin: .horv,
                               name: "Drink the beer",
                               description: "Bring your own beer. Drink beer",
                               time: Date(timeIntervalSinceNow: TimeInterval(6*oneDay)),
                               location: Location(coordinate: .init(lat: 57.708870, lng: 11.974560)),
-                              attendees: [malt, horv],
+                              attendees: [.malt, .horv],
                               awaiting: [],
                               cancelled: false)
     return [codeParty, beerParty]
-}
-
-private enum Gender : String {
-    case male = "men"
-    case female = "women"
-    case lego = "lego"
-}
-
-private func randomProfileImage(gender: Gender = .male) -> String {
-    let max = gender == .lego ? 8 : 100
-    let number = Int.random(in: 1..<max)
-    return "https://randomuser.me/api/portraits/\(gender.rawValue)/\(number).jpg"
 }

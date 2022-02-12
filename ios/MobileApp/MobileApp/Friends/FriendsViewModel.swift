@@ -11,6 +11,31 @@ extension User: Comparable {
     static func < (lhs: User, rhs: User) -> Bool {
         lhs.nick < rhs.nick
     }
+    static var malt : User {
+        User(id: 5, nick: "Malt", avatarUrl: randomProfileImage())
+    }
+    static var horv : User {
+        User(id: 6,
+            nick: "Alkohorv",
+            avatarUrl: randomProfileImage(gender: .lego))
+    }
+    static var nrussian : User {
+        User(id: 6,
+            nick: "Nrussian",
+            avatarUrl: randomProfileImage())
+    }
+}
+
+private enum Gender : String {
+    case male = "men"
+    case female = "women"
+    case lego = "lego"
+}
+
+private func randomProfileImage(gender: Gender = .male) -> String {
+    let max = gender == .lego ? 8 : 100
+    let number = Int.random(in: 1..<max)
+    return "https://randomuser.me/api/portraits/\(gender.rawValue)/\(number).jpg"
 }
 
 class FriendsViewModel: ObservableObject {
@@ -59,5 +84,14 @@ class FriendsViewModel: ObservableObject {
         waitingFriends.removeAll(where: { dude in
             dude.id == person.id
         })
+    }
+}
+
+extension FriendsViewModel {
+    static var example : FriendsViewModel {
+        let viewModel = FriendsViewModel()
+        viewModel.friends = [.malt, .horv]
+        viewModel.waitingFriends = [.nrussian]
+        return viewModel
     }
 }
