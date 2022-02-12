@@ -1,4 +1,4 @@
-FROM gradle:4.10-alpine as build
+FROM gradle:6.9-jdk11-alpine as build
 
 COPY . .
 
