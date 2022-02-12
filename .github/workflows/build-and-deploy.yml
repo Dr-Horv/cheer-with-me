@@ -3,7 +3,7 @@ name: Build & Deploy Docker Image
 
 on:
   push:
-    branches: [ feature/github-actions ]
+    branches: [ master ]
 
 jobs:
   build:
