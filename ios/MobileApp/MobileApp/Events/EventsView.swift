@@ -1,6 +1,7 @@
 import SwiftUI
 import Alamofire
 import MapKit
+import URLImage
 
 struct SingleEventMapView: View {
     let coordinate: CLLocationCoordinate2D
@@ -31,21 +32,28 @@ struct EventMarker: Identifiable {
 struct SingleEventView: View {
     let event: Happening
 
-    func coord() -> CLLocationCoordinate2D? {
-        if let c = event.location?.coordinate {
-            return CLLocationCoordinate2D(latitude: c.lat, longitude: c.lng)
-        }
-        return nil
-    }
-
     var body: some View {
         VStack {
-            Text(event.description)
-            Text(event.time, format: .dateTime)
-            Text(event.admin.nick)
-            if let coord = self.coord() {
+            HStack {
+                if let image = event.admin.avatarUrl {
+                    AsyncImage(url: URL(string: image)) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } placeholder: {
+                        ProgressView()
+                    }
+                    .frame(width: 100, height: 100)
+                    .clipShape(Circle())
+                }
+                VStack(alignment: .leading) {
+                    Text(event.admin.nick).bold()
+                    Text(event.description)
+                    Text(event.time, format: .dateTime)
+                }
+            }
+            if let coord = event.location?.coord() {
                 SingleEventMapView(coordinate: coord)
-                    .frame(width: 100.0, height: 100.0, alignment: .center)
             }
         }.navigationTitle(event.name)
     }
