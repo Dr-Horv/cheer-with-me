@@ -20,7 +20,7 @@ class ApplicationTest {
         }) {
             handleRequest(HttpMethod.Get, "/").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("Cheers mate! :D", response.content)
+                assertEquals("Cheers mate! \uD83C\uDF7B", response.content)
             }
         }
     }
