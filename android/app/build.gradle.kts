@@ -1,4 +1,3 @@
-
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -7,34 +6,39 @@ plugins {
     id("dagger.hilt.android.plugin")
 }
 
-val composeVersion = "1.1.0-beta01"
+val composeVersion = "1.1.0-rc01"
 val coroutinesVersion = "1.3.8-1.4.0-rc"
 val roomVersion = "2.2.5"
 val archLifecycleVersion = "2.2.0"
 val filamentVersion = "1.8.0"
 val navigationVersion = "2.3.0"
 val hiltVersion = "2.40"
+val coilVersion = "1.4.0"
 
 dependencies {
+    testImplementation("org.junit.jupiter", "junit-jupiter-engine", "5.8.1")
+    testImplementation("org.junit.jupiter", "junit-jupiter-api", "5.8.1")
+    testImplementation("org.junit.jupiter", "junit-jupiter-params", "5.8.1")
     implementation(kotlin("stdlib"))
+
     api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
     api("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
 
 // Dagger Core
-    implementation ("com.google.dagger:dagger:$hiltVersion")
-    kapt ("com.google.dagger:dagger-compiler:$hiltVersion")
+    implementation("com.google.dagger:dagger:$hiltVersion")
+    kapt("com.google.dagger:dagger-compiler:$hiltVersion")
 
 // Dagger Android
-    api ("com.google.dagger:dagger-android:$hiltVersion")
-    api ("com.google.dagger:dagger-android-support:$hiltVersion")
-    kapt ("com.google.dagger:dagger-android-processor:$hiltVersion")
+    api("com.google.dagger:dagger-android:$hiltVersion")
+    api("com.google.dagger:dagger-android-support:$hiltVersion")
+    kapt("com.google.dagger:dagger-android-processor:$hiltVersion")
 
 // Dagger - Hilt
-    implementation ("com.google.dagger:hilt-android:$hiltVersion")
-    kapt ("com.google.dagger:hilt-android-compiler:$hiltVersion")
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
 
     // injection in navigation
-    implementation ("androidx.hilt:hilt-navigation-compose:1.0.0-beta01")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0-beta01")
 
     // Dagger & Hilt
     //  implementation("androidx.hilt:hilt-common:1.0.0")
@@ -55,9 +59,9 @@ dependencies {
     implementation("androidx.annotation:annotation:1.3.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.4.0")
     kapt("androidx.room:room-compiler:$roomVersion")
-    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
-    implementation ("androidx.activity:activity-compose:1.4.0")
-    implementation ("androidx.navigation:navigation-compose:2.4.0-beta02")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
+    implementation("androidx.activity:activity-compose:1.4.0")
+    implementation("androidx.navigation:navigation-compose:2.4.0-beta02")
 
 
     kapt("androidx.room:room-compiler:$roomVersion")
@@ -74,7 +78,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime:$composeVersion")
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
-    implementation ("androidx.compose.ui:ui-tooling-preview:$composeVersion")
+    implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
 
     implementation("com.google.android.filament:filament-android:$filamentVersion")
     implementation("com.google.android.filament:filament-utils-android:$filamentVersion")
@@ -109,7 +113,7 @@ android {
 
     defaultConfig {
         applicationId = "dev.fredag.cheerwithme"
-        minSdkVersion(24)
+        minSdkVersion(26)
         targetSdkVersion(29)
         versionCode = 1
         versionName = "1.0"
@@ -124,7 +128,10 @@ android {
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -161,4 +168,64 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         jvmTarget = JavaVersion.VERSION_11.toString()
         freeCompilerArgs = listOf("-Xallow-jvm-ir-dependencies", "-Xskip-prerelease-check")
     }
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
+
+    testLogging {
+        lifecycle {
+            events = mutableSetOf(
+                org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED,
+                org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+                org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+            )
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
+            showStandardStreams = true
+        }
+        info.events = lifecycle.events
+        info.exceptionFormat = lifecycle.exceptionFormat
+    }
+
+    val failedTests = mutableListOf<TestDescriptor>()
+    val skippedTests = mutableListOf<TestDescriptor>()
+
+    // See https://github.com/gradle/kotlin-dsl/issues/836
+    addTestListener(object : TestListener {
+        override fun beforeSuite(suite: TestDescriptor) {}
+        override fun beforeTest(testDescriptor: TestDescriptor) {}
+        override fun afterTest(testDescriptor: TestDescriptor, result: TestResult) {
+            when (result.resultType) {
+                TestResult.ResultType.FAILURE -> failedTests.add(testDescriptor)
+                TestResult.ResultType.SKIPPED -> skippedTests.add(testDescriptor)
+                else -> Unit
+            }
+        }
+
+        override fun afterSuite(suite: TestDescriptor, result: TestResult) {
+            if (suite.parent == null) { // root suite
+                logger.lifecycle("----")
+                logger.lifecycle("Test result: ${result.resultType}")
+                logger.lifecycle(
+                    "Test summary: ${result.testCount} tests, " +
+                            "${result.successfulTestCount} succeeded, " +
+                            "${result.failedTestCount} failed, " +
+                            "${result.skippedTestCount} skipped"
+                )
+                failedTests.takeIf { it.isNotEmpty() }?.prefixedSummary("\tFailed Tests")
+                skippedTests.takeIf { it.isNotEmpty() }?.prefixedSummary("\tSkipped Tests:")
+            }
+        }
+
+        private infix fun List<TestDescriptor>.prefixedSummary(subject: String) {
+            logger.lifecycle(subject)
+            forEach { test -> logger.lifecycle("\t\t${test.displayName()}") }
+        }
+
+        private fun TestDescriptor.displayName() = parent?.let { "${it.name} - $name" } ?: "$name"
+    })
+
 }

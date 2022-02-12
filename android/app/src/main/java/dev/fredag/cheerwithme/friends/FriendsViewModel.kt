@@ -7,21 +7,20 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.fredag.cheerwithme.data.FriendsRepository
+import dev.fredag.cheerwithme.data.UserRepository
+import dev.fredag.cheerwithme.data.backend.User
 import dev.fredag.cheerwithme.data.backend.UserFriends
 import dev.fredag.cheerwithme.data.backend.UserId
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 @FlowPreview
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class FriendsViewModel @Inject constructor(private val friendsRepository: FriendsRepository) :
+class FriendsViewModel @Inject constructor(private val friendsRepository: FriendsRepository, private val userRepository: UserRepository) :
     ViewModel() {
-    private val friendsChannel = ConflatedBroadcastChannel(UserFriends())
+    private val friendsChannel = MutableStateFlow(UserFriends())
     private var _currentRefresh: Job? = null
 
     init {
@@ -33,13 +32,21 @@ class FriendsViewModel @Inject constructor(private val friendsRepository: Friend
         _currentRefresh = viewModelScope.launch(Dispatchers.IO) {
             friendsRepository.getFriends().collect {
                 Log.d("FriendsViewModel", it.toString())
-                friendsChannel.offer(it)
+                friendsChannel.value = it
                 Log.d("FriendsViewModel", "Offer done")
             }
         }
     }
 
-    val friends: LiveData<UserFriends> = friendsChannel.asFlow().mapLatest {
+    val usersMatchingSearch = userRepository.usersMatchingSearch.asLiveData()
+
+    fun searchUserByNick(nick: String) {
+        viewModelScope.launch {
+            userRepository.searchUserByNick(nick)
+        }
+    }
+
+    val friends: LiveData<UserFriends> = friendsChannel.mapLatest {
         Log.d("FriendsViewModel", "Inside friends flow $it")
         it
     }.asLiveData()
@@ -48,6 +55,13 @@ class FriendsViewModel @Inject constructor(private val friendsRepository: Friend
         Log.d("FriendsViewModel", "acceptFriendRequest $userId")
         viewModelScope.launch {
             friendsRepository.acceptFriendRequest(userId)
+            fetchFriends()
+        }
+    }
+
+    fun sendFriendRequest(userId: UserId) {
+        viewModelScope.launch {
+            friendsRepository.sendFriendRequest(userId)
             fetchFriends()
         }
     }
