@@ -34,6 +34,9 @@ jobs:
     name: Deploy Backend
     runs-on: ubuntu-18.04
     needs: [build]
+    environment:
+      name: Production
+      url: https://cheerwithme.fredag.dev/
     steps:
       - name: Workflow Webhook Action
         uses: distributhor/workflow-webhook@v1.0.2
