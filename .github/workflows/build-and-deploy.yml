@@ -24,7 +24,7 @@ jobs:
         with:
           push: true
           tags: ghcr.io/fredagsdeploy/cheer-with-me-backend:${{ github.sha }}
-          context: ./backend
+          context: backend
       - name: Push Latest Tag to Container Registry
         uses: docker/build-push-action@v2
         with:
