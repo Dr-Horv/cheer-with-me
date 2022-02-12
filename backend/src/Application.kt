@@ -154,7 +154,7 @@ fun Application.module(testing: Boolean = false) {
     initAwsSdkClients()
     install(Routing) {
         get("/") {
-            call.respondText("Cheers mate! :D", contentType = ContentType.Text.Plain)
+            call.respondText("Cheers mate! \uD83C\uDF7B", contentType = ContentType.Text.Plain)
         }
         get("/health") {
             call.respond(
