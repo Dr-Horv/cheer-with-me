@@ -29,14 +29,16 @@ jobs:
           push: true
           tags: ghcr.io/fredagsdeploy/cheer-with-me-backend:latest
           context: backend
-#
-#  deploy:
-#    name: Deploy Backend
-#    runs-on: ubuntu-18.04
-#    needs: [build]
-#    steps:
-#      - name: Deploy backend docker container
-#        uses: joelwmale/webhook-action@master
-#        env:
-#          WEBHOOK_URL: ${{ secrets.DEPLOY_WEBHOOK_URL  }}
-#          data: "{ 'secret': '${{ secrets.DEPLOY_WEBHOOK_SECRET  }}'}"
+
+  deploy:
+    name: Deploy Backend
+    runs-on: ubuntu-18.04
+    needs: [build]
+    steps:
+      - name: Workflow Webhook Action
+        uses: distributhor/workflow-webhook@v1.0.2
+        env:
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
+          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
+          data: '{ "built": "fredagsdeploy/cheer-with-me-backend:latest" }'
+
