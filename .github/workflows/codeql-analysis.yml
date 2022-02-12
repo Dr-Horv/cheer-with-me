@@ -23,6 +23,14 @@ jobs:
     # If you're analyzing C/C++, C#, Go, or Java, CodeQL runs on ubuntu-latest, windows-2019, and macos-latest.
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'javascript', 'java' ]
+        # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python' ]
+        # Learn more:
+        # https://docs.github.com/en/free-pro-team@latest/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#changing-the-languages-that-are-analyzed
+
     permissions:
       # required for all workflows
       security-events: write
@@ -44,6 +52,25 @@ jobs:
 
       # Autobuild attempts to build any compiled languages (C/C++, C#, or Java).
       # If this step fails, then you should remove it and run the build manually (see below).
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+
+      - if: matrix.language == 'javascript'
+        name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+
+      - if: matrix.language == 'java'
+        name: Build Java
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+
       - name: Autobuild
         uses: github/codeql-action/autobuild@v1
 
