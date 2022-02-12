@@ -46,6 +46,7 @@ jobs:
 
       - if: matrix.language == 'java'
         name: Build Java
+        working-directory: ./backend
         run: |
           chmod +x gradlew
           ./gradlew build
