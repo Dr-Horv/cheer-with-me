@@ -1,15 +1,13 @@
 import SwiftUI
 import URLImage
-import Alamofire
 
 let AVATAR_HEIGHT = 40.0
 
 struct FriendsView: View {
     @ObservedObject var viewModel = FriendsViewModel()
-    @State var isLoading: Bool = false
 
     var body: some View {
-        if isLoading {
+        if viewModel.isLoading {
             ProgressView().progressViewStyle(.circular)
         }
         List {
@@ -31,16 +29,7 @@ struct FriendsView: View {
                 }
             }.listStyle(GroupedListStyle())
         }.onAppear {
-            isLoading = true
-
-            AF.request("\(BACKEND_URL)/friends", headers: SingletonState.shared.authHeaders()).responseDecodable(of: FriendsResponse.self) { response in
-                isLoading = false
-
-                if let friendResponse = response.value {
-                    viewModel.friends = friendResponse.friends
-                    viewModel.waitingFriends = friendResponse.incomingFriendRequests
-                }
-            }
+            viewModel.getFriends()
         }
     }
 }
