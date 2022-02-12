@@ -66,7 +66,7 @@ fun Friends(friendsViewModel: FriendsViewModel, openAddFriendScreen: () -> Unit)
                                     FriendRequestItem(
                                         user = it,
                                         onAcceptFriendRequest = friendsViewModel::acceptFriendRequest,
-                                        onDenyFriendRequest = {}
+                                        onDenyFriendRequest = {} // TODO https://github.com/fredagsdeploy/cheer-with-me/issues/31
                                     )
                                 }
 
