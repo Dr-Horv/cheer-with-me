@@ -8,7 +8,7 @@ interface BackendService {
     suspend fun loginGoogle(@Body googleUserSignInRequest: GoogleUserSignInRequest): GoogleUserSignInResponse
 
     @GET("/friends/")
-    suspend fun friends(): UserFriends
+    suspend fun friends(): Response<UserFriends>
 
     @POST("/friends/sendFriendRequest/")
     suspend fun sendFriendRequest(@Body acceptFriendRequest: SendFriendRequest): Response<Void>

@@ -79,6 +79,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata:$composeVersion")
     implementation("androidx.compose.ui:ui:$composeVersion")
     implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.23.0")
 
     implementation("com.google.android.filament:filament-android:$filamentVersion")
     implementation("com.google.android.filament:filament-utils-android:$filamentVersion")
