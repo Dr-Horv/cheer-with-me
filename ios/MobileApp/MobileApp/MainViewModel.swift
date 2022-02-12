@@ -6,6 +6,7 @@ class MainViewModel: ObservableObject {
     @Published var isLoggedIn = false
     @Published var username = "Nrussian"
     @Published var isSigningIn = false
+    @Published var friend: User?
 
     func logIn() {
         isSigningIn = true
@@ -15,12 +16,21 @@ class MainViewModel: ObservableObject {
             self.isLoggedIn = true
         }
     }
+
+    func getProfileInfo() {
+        AF.request("\(BACKEND_URL)/user/me", headers: SingletonState.shared.authHeaders()).responseDecodable(of: User.self) { response in
+
+            if let me = response.value {
+                debugPrint(me)
+                self.friend = me
+            }
+        }
+    }
 }
 
 extension MainViewModel {
     static var example = MainViewModel()
 }
-
 
 class SingletonState {
     static let shared = SingletonState()

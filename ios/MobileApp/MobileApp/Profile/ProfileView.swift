@@ -1,17 +1,15 @@
 import GoogleSignIn
 import SwiftUI
 import URLImage
-import Alamofire
 
 struct ProfileView: View {
     @ObservedObject var viewModel: MainViewModel
-    @State var friend: User? = nil
     
     var body: some View {
         VStack {
             List {
                 HStack {
-                    if let friend = friend {
+                    if let friend = viewModel.friend {
                         if let avatarUrl = friend.avatarUrl {
                             URLImage(URL(string: avatarUrl)!) { image in
                                 image
@@ -40,13 +38,7 @@ struct ProfileView: View {
                 }
             }
         }.onAppear {
-            AF.request("\(BACKEND_URL)/user/me", headers: SingletonState.shared.authHeaders()).responseDecodable(of: User.self) { response in
-                
-                if let me = response.value {
-                    debugPrint(me)
-                    friend = me
-                }
-            }
+            viewModel.getProfileInfo()
         }
     }
 }
