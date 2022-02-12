@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="fa_icon_beer">&#xf0fc;</string>
-    <string name="fa_icon_wine">&#xf5ce;</string>
-    <string name="fa_icon_coffee">&#xf0f4;</string>
-    <string name="fa_icon_whiskey">&#xf7a1;</string>
-    <string name="fa_icon_cocktail">&#xf561;</string>
-    <string name="fa_icon_wineBottle">&#xf72f;</string>
-</resources>
