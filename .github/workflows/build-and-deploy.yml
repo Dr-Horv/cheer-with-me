@@ -1,5 +1,9 @@
 name: Build & Deploy Docker Image
 
+defaults:
+  run:
+    working-directory: ./backend
+
 on:
   push:
     branches: [ feature/github-actions ]
