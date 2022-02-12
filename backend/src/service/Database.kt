@@ -34,7 +34,7 @@ object Database {
                 userService.upsertUserWithId(
                     "Horv",
                     "horvtoken",
-                    googleId = "Horv"
+                    googleId = "104624699130264441197"
                 )
                 userService.upsertUserWithId(
                     "Ndushi",
