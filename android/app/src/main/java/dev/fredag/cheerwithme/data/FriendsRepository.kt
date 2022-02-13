@@ -5,11 +5,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-sealed class Result<T> {
-    class Ok<T>(val r: T) : Result<T>()
-    class Err<T>(val e: String) : Result<T>()
-}
-
 class FriendsRepository @Inject constructor(
     private val backendService: BackendService
 ) {
@@ -18,13 +13,13 @@ class FriendsRepository @Inject constructor(
             val request = backendService.friends()
             if (request.isSuccessful) {
                 request.body()?.let {
-                    emit(Result.Ok(it))
-                } ?: emit(Result.Err("Friends list is empty"))
+                    emit(Result.success(it))
+                } ?: emit(Result.failure(Throwable("Friends list is empty")))
             } else {
-                emit(Result.Err(request.toString()))
+                emit(Result.failure(Throwable(request.toString())))
             }
         } catch (e: Exception) {
-            emit(Result.Err("Could not access server $e"))
+            emit(Result.failure(Throwable("Could not access server $e")))
         }
 
 
