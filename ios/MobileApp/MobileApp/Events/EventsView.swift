@@ -64,7 +64,7 @@ enum DateError: String, Error {
 }
 
 struct EventsView: View {
-    @ObservedObject var viewModel = EventsViewModel()
+    @ObservedObject var viewModel: EventsViewModel
 
     var body: some View {
         NavigationView {
