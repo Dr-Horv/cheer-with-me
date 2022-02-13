@@ -8,10 +8,10 @@ class MainViewModel: ObservableObject {
     @Published var friend: User?
     private var google: AuthProviderProtocol
 
-    init(google: AuthProviderProtocol) {
-        self.google = google
-        self.google.signinClosure = { self.objectWillChange.send() }
-        self.google.signInFromCache()
+    init(authProvider: AuthProviderProtocol) {
+        google = authProvider
+        google.signinClosure = { self.objectWillChange.send() }
+        google.signInFromCache()
     }
 
     var isLoggedIn: Bool {
@@ -61,5 +61,5 @@ class MainViewModel: ObservableObject {
 }
 
 extension MainViewModel {
-    static var example = MainViewModel(google: AuthProviderMock())
+    static var example = MainViewModel(authProvider: AuthProviderMock())
 }

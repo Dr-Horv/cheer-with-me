@@ -9,7 +9,7 @@ struct MobileApp: App {
     init() {
         let auth = GoogleAuth()
         self.auth = auth
-        viewModel = MainViewModel(google: auth)
+        viewModel = MainViewModel(authProvider: auth)
     }
 
     var body: some Scene {
