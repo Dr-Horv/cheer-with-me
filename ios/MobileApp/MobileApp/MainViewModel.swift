@@ -3,59 +3,54 @@ import GoogleSignIn
 import Alamofire
 
 class MainViewModel: ObservableObject {
-    @Published var isLoggedIn = false
     @Published var username = "Nrussian"
     @Published var isSigningIn = false
     @Published var friend: User?
+    private var google = GoogleAuth()
+
+    init() {
+        google.signinClosure = { self.objectWillChange.send() }
+        google.signInFromCache()
+    }
+
+    var isLoggedIn: Bool {
+        google.token != nil
+    }
+
+    var authHeaders: HTTPHeaders? {
+        guard let token = google.token else {
+            return nil
+        }
+
+        return HTTPHeaders([
+            "Authorization": "Bearer \(token)",
+            "Accept": "application/json"
+        ])
+    }
 
     func logIn() {
         isSigningIn = true
 
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(2)) {
             self.isSigningIn = false
-            self.isLoggedIn = true
         }
     }
 
     func signInWithGoogle() {
-        isSigningIn = true
-        GIDSignIn.sharedInstance.signIn(with: SingletonState.shared.signInConfig, presenting: (UIApplication.shared.rootViewController)!) {
-            user, error in
+        google.signIn()
+    }
 
-            guard error == nil else {
-                self.isSigningIn = false
-                self.isLoggedIn = false
-                return
-            }
-
-            guard let user = user,
-                  let serverAuthCode = user.serverAuthCode,
-                  let idToken = user.authentication.idToken else {
-                return
-            }
-
-            let params = Login(code: serverAuthCode)
-            let headers: HTTPHeaders = [
-                "Authorization": "Bearer \(idToken)",
-                "Accept": "application/json"
-            ]
-
-            AF.request("\(BACKEND_URL)/login/google", method: .post, parameters: params, encoder: JSONParameterEncoder.default, headers: headers).responseDecodable(of: AccessTokenResponse.self) {
-                response in
-
-                if let tokenResponse = response.value {
-                    self.isLoggedIn = true
-                    SingletonState.shared.token = tokenResponse.accessToken
-                }
-
-                self.isSigningIn = false
-            }
-        }
+    func signOut() {
+        google.signOut()
+        self.objectWillChange.send()
     }
 
     func getProfileInfo() {
-        AF.request("\(BACKEND_URL)/user/me", headers: SingletonState.shared.authHeaders()).responseDecodable(of: User.self) { response in
+        guard let headers = authHeaders else {
+            return
+        }
 
+        AF.request("\(BACKEND_URL)/user/me", headers: headers).responseDecodable(of: User.self) { response in
             if let me = response.value {
                 debugPrint(me)
                 self.friend = me

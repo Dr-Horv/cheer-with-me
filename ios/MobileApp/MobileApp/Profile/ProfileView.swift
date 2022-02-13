@@ -31,8 +31,7 @@ struct ProfileView: View {
                 }
                 Section {
                     Button("Sign out") {
-                        GIDSignIn.sharedInstance.signOut()
-                        viewModel.isLoggedIn = false
+                        viewModel.signOut()
                     }
                     .foregroundColor(.red)
                 }
