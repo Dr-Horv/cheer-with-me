@@ -28,31 +28,28 @@ class MainViewModel: ObservableObject {
                 return
             }
 
-            if let user = user,
-               let serverAuthCode = user.serverAuthCode,
-               let idToken = user.authentication.idToken {
-                let params = Login(code: serverAuthCode)
-
-
-
-                let headers: HTTPHeaders = [
-                    "Authorization": "Bearer \(idToken)",
-                    "Accept": "application/json"
-                ]
-
-                AF.request("\(BACKEND_URL)/login/google", method: .post, parameters: params, encoder: JSONParameterEncoder.default, headers: headers).responseDecodable(of: AccessTokenResponse.self) {
-                    response in
-
-                    if let tokenResponse = response.value {
-                        self.isLoggedIn = true
-                        SingletonState.shared.token = tokenResponse.accessToken
-                    }
-
-                    self.isSigningIn = false
-                }
-
+            guard let user = user,
+                  let serverAuthCode = user.serverAuthCode,
+                  let idToken = user.authentication.idToken else {
+                return
             }
 
+            let params = Login(code: serverAuthCode)
+            let headers: HTTPHeaders = [
+                "Authorization": "Bearer \(idToken)",
+                "Accept": "application/json"
+            ]
+
+            AF.request("\(BACKEND_URL)/login/google", method: .post, parameters: params, encoder: JSONParameterEncoder.default, headers: headers).responseDecodable(of: AccessTokenResponse.self) {
+                response in
+
+                if let tokenResponse = response.value {
+                    self.isLoggedIn = true
+                    SingletonState.shared.token = tokenResponse.accessToken
+                }
+
+                self.isSigningIn = false
+            }
         }
     }
 
