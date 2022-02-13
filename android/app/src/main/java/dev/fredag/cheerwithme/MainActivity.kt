@@ -10,7 +10,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
- import androidx.compose.ui.Modifier
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +25,7 @@ import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import dev.fredag.cheerwithme.data.UserState
 import dev.fredag.cheerwithme.data.backend.BackendModule
+import dev.fredag.cheerwithme.data.backend.HappeningId
 import dev.fredag.cheerwithme.friends.FindFriendView
 import dev.fredag.cheerwithme.friends.FriendsScreen
 import dev.fredag.cheerwithme.happening.Happenings
@@ -46,29 +47,23 @@ class MainActivity : ComponentActivity() {
         }
         // Comment this out if you don't want to auto-login with stored access key. To test login
         UserState.loggedIn.postValue(BackendModule.hasAccessKey(applicationContext))
-
-//        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-//        val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
-//        bottomNavigation.setupWithNavController(navController)
-
-//        lifecycleScope.launchWhenStarted {
-//            UserState.loggedIn.observe(this@MainActivity) {
-//                Log.d("LoggedIn", it.toString())
-//                if(!it) {
-//                    bottomNavigation.visibility = View.GONE
-//                    navController.navigate(R.id.action_global_loginFragment)
-//                } else {
-//                    bottomNavigation.visibility = View.VISIBLE
-//                }
-//            }
-//        }
     }
 }
 
 
-sealed class AuthenticatedScreen(val route: String) {
+sealed class AuthenticatedScreen(val route: String, val path: String = route) {
     object Friends : AuthenticatedScreen("authenticated/friends")
-    object Calendar : AuthenticatedScreen("authenticated/calendar")
+    object Happenings : AuthenticatedScreen("authenticated/happenings")
+    object NewHappening : AuthenticatedScreen("authenticated/happenings/new")
+    class Happening(happeningsId: HappeningId) : AuthenticatedScreen(
+        route,
+        "authenticated/happenings/$happeningsId"
+    ) {
+        companion object {
+            const val route = "authenticated/happenings/{happeningsId}"
+        }
+    }
+
     object Profile : AuthenticatedScreen("authenticated/profile")
     object Checkin : AuthenticatedScreen("authenticated/checkin")
     object Map : AuthenticatedScreen("authenticated/map")
@@ -96,7 +91,7 @@ fun Router(navController: NavHostController) {
         Box(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 58.dp)) {
             NavHost(
                 navController = navController,
-                startDestination = if(loggedIn.value == true) AuthenticatedScreen.Checkin.route else AuthenticatedScreen.Login.route
+                startDestination = if (loggedIn.value == true) AuthenticatedScreen.Happenings.route else AuthenticatedScreen.Login.route
             ) {
                 composable(AuthenticatedScreen.Friends.route) {
                     FriendsScreen(hiltViewModel()) {
@@ -115,9 +110,22 @@ fun Router(navController: NavHostController) {
                     )
                 }
                 composable(AuthenticatedScreen.Checkin.route) { Happening() }
-                composable(AuthenticatedScreen.Calendar.route) { Happenings(hiltViewModel()) {
-                    TODO()
-                } }
+                composable(AuthenticatedScreen.Happening.route) {
+
+                }
+                composable(AuthenticatedScreen.NewHappening.route) {
+
+                }
+                composable(AuthenticatedScreen.Happenings.route) {
+                    Happenings(
+                        hiltViewModel(),
+                        openAddHappeningScreen = {
+                            navController.navigate(AuthenticatedScreen.NewHappening.path)
+                        },
+                        openHappningScreen = {
+                            navController.navigate(AuthenticatedScreen.Happening(it.happeningId).path)
+                        })
+                }
                 composable(AuthenticatedScreen.Profile.route) { Profile(navController) }
                 composable(AuthenticatedScreen.Login.route) {
                     Login(hiltViewModel(), {
@@ -159,7 +167,7 @@ fun Profile(navController: NavHostController) {
 }
 
 fun clearAccessToken(context: Context) {
-    BackendModule.clearAccessKey(context )
+    BackendModule.clearAccessKey(context)
 }
 
 @Composable
@@ -180,7 +188,7 @@ fun NavBar(navController: NavHostController) {
             )
             NavButton(
                 painterResource(R.drawable.ic_calendar_black_24dp),
-                AuthenticatedScreen.Calendar,
+                AuthenticatedScreen.Happenings,
                 navController
             )
             NavButton(
