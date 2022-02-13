@@ -17,6 +17,45 @@ class MainViewModel: ObservableObject {
         }
     }
 
+    func signInWithGoogle() {
+        isSigningIn = true
+        GIDSignIn.sharedInstance.signIn(with: SingletonState.shared.signInConfig, presenting: (UIApplication.shared.rootViewController)!) {
+            user, error in
+
+            guard error == nil else {
+                self.isSigningIn = false
+                self.isLoggedIn = false
+                return
+            }
+
+            if let user = user,
+               let serverAuthCode = user.serverAuthCode,
+               let idToken = user.authentication.idToken {
+                let params = Login(code: serverAuthCode)
+
+
+
+                let headers: HTTPHeaders = [
+                    "Authorization": "Bearer \(idToken)",
+                    "Accept": "application/json"
+                ]
+
+                AF.request("\(BACKEND_URL)/login/google", method: .post, parameters: params, encoder: JSONParameterEncoder.default, headers: headers).responseDecodable(of: AccessTokenResponse.self) {
+                    response in
+
+                    if let tokenResponse = response.value {
+                        self.isLoggedIn = true
+                        SingletonState.shared.token = tokenResponse.accessToken
+                    }
+
+                    self.isSigningIn = false
+                }
+
+            }
+
+        }
+    }
+
     func getProfileInfo() {
         AF.request("\(BACKEND_URL)/user/me", headers: SingletonState.shared.authHeaders()).responseDecodable(of: User.self) { response in
 
