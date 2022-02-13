@@ -3,17 +3,16 @@ package dev.fredag.cheerwithme.data.backend
 import android.content.Context
 import android.util.Log
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.*
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
-import java.io.IOException
-import java.net.SocketTimeoutException
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -47,7 +46,9 @@ object BackendModule {
 
     @Provides
     @Singleton
-    fun objectMapper(): ObjectMapper = ObjectMapper().registerKotlinModule()
+    fun objectMapper(): ObjectMapper = ObjectMapper()
+        .registerKotlinModule()
+        .registerModule(JavaTimeModule())
 
     @Provides
     @Singleton
