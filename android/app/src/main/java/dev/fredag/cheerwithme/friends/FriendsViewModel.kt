@@ -1,46 +1,29 @@
 package dev.fredag.cheerwithme.friends
 
-import android.util.Log
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.fredag.cheerwithme.BaseViewModel
+import dev.fredag.cheerwithme.FetchStatus
 import dev.fredag.cheerwithme.data.FriendsRepository
-import dev.fredag.cheerwithme.data.Result
 import dev.fredag.cheerwithme.data.UserRepository
 import dev.fredag.cheerwithme.data.backend.UserFriends
 import dev.fredag.cheerwithme.data.backend.UserId
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 sealed class FriendsViewActions {
     object ClearFetchError : FriendsViewActions()
+    object FetchFriends : FriendsViewActions()
+    class AcceptFriendRequest(val userId: UserId) : FriendsViewActions()
 }
 
-sealed class FetchStatus {
-    object Default : FetchStatus()
-    object Loading : FetchStatus()
-    class Error(val message: String) : FetchStatus()
-}
-
-class FriendsViewState(
+data class FriendsViewState(
     val showError: Boolean = false,
     val fetchStatus: FetchStatus = FetchStatus.Default,
     val friendsModel: UserFriends = UserFriends()
-) {
-    private fun modify(
-        showError: Boolean = this.showError,
-        fetchStatus: FetchStatus = this.fetchStatus,
-        friendsModel: UserFriends = this.friendsModel,
-    ): FriendsViewState = FriendsViewState(showError, fetchStatus, friendsModel)
-
-    fun showError(showError: Boolean) = modify(showError = showError)
-
-    fun fetchStatus(fetchStatus: FetchStatus) = modify(fetchStatus = fetchStatus)
-
-    fun friendsModel(friendsModel: UserFriends) = modify(friendsModel = friendsModel)
-}
+)
 
 @FlowPreview
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -48,49 +31,48 @@ class FriendsViewState(
 class FriendsViewModel @Inject constructor(
     private val friendsRepository: FriendsRepository,
     private val userRepository: UserRepository
-) : ViewModel() {
+) : BaseViewModel<FriendsViewState, FriendsViewActions, Nothing>() {
     private var _currentRefresh: Job? = null
-    private val _friendsViewState = MutableStateFlow(FriendsViewState())
-    val friendsViewState = _friendsViewState.asStateFlow()
 
-    private val actionsFlow: MutableSharedFlow<FriendsViewActions> = MutableSharedFlow()
-
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            actionsFlow.collect {
-                when (it) {
-                    is FriendsViewActions.ClearFetchError -> {
-                        _friendsViewState.value =
-                            _friendsViewState.value.showError(false)
-                    }
+    override fun handleAction(it: FriendsViewActions) {
+        when (it) {
+            FriendsViewActions.ClearFetchError -> {
+                setState {
+                    it.copy(showError = false)
                 }
             }
+            FriendsViewActions.FetchFriends -> fetchFriends()
+            is FriendsViewActions.AcceptFriendRequest -> acceptFriendRequest(it.userId)
         }
     }
 
-    fun sendAction(action: FriendsViewActions) = viewModelScope.launch {
-        actionsFlow.emit(action)
-    }
-
-    fun fetchFriends() {
+    private fun fetchFriends() {
         _currentRefresh?.cancel()
         _currentRefresh = viewModelScope.launch(Dispatchers.IO) {
-            _friendsViewState.value = _friendsViewState.value.fetchStatus(FetchStatus.Loading)
-            friendsRepository.getFriends().collect {
-                _friendsViewState.value = when (it) {
-                    is Result.Err -> _friendsViewState.value
-                        .showError(true)
-                        .fetchStatus(FetchStatus.Error(it.e))
-                    is Result.Ok -> _friendsViewState.value
-                        .showError(false)
-                        .fetchStatus(FetchStatus.Default)
-                        .friendsModel(it.r)
-
+            setState {
+                it.copy(fetchStatus = FetchStatus.Loading)
+            }
+            friendsRepository.getFriends().collect { res ->
+                setState { prev ->
+                    res.fold(onSuccess = {
+                        prev.copy(
+                            showError = false,
+                            fetchStatus = FetchStatus.Default,
+                            friendsModel = it
+                        )
+                    },
+                        onFailure = {
+                            prev.copy(
+                                showError = true,
+                                fetchStatus = FetchStatus.Error(it.toString())
+                            )
+                        })
                 }
             }
         }
     }
 
+    // Todo extract this to another view model only used for friend search
     val usersMatchingSearch = userRepository.usersMatchingSearch.asLiveData()
 
     fun searchUserByNick(nick: String) {
@@ -100,8 +82,7 @@ class FriendsViewModel @Inject constructor(
     }
 
 
-    fun acceptFriendRequest(userId: UserId) {
-        Log.d("FriendsViewModel", "acceptFriendRequest $userId")
+    private fun acceptFriendRequest(userId: UserId) {
         viewModelScope.launch {
             friendsRepository.acceptFriendRequest(userId)
             fetchFriends()
@@ -114,4 +95,6 @@ class FriendsViewModel @Inject constructor(
             fetchFriends()
         }
     }
+
+    override fun initialViewState() = FriendsViewState()
 }

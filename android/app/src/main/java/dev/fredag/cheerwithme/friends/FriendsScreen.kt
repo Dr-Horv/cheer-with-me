@@ -14,9 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import dev.fredag.cheerwithme.FetchStatus
 import dev.fredag.cheerwithme.R
 import dev.fredag.cheerwithme.data.backend.User
 import dev.fredag.cheerwithme.data.backend.UserId
@@ -25,14 +28,30 @@ import java.util.*
 
 @OptIn(FlowPreview::class)
 @Composable
-fun Friends(friendsViewModel: FriendsViewModel, openAddFriendScreen: () -> Unit) {
+fun FriendsScreen(
+    friendsViewModel: FriendsViewModel,
+    openAddFriendScreen: () -> Unit = {}
+) {
     LaunchedEffect(Unit) {
-        friendsViewModel.fetchFriends()
+        friendsViewModel.sendAction(FriendsViewActions.FetchFriends)
     }
-    val _friendsViewState by friendsViewModel.friendsViewState.collectAsState()
-    // Redeclare to fix smartcast
-    val friendsViewState = _friendsViewState
+    val friendsViewState by friendsViewModel.viewState.collectAsState()
 
+    FriendsView(
+        friendsViewState,
+        openAddFriendScreen,
+        sendAction = friendsViewModel::sendAction,
+    )
+}
+
+// TODO something is wrong with previews
+@Preview
+@Composable
+fun FriendsView(
+    @PreviewParameter(FriendsViewStateProvider::class) friendsViewState: FriendsViewState,
+    openAddFriendScreen: () -> Unit = {},
+    sendAction: (FriendsViewActions) -> Unit = {}
+) {
     val loading = friendsViewState.fetchStatus == FetchStatus.Loading
 
     Scaffold(
@@ -48,7 +67,7 @@ fun Friends(friendsViewModel: FriendsViewModel, openAddFriendScreen: () -> Unit)
         Surface(modifier = Modifier.padding(20.dp, 16.dp)) {
             SwipeRefresh(
                 state = rememberSwipeRefreshState(loading),
-                onRefresh = friendsViewModel::fetchFriends,
+                onRefresh = { sendAction(FriendsViewActions.FetchFriends) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
@@ -61,11 +80,15 @@ fun Friends(friendsViewModel: FriendsViewModel, openAddFriendScreen: () -> Unit)
                             item {
                                 Text(text = "Friend Requests".toUpperCase(Locale.getDefault()))
                             }
-                            it.map {
+                            it.map { user ->
                                 item {
                                     FriendRequestItem(
-                                        user = it,
-                                        onAcceptFriendRequest = friendsViewModel::acceptFriendRequest,
+                                        user = user,
+                                        onAcceptFriendRequest = { userId ->
+                                            sendAction(
+                                                FriendsViewActions.AcceptFriendRequest(userId)
+                                            )
+                                        },
                                         onDenyFriendRequest = {} // TODO https://github.com/fredagsdeploy/cheer-with-me/issues/31
                                     )
                                 }
@@ -99,7 +122,7 @@ fun Friends(friendsViewModel: FriendsViewModel, openAddFriendScreen: () -> Unit)
         ErrorSnackbar(
             friendsViewState.showError,
             if (friendsViewState.fetchStatus is FetchStatus.Error) friendsViewState.fetchStatus.message else "",
-            onDismiss = { friendsViewModel.sendAction(FriendsViewActions.ClearFetchError) }
+            onDismiss = { sendAction(FriendsViewActions.ClearFetchError) }
         )
     }
 }

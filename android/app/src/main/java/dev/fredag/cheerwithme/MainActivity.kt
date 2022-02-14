@@ -26,7 +26,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dev.fredag.cheerwithme.data.UserState
 import dev.fredag.cheerwithme.data.backend.BackendModule
 import dev.fredag.cheerwithme.friends.FindFriendView
-import dev.fredag.cheerwithme.friends.Friends
+import dev.fredag.cheerwithme.friends.FriendsScreen
 import dev.fredag.cheerwithme.happening.Happenings
 import dev.fredag.cheerwithme.ui.CheerWithMeTheme
 import kotlinx.coroutines.FlowPreview
@@ -99,7 +99,7 @@ fun Router(navController: NavHostController) {
                 startDestination = if(loggedIn.value == true) AuthenticatedScreen.Checkin.route else AuthenticatedScreen.Login.route
             ) {
                 composable(AuthenticatedScreen.Friends.route) {
-                    Friends(hiltViewModel()) {
+                    FriendsScreen(hiltViewModel()) {
                         navController.navigate(
                             AuthenticatedScreen.FindFriend.route
                         ) {
@@ -108,7 +108,12 @@ fun Router(navController: NavHostController) {
                     }
                 }
                 composable(AuthenticatedScreen.Map.route) { Map() }
-                composable(AuthenticatedScreen.FindFriend.route) { FindFriendView(navController, hiltViewModel()) }
+                composable(AuthenticatedScreen.FindFriend.route) {
+                    FindFriendView(
+                        navController,
+                        hiltViewModel()
+                    )
+                }
                 composable(AuthenticatedScreen.Checkin.route) { Happening() }
                 composable(AuthenticatedScreen.Calendar.route) { Happenings(hiltViewModel()) {
                     TODO()
