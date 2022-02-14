@@ -64,6 +64,7 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.4.0")
     implementation("androidx.navigation:navigation-compose:2.4.0")
 
+    implementation("io.coil-kt:coil-compose:$coilVersion")
 
     kapt("androidx.room:room-compiler:$roomVersion")
 
