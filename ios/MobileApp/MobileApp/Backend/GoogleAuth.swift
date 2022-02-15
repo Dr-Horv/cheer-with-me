@@ -19,13 +19,10 @@ class GoogleAuth: AuthProviderProtocol, ObservableObject {
         GIDSignIn.sharedInstance.signIn(with: signInConfig, presenting: (UIApplication.shared.rootViewController)!) {
             user, error in
 
-            guard error == nil,
-                  let user = user
-            else {
-                return
+            if let user = user,
+               error == nil {
+                self.sendGoogleTokenToBackend(user: user)
             }
-
-            self.sendGoogleTokenToBackend(user: user)
         }
     }
 
