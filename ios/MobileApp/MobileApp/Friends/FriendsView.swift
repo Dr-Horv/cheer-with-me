@@ -1,5 +1,6 @@
 import SwiftUI
 import URLImage
+import Alamofire
 
 let AVATAR_HEIGHT = 40.0
 
@@ -7,29 +8,52 @@ struct FriendsView: View {
     @ObservedObject var viewModel: FriendsViewModel
 
     var body: some View {
-        if viewModel.isLoading {
-            ProgressView().progressViewStyle(.circular)
-        }
-        List {
-            if !viewModel.waitingFriends.isEmpty {
-                Section(header: Text("FRIEND REQUESTS")) {
-                    ForEach(viewModel.waitingFriends) { friend in
+        NavigationView {
+            List {
+                if !viewModel.outgoingFriendRequests.isEmpty {
+                    Section(header: Text("SENT FRIEND REQUESTS")) {
+                        ForEach(viewModel.outgoingFriendRequests) { friend in
+                            friendItem(friend: friend,
+                                       showButtons: false,
+                                       viewModel: viewModel)
+                        }
+                    }.listStyle(GroupedListStyle())
+                }
+
+                if !viewModel.waitingFriends.isEmpty {
+                    Section(header: Text("FRIEND REQUESTS")) {
+                        ForEach(viewModel.waitingFriends) { friend in
+                            friendItem(friend: friend,
+                                       showButtons: true,
+                                       viewModel: viewModel)
+                        }
+                    }.listStyle(GroupedListStyle())
+                }
+
+                Section(header: Text("FRIENDS")) {
+                    ForEach(viewModel.friends) { friend in
                         friendItem(friend: friend,
-                                   showButtons: true,
+                                   showButtons: false,
                                    viewModel: viewModel)
                     }
-                }
-            }
+                }.listStyle(GroupedListStyle())
+                
+                NavigationLink(destination:
+                    FriendSearchView(viewModel: FriendsSearchViewModel(parentViewModel: viewModel))
+                ) {
+                    HStack {
+                        Image(systemName: "plus")
+                        Text("Add friend")
+                    }
+                }.foregroundColor(.accentColor)
 
-            Section(header: Text("FRIENDS")) {
-                ForEach(viewModel.friends) { friend in
-                    friendItem(friend: friend,
-                               showButtons: false,
-                               viewModel: viewModel)
-                }
-            }.listStyle(GroupedListStyle())
-        }.onAppear {
-            viewModel.getFriends()
+            }.navigationTitle("Friends")
+            .refreshable {
+                await viewModel.getFriends()
+            }.task {
+                await viewModel.getFriends()
+            }
+            
         }
     }
 }
@@ -63,15 +87,48 @@ private struct friendItem: View {
                     withAnimation {
                         viewModel.ignore(person: friend)
                     }
-                    print("CLICK")
                 }
                 CircleButton(color: Color.orange, icon: .check) {
-                    withAnimation {
-                        viewModel.befriend(person: friend)
+                    Task {
+                        await viewModel.befriend(person: friend)
                     }
-                    print("CLICK")
                 }
             }
+        }
+    }
+}
+
+private struct FriendSearchView: View {    
+    @ObservedObject var viewModel: FriendsSearchViewModel
+    
+    var body: some View {
+        List {
+            Section{
+                TextField("Search", text: $viewModel.query)
+                    .submitLabel(.search)
+                    .onSubmit {
+                        Task {
+                            await viewModel.searchFriends()
+                        }
+                    }
+            }
+            
+            if viewModel.isLoading {
+                ProgressView().progressViewStyle(.circular)
+            }
+            
+                
+            Section {
+                ForEach(viewModel.results) { friend in
+                    friendItem(friend: friend,
+                               showButtons: true,
+                               viewModel: viewModel.parentViewModel)
+                }
+            }
+        }.listStyle(GroupedListStyle())
+        .onDisappear {
+            viewModel.results = []
+            viewModel.query = ""
         }
     }
 }
