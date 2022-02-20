@@ -1,6 +1,9 @@
 import Alamofire
 import Foundation
 
+struct FriendRequestPayload: Codable {
+    let userId: UserId
+}
 
 extension User: Equatable {
     static func == (lhs: User, rhs: User) -> Bool {
