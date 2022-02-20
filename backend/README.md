@@ -19,12 +19,18 @@ Recommended way is to open `build.gradle` from IntelliJ, the `main`-function
 is located in `Application.kt` create a run configuration from that and
 add the following environment variables:
 ```
-GOOGLE_CLIENT_ID=100813085034-huu6nmbj7uicgik0r6ms9oe90j51drl0.apps.googleusercontent.com;
-GOOGLE_CLIENT_SECRET=<ask Horv or Tejp>
-APPLE_CLIENT_ID=asd;
-APPLE_CLIENT_SECRET=asd;
-IOS_PUSH_ARN=asd;
-ANDROID_PUSH_ARN=asd
+export GOOGLE_CLIENT_ID=100813085034-huu6nmbj7uicgik0r6ms9oe90j51drl0.apps.googleusercontent.com; \
+export GOOGLE_CLIENT_SECRET=askHorvOrTejp \
+export APPLE_CLIENT_ID=asd; \
+export APPLE_CLIENT_SECRET=asd; \
+export IOS_PUSH_ARN=asd; \
+export ANDROID_PUSH_ARN=asd
 ```
+
+`
+docker build -t cheerwithme .
+`
+
+`docker run --env-file .env.example -p 8080:8080 cheerwithme`
 
 
