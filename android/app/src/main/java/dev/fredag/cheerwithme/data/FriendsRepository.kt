@@ -29,7 +29,13 @@ class FriendsRepository @Inject constructor(
         backendService.acceptFriendRequest(AcceptFriendRequest(userId))
     }
 
-    suspend fun sendFriendRequest(userId: UserId) {
-        backendService.sendFriendRequest(SendFriendRequest(userId = userId))
+    suspend fun sendFriendRequest(userId: UserId): Result<Unit> {
+        val request = backendService.sendFriendRequest(SendFriendRequest(userId = userId))
+
+        return if (request.isSuccessful) {
+            Result.success(Unit)
+        } else {
+            Result.failure(Throwable(request.toString()))
+        }
     }
 }
