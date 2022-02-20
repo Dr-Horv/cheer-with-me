@@ -20,7 +20,9 @@ struct SingleEventMapView: View {
         }
         .onAppear {
             region.center = coordinate
-        }
+        }.onChange(of: coordinate, perform: {
+            region.center = $0
+        })
     }
 }
 

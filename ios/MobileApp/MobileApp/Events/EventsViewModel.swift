@@ -2,6 +2,12 @@ import Alamofire
 import Foundation
 import MapKit
 
+extension CLLocationCoordinate2D: Equatable {
+    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        return lhs.longitude == rhs.longitude && lhs.latitude == rhs.latitude
+    }
+}
+
 struct Coordinate: Codable {
     let lat: Double
     let lng: Double
