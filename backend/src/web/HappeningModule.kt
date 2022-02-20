@@ -11,13 +11,13 @@ import io.ktor.routing.*
 
 fun Route.happeningRouting(happeningService: HappeningService) {
 
-    get("/happenings/") {
+    get("/happenings") {
         val happenings= happeningService.getHappenings(getUserId())
         call.respond(HttpStatusCode.OK, happenings)
     }
 
 
-    get("/happenings/{happeningId}/") {
+    get("/happenings/{happeningId}") {
         val happeningId = call.parameters["happeningId"]
         if(happeningId == null) {
             call.respond(HttpStatusCode.BadRequest, "Missing happeningId from path")
@@ -31,13 +31,13 @@ fun Route.happeningRouting(happeningService: HappeningService) {
         call.respond(HttpStatusCode.OK, happening)
     }
 
-    post("/happenings/createHappening/") {
+    post("/happenings/createHappening") {
         val createHappeningRequest = call.receive<CreateHappening>()
         val happening = happeningService.createHappening(getUserId(), createHappeningRequest)
         call.respond(HttpStatusCode.Created, happening)
     }
 
-    put("/happenings/updateHappening/") {
+    put("/happenings/updateHappening") {
         val updateHappeningRequest = call.receive<UpdateHappening>()
         val happening = happeningService.updateHappening(getUserId(), updateHappeningRequest)
         if(happening == null) {
@@ -47,13 +47,13 @@ fun Route.happeningRouting(happeningService: HappeningService) {
         call.respond(HttpStatusCode.Accepted, happening)
     }
 
-    delete("/happenings/cancelHappening/") {
+    delete("/happenings/cancelHappening") {
         val cancelHappeningRequest = call.receive<CancelHappening>()
         happeningService.cancelHappening(getUserId(), cancelHappeningRequest)
         call.respond(HttpStatusCode.NoContent)
     }
 
-    put("/happenings/inviteUsers/") {
+    put("/happenings/inviteUsers") {
         val inviteUsersRequest = call.receive<InviteUsersToHappening>()
         val happening = happeningService.inviteUsers(getUserId(), inviteUsersRequest)
         if(happening == null) {
@@ -63,7 +63,7 @@ fun Route.happeningRouting(happeningService: HappeningService) {
         call.respond(HttpStatusCode.Accepted, happening)
     }
 
-    post("/happenings/acceptHappeningInvite/") {
+    post("/happenings/acceptHappeningInvite") {
         val acceptHappeningInviteRequest = call.receive<AcceptHappeningInvite>()
         val happening = happeningService.acceptHappeningInvite(getUserId(), acceptHappeningInviteRequest)
         if(happening == null) {
@@ -73,7 +73,7 @@ fun Route.happeningRouting(happeningService: HappeningService) {
         call.respond(HttpStatusCode.Accepted, happening)
     }
 
-    post("/happenings/rejectHappeningInvite/") {
+    post("/happenings/rejectHappeningInvite") {
         val rejectHappeningInviteRequest = call.receive<RejectHappeningInvite>()
         val happening = happeningService.rejectHappeningInvite(getUserId(), rejectHappeningInviteRequest)
         if(happening == null) {

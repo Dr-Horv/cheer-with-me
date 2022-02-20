@@ -16,19 +16,19 @@ import io.ktor.routing.post
 
 fun Route.friendRouting(
     userFriendsService: UserFriendsService, testing: Boolean = false) {
-    get("/friends/") {
+    get("/friends") {
         call.respond(
             userFriendsService.getUserFriends(getUserId())
         )
     }
 
-    post("/friends/sendFriendRequest/") {
+    post("/friends/sendFriendRequest") {
         val friendReq = call.receive<SendFriendRequest>()
         userFriendsService.sendFriendRequest(getUserId(), friendReq)
         call.respond(HttpStatusCode.NoContent)
     }
 
-    post("/friends/acceptFriendRequest/") {
+    post("/friends/acceptFriendRequest") {
         val acceptReq = call.receive<AcceptFriendRequest>()
         userFriendsService.acceptFriendRequest(getUserId(), acceptReq)
         call.respond(HttpStatusCode.NoContent)
