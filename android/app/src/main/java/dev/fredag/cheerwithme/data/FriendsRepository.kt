@@ -21,8 +21,6 @@ class FriendsRepository @Inject constructor(
         } catch (e: Exception) {
             emit(Result.failure(Throwable("Could not access server $e")))
         }
-
-
     }
 
     suspend fun acceptFriendRequest(userId: UserId) {
