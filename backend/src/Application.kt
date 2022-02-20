@@ -10,6 +10,7 @@ import dev.fredag.cheerwithme.model.AppleOauthResponse
 import dev.fredag.cheerwithme.model.AppleUserSignInRequest
 import dev.fredag.cheerwithme.model.GoogleOauthResponse
 import dev.fredag.cheerwithme.model.GoogleUserSignInRequest
+import dev.fredag.cheerwithme.repository.UserFriendsEventsRepository
 import dev.fredag.cheerwithme.service.*
 import dev.fredag.cheerwithme.web.*
 import io.ktor.application.*
@@ -48,7 +49,7 @@ private val snsService: SnsService = SnsService(buildSnsClient())
 private val pushService: PushService = PushService(snsService, userService)
 private val oauth2Service: Oauth2Service = Oauth2Service()
 private val authService: AuthService = AuthService(userService)
-private val userFriendsService: UserFriendsService = UserFriendsService(userService, pushService = pushService)
+private val userFriendsService: UserFriendsService = UserFriendsService(userService, pushService = pushService, userFriendsEventsRepository = UserFriendsEventsRepository())
 private val happeningService: HappeningService = HappeningService(userService = userService, pushService = pushService)
 private val searchService: SearchService = SearchService(userService, friendsService = userFriendsService)
 

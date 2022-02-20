@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import dev.fredag.cheerwithme.buildSnsClient
 import dev.fredag.cheerwithme.model.*
+import dev.fredag.cheerwithme.repository.UserFriendsEventsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ object Database {
     fun init() {
         val userService = UserService()
         val pushService = PushService(SnsService(buildSnsClient()), userService)
-        val userFriendsService = UserFriendsService(userService, pushService = pushService)
+        val userFriendsService = UserFriendsService(userService, pushService = pushService, userFriendsEventsRepository = UserFriendsEventsRepository())
         val happeningService = HappeningService(userService = UserService(), pushService = pushService)
 
         // Database.connect("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", driver = "org.h2.Driver")
