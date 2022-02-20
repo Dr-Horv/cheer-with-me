@@ -22,6 +22,16 @@ struct Location: Codable {
     }
 }
 
+typealias UserId = Int64
+
+struct HappeningInput: Codable {
+    let name: String
+    let description: String
+    let time: Date
+    let location: Location?
+    let usersToInvite: [UserId]
+}
+
 struct Happening: Identifiable, Codable {
     var id: String { self.happeningId }
     let happeningId: String
@@ -36,7 +46,7 @@ struct Happening: Identifiable, Codable {
 }
 
 struct User: Identifiable, Codable {
-    let id: Int64
+    let id: UserId
     let nick: String
     let avatarUrl: String?
 }
@@ -60,7 +70,8 @@ class EventsViewModel: ObservableObject {
 
         return HTTPHeaders([
             "Authorization": "Bearer \(token)",
-            "Accept": "application/json"
+            "Accept": "application/json",
+            "Content-Type": "application/json",
         ])
     }
 
@@ -68,26 +79,61 @@ class EventsViewModel: ObservableObject {
         google = authProvider
     }
 
-    func getEvents() {
+    func getEvents() async {
         guard let headers = authHeaders else {
             return
         }
-
-        isLoading = true
-
-        AF.request("\(BACKEND_URL)/happenings", headers: headers).responseDecodable(of: [Happening].self, decoder: decoder) {
-            response in
-
-            debugPrint(response)
-
-            self.isLoading = false
-
-            if let data = response.value {
-                self.happenings = data
-                debugPrint(9)
+        
+        do {
+            let request = try URLRequest(url: "\(BACKEND_URL)/happenings", method: .get, headers: headers)
+            let (data, _) = try await URLSession.shared.data(for: request)
+            
+            let response = try getDecoder().decode([Happening].self, from: data)
+            
+            DispatchQueue.main.async {
+                self.happenings = response
             }
+            
+        } catch {
+            print("Error getEvents: \(error)")
         }
     }
+    
+    func createEvent(input: HappeningInput) async {
+        guard let headers = authHeaders else {
+            return
+        }
+        
+        do {
+            var request = try URLRequest(url: "\(BACKEND_URL)/happenings/createHappening", method: .post, headers: headers)
+            
+            request.httpBody = try getEncoder().encode(input)
+            
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let response = try getDecoder().decode(Happening.self, from: data)
+            
+            DispatchQueue.main.async {
+                self.happenings.append(response)
+            }
+            
+            
+        } catch {
+            print("Error createEvent: \(error)")
+        }
+    }
+}
+
+private func getEncoder() -> JSONEncoder {
+    let formatter = DateFormatter()
+    formatter.calendar = Calendar(identifier: .iso8601)
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = TimeZone(secondsFromGMT: 0)
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+    
+    let encoder = JSONEncoder()
+    encoder.dateEncodingStrategy = .formatted(formatter)
+        
+    return encoder
 }
 
 private func getDecoder() -> JSONDecoder {
