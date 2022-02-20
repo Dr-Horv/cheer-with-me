@@ -44,12 +44,32 @@ struct FriendsResponse: Codable {
 class EventsViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var happenings: [Happening] = []
+    @Published var google: AuthProviderProtocol
     private var decoder = getDecoder()
 
+    var authHeaders: HTTPHeaders? {
+        guard let token = google.token else {
+            return nil
+        }
+
+        return HTTPHeaders([
+            "Authorization": "Bearer \(token)",
+            "Accept": "application/json"
+        ])
+    }
+
+    init(authProvider: AuthProviderProtocol) {
+        google = authProvider
+    }
+
     func getEvents() {
+        guard let headers = authHeaders else {
+            return
+        }
+
         isLoading = true
 
-        AF.request("\(BACKEND_URL)/happenings", headers: SingletonState.shared.authHeaders()).responseDecodable(of: [Happening].self, decoder: decoder) {
+        AF.request("\(BACKEND_URL)/happenings", headers: headers).responseDecodable(of: [Happening].self, decoder: decoder) {
             response in
 
             debugPrint(response)
@@ -93,7 +113,7 @@ private func getDecoder() -> JSONDecoder {
 
 extension EventsViewModel {
     static var example : EventsViewModel {
-        let viewModel = EventsViewModel()
+        let viewModel = EventsViewModel(authProvider: AuthProviderMock())
         viewModel.happenings = exampleHappenings()
         return viewModel
     }

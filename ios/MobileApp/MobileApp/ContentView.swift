@@ -4,6 +4,7 @@ import SwiftUI
 
 struct ContentView: View {
     @ObservedObject var viewModel: MainViewModel
+    var google: AuthProviderProtocol
 
     var body: some View {
         TabView {
@@ -17,12 +18,12 @@ struct ContentView: View {
                     Image(systemName: "map.fill")
                     Text("Map")
                 }
-            EventsView()
+            EventsView(viewModel: EventsViewModel(authProvider: google))
                 .tabItem {
                     Image(systemName: "calendar")
                     Text("Events")
                 }
-            FriendsView()
+            FriendsView(viewModel: FriendsViewModel(authProvider: google))
                 .tabItem {
                     Image(systemName: "person.2.fill")
                     Text("Friends")
@@ -46,6 +47,6 @@ private struct CheersMap: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView(viewModel: .example)
+        ContentView(viewModel: .example, google: AuthProviderMock())
     }
 }

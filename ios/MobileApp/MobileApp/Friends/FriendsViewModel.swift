@@ -49,11 +49,31 @@ class FriendsViewModel: ObservableObject {
 //        User(id: 1, nick: "Malmerino", avatarUrl: "https://randomuser.me/api/portraits/men/25.jpg"),
 //        User(id: 2, nick: "Ndushierino", avatarUrl: "https://randomuser.me/api/portraits/men/90.jpg")
     ]
+    @Published var google: AuthProviderProtocol
+
+    var authHeaders: HTTPHeaders? {
+        guard let token = google.token else {
+            return nil
+        }
+
+        return HTTPHeaders([
+            "Authorization": "Bearer \(token)",
+            "Accept": "application/json"
+        ])
+    }
+
+    init(authProvider: AuthProviderProtocol) {
+        google = authProvider
+    }
 
     func getFriends() {
+        guard let headers = authHeaders else {
+            return
+        }
+
         isLoading = true
 
-        AF.request("\(BACKEND_URL)/friends", headers: SingletonState.shared.authHeaders()).responseDecodable(of: FriendsResponse.self) { response in
+        AF.request("\(BACKEND_URL)/friends", headers: headers).responseDecodable(of: FriendsResponse.self) { response in
             self.isLoading = false
 
             if let friendResponse = response.value {
@@ -89,7 +109,7 @@ class FriendsViewModel: ObservableObject {
 
 extension FriendsViewModel {
     static var example : FriendsViewModel {
-        let viewModel = FriendsViewModel()
+        let viewModel = FriendsViewModel(authProvider: AuthProviderMock())
         viewModel.friends = [.malt, .horv]
         viewModel.waitingFriends = [.nrussian]
         return viewModel

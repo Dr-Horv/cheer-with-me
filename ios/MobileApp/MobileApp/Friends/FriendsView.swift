@@ -4,7 +4,7 @@ import URLImage
 let AVATAR_HEIGHT = 40.0
 
 struct FriendsView: View {
-    @ObservedObject var viewModel = FriendsViewModel()
+    @ObservedObject var viewModel: FriendsViewModel
 
     var body: some View {
         if viewModel.isLoading {
