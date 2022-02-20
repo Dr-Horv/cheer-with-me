@@ -1,12 +1,10 @@
 package dev.fredag.cheerwithme
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 abstract class BaseViewModel<ViewState, ViewAction, ViewEvent> : ViewModel() {
@@ -19,6 +17,16 @@ abstract class BaseViewModel<ViewState, ViewAction, ViewEvent> : ViewModel() {
      * The readonly state for the view
      */
     val viewState = _viewState.asStateFlow()
+
+    /**
+     * The flow for the ViewModel to send events to the UI
+     */
+    protected val _viewEvent: MutableSharedFlow<ViewEvent> = MutableSharedFlow()
+
+    /**
+     * The flow for the UI to consume to be notified of events
+     */
+    val viewEvent: SharedFlow<ViewEvent> = _viewEvent
 
     /**
      * Flow for actions coming from the view to the view model.
@@ -41,6 +49,13 @@ abstract class BaseViewModel<ViewState, ViewAction, ViewEvent> : ViewModel() {
      */
     fun sendAction(action: ViewAction) = viewModelScope.launch {
         actionsFlow.emit(action)
+    }
+
+    /**
+     * Lets the ViewModel send events to the UI
+     */
+    fun sendEvent(event: ViewEvent) = viewModelScope.launch {
+        _viewEvent.emit(event)
     }
 
     /**
