@@ -83,17 +83,36 @@ class FriendsViewModel: ObservableObject {
         }
     }
 
-    func befriend(person: User) {
+    func befriend(person: User) async {
+        
+        guard let headers = authHeaders else {
+            return
+        }
+        
         let isWaiting = waitingFriends.contains(person)
 
-        guard isWaiting else { return }
+        if isWaiting {
+            waitingFriends.removeAll(where: { dude in
+                dude.id == person.id
+            })
+        }
 
-        waitingFriends.removeAll(where: { dude in
-            dude.id == person.id
-        })
-
-        friends.append(person)
-        friends.sort()
+        let payload = FriendRequestPayload(userId: person.id)
+        
+        do {
+            var request = try URLRequest(url: "\(BACKEND_URL)/friends/sendFriendRequest", method: .post, headers: headers)
+            
+            request.httpBody = try JSONEncoder().encode(payload)
+            
+            let (_, _) = try await URLSession.shared.data(for: request)
+            
+            friends.append(person)
+            friends.sort()
+            
+            await getFriends()
+        } catch {
+            print("Error befriend: \(error)")
+        }
     }
 
     func ignore(person: User) {
