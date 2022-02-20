@@ -14,28 +14,18 @@ import dev.fredag.cheerwithme.service.*
 import dev.fredag.cheerwithme.web.*
 import io.ktor.application.*
 import io.ktor.auth.*
-import io.ktor.auth.jwt.JWTPrincipal
-import io.ktor.auth.jwt.jwt
-import io.ktor.client.HttpClient
-import io.ktor.client.request.get
-import io.ktor.client.request.header
+import io.ktor.auth.jwt.*
+import io.ktor.client.*
+import io.ktor.client.request.*
 import io.ktor.features.*
-import io.ktor.http.ContentType
-import io.ktor.http.HttpHeaders
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
-import io.ktor.jackson.jackson
-import io.ktor.request.path
-import io.ktor.request.receive
-import io.ktor.response.respond
-import io.ktor.response.respondText
+import io.ktor.http.*
+import io.ktor.jackson.*
+import io.ktor.request.*
+import io.ktor.response.*
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import io.ktor.routing.post
-import io.ktor.routing.routing
-import io.ktor.util.KtorExperimentalAPI
-import io.ktor.util.pipeline.PipelineContext
-import kotlinx.coroutines.Dispatchers
+import io.ktor.util.pipeline.*
 import org.slf4j.LoggerFactory
 import org.slf4j.event.Level
 import software.amazon.awssdk.regions.Region
@@ -64,7 +54,6 @@ private val searchService: SearchService = SearchService(userService, friendsSer
 
 private val logger = LoggerFactory.getLogger("Application.kt")
 
-@KtorExperimentalAPI
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
 fun Application.module(testing: Boolean = false) {
