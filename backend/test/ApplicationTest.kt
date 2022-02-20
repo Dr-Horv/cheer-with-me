@@ -3,12 +3,12 @@ package dev.fredag
 import dev.fredag.cheerwithme.module
 import io.ktor.config.MapApplicationConfig
 import io.ktor.http.*
+import org.junit.Test
+
 import kotlin.test.*
 import io.ktor.server.testing.*
-import io.ktor.util.KtorExperimentalAPI
 
 class ApplicationTest {
-    @KtorExperimentalAPI
     @Test
     fun testRoot() {
         withTestApplication({
