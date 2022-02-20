@@ -47,11 +47,7 @@ fun Happenings(
     }) {
         Surface(modifier = Modifier.padding(20.dp, 16.dp)) {
             Column() {
-                Text(
-                    text = "Events",
-                    fontSize = 32.sp,
-                    modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 10.dp)
-                )
+                ScreenHeaderText("Events")
 
                 SwipeRefresh(
                     state = rememberSwipeRefreshState(fetchStatus == FetchStatus.Loading),
