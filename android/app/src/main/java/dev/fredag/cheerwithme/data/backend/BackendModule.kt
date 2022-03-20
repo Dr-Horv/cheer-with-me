@@ -10,6 +10,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import dev.fredag.cheerwithme.data.UserState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
@@ -65,7 +68,13 @@ object BackendModule {
             }
             val request =
                 it.request().newBuilder().addHeader("Authorization", "Bearer $accessKey").build()
-            it.proceed(request)
+            val res = it.proceed(request)
+            if (res.code == 401) {
+                runBlocking(Dispatchers.Main) {
+                    UserState.loggedIn.value = false
+                }
+            }
+            res
         }
 
         val client = okHttpClientBuilder.build()
