@@ -61,6 +61,8 @@ class EventsViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var happenings: [Happening] = []
     @Published var google: AuthProviderProtocol
+    @Published var results: [MKMapItem] = []
+    @Published var isSearching = false
     private var decoder = getDecoder()
 
     var authHeaders: HTTPHeaders? {
@@ -119,6 +121,21 @@ class EventsViewModel: ObservableObject {
             
         } catch {
             print("Error createEvent: \(error)")
+        }
+    }
+
+    @MainActor
+    func search(for location: String) async {
+        if location.isEmpty {
+            return
+        }
+
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = location
+        let search = MKLocalSearch(request: request)
+
+        if let response = try? await search.start() {
+            self.results = response.mapItems
         }
     }
 }
