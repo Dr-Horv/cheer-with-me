@@ -39,6 +39,7 @@ struct CreateEventView: View {
                     }
                 }
             }
+
             if let c = viewModel.coords {
                 SingleEventMapView(coordinate: c).frame(height: 200)
             }
@@ -46,7 +47,7 @@ struct CreateEventView: View {
 
         Button("Save") {
             var location: Location? = nil
-            
+
             if let c = viewModel.coords {
                 location = Location(coordinate: Coordinate(lat: c.latitude, lng: c.longitude))
             }

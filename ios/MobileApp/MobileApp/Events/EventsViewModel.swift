@@ -94,40 +94,37 @@ class EventsViewModel: ObservableObject {
         guard let headers = authHeaders else {
             return
         }
-        
+
         do {
             let request = try URLRequest(url: "\(BACKEND_URL)/happenings", method: .get, headers: headers)
             let (data, _) = try await URLSession.shared.data(for: request)
-            
+
             let response = try getDecoder().decode([Happening].self, from: data)
-            
+
             DispatchQueue.main.async {
                 self.happenings = response
             }
-            
+
         } catch {
             print("Error getEvents: \(error)")
         }
     }
-    
+
     func createEvent(input: HappeningInput) async {
         guard let headers = authHeaders else {
             return
         }
-        
+
         do {
             var request = try URLRequest(url: "\(BACKEND_URL)/happenings/createHappening", method: .post, headers: headers)
-            
             request.httpBody = try getEncoder().encode(input)
-            
+
             let (data, _) = try await URLSession.shared.data(for: request)
             let response = try getDecoder().decode(Happening.self, from: data)
-            
+
             DispatchQueue.main.async {
                 self.happenings.append(response)
             }
-            
-            
         } catch {
             print("Error createEvent: \(error)")
         }
@@ -156,10 +153,10 @@ private func getEncoder() -> JSONEncoder {
     formatter.locale = Locale(identifier: "en_US_POSIX")
     formatter.timeZone = TimeZone(secondsFromGMT: 0)
     formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    
+
     let encoder = JSONEncoder()
     encoder.dateEncodingStrategy = .formatted(formatter)
-        
+
     return encoder
 }
 
