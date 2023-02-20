@@ -132,6 +132,7 @@ class EventsViewModel: ObservableObject {
 
     @MainActor
     func search(for location: String) async {
+        isSearching = true
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = location
         let search = MKLocalSearch(request: request)
@@ -139,6 +140,8 @@ class EventsViewModel: ObservableObject {
         if let response = try? await search.start() {
             self.results = response.mapItems
         }
+
+        isSearching = false
     }
 
     func select(result location: MKMapItem) {
