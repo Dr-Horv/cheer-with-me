@@ -3,7 +3,7 @@ import GoogleSignIn
 import Alamofire
 
 class MainViewModel: ObservableObject {
-    @Published var username = "Nrussian"
+    @Published var username = ""
     @Published var isSigningIn = false
     @Published var friend: User?
     private var google: AuthProviderProtocol
@@ -46,16 +46,20 @@ class MainViewModel: ObservableObject {
         self.objectWillChange.send()
     }
 
-    func getProfileInfo() {
+    func getProfileInfo() async {
         guard let headers = authHeaders else {
             return
         }
-
-        AF.request("\(BACKEND_URL)/user/me", headers: headers).responseDecodable(of: User.self) { response in
-            if let me = response.value {
-                debugPrint(me)
+        
+        do {
+            let request = try URLRequest(url: "\(BACKEND_URL)/user/me", method: .get, headers: headers)
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let me = try JSONDecoder().decode(User.self, from: data)
+            DispatchQueue.main.async {
                 self.friend = me
             }
+        } catch {
+            print("Error getProfileInfo: \(error)")
         }
     }
 }

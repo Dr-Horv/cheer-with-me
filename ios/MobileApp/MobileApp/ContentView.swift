@@ -31,8 +31,10 @@ struct ContentView: View {
             ProfileView(viewModel: viewModel)
                 .tabItem {
                     Image(systemName: "person.crop.circle")
-                    Text(viewModel.username)
+                    Text(viewModel.friend?.nick ?? viewModel.username)
                 }
+        }.task {
+            await viewModel.getProfileInfo()
         }
     }
 }

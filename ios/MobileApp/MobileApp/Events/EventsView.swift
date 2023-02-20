@@ -20,7 +20,9 @@ struct SingleEventMapView: View {
         }
         .onAppear {
             region.center = coordinate
-        }
+        }.onChange(of: coordinate, perform: {
+            region.center = $0
+        })
     }
 }
 
@@ -65,6 +67,7 @@ enum DateError: String, Error {
 
 struct EventsView: View {
     @ObservedObject var viewModel: EventsViewModel
+    @State var isPresented: Bool = false
 
     var body: some View {
         NavigationView {
@@ -72,16 +75,35 @@ struct EventsView: View {
                 if viewModel.isLoading {
                     ProgressView()
                 }
-                List(viewModel.happenings) { h in
-                    NavigationLink(destination: SingleEventView(event: h)) {
-                        Text(h.name)
+                List {
+                    ForEach(viewModel.happenings) { h in
+                        NavigationLink(destination: SingleEventView(event: h)) {
+                            Text(h.name)
+                        }
+                    }
+                    Button(action: { self.isPresented = true }) {
+                        HStack {
+                            Image(systemName: "plus")
+                            Text("Create event")
+                        }.foregroundColor(.accentColor)
                     }
                 }
+                .refreshable {
+                    await viewModel.getEvents()
+                }
+                .navigationTitle("Events")
+                .task {
+                    viewModel.isLoading = true
+                    await viewModel.getEvents()
+                    viewModel.isLoading = false
+                }
+                .sheet(isPresented: $isPresented, onDismiss: { self.isPresented = false }) {
+                    CreateEventView(viewModel: viewModel, onSuccess: {
+                        self.isPresented = false
+                    })
+                }
             }
-            .navigationTitle("Events")
-            .onAppear {
-                viewModel.getEvents()
-            }
+            
         }
     }
 }
