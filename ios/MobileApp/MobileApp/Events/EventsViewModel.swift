@@ -63,7 +63,16 @@ class EventsViewModel: ObservableObject {
     @Published var google: AuthProviderProtocol
     @Published var results: [MKMapItem] = []
     @Published var isSearching = false
+    @Published var choosenLocation: MKMapItem?
     private var decoder = getDecoder()
+
+    var locationName: String? {
+        choosenLocation?.name ?? choosenLocation?.description
+    }
+
+    var coords: CLLocationCoordinate2D? {
+        return choosenLocation?.placemark.location?.coordinate
+    }
 
     var authHeaders: HTTPHeaders? {
         guard let token = google.token else {
@@ -126,10 +135,6 @@ class EventsViewModel: ObservableObject {
 
     @MainActor
     func search(for location: String) async {
-        if location.isEmpty {
-            return
-        }
-
         let request = MKLocalSearch.Request()
         request.naturalLanguageQuery = location
         let search = MKLocalSearch(request: request)
@@ -137,6 +142,11 @@ class EventsViewModel: ObservableObject {
         if let response = try? await search.start() {
             self.results = response.mapItems
         }
+    }
+
+    func select(result location: MKMapItem) {
+        choosenLocation = location
+        results = []
     }
 }
 
