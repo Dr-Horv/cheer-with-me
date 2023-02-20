@@ -6,6 +6,7 @@ let AVATAR_HEIGHT = 40.0
 
 struct FriendsView: View {
     @ObservedObject var viewModel: FriendsViewModel
+    @State var showAddFriend: Bool = false
 
     var body: some View {
         NavigationView {
@@ -37,10 +38,8 @@ struct FriendsView: View {
                                    viewModel: viewModel)
                     }
                 }.listStyle(GroupedListStyle())
-                
-                NavigationLink(destination:
-                    FriendSearchView(viewModel: FriendsSearchViewModel(parentViewModel: viewModel))
-                ) {
+
+                Button(action: { self.showAddFriend = true }) {
                     HStack {
                         Image(systemName: "plus")
                         Text("Add friend")
@@ -50,10 +49,13 @@ struct FriendsView: View {
             }.navigationTitle("Friends")
             .refreshable {
                 await viewModel.getFriends()
-            }.task {
+            }
+            .task {
                 await viewModel.getFriends()
             }
-            
+            .sheet(isPresented: $showAddFriend) {
+                FriendSearchView(viewModel: FriendsSearchViewModel(parentViewModel: viewModel))
+            }
         }
     }
 }
@@ -100,7 +102,7 @@ private struct friendItem: View {
 
 private struct FriendSearchView: View {    
     @ObservedObject var viewModel: FriendsSearchViewModel
-    
+
     var body: some View {
         List {
             Section{
@@ -112,12 +114,11 @@ private struct FriendSearchView: View {
                         }
                     }
             }
-            
+
             if viewModel.isLoading {
                 ProgressView().progressViewStyle(.circular)
             }
-            
-                
+
             Section {
                 ForEach(viewModel.results) { friend in
                     friendItem(friend: friend,
