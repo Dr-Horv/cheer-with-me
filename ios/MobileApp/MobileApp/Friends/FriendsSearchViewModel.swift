@@ -40,3 +40,10 @@ class FriendsSearchViewModel: ObservableObject {
         }
     }
 }
+
+extension FriendsSearchViewModel {
+    static var example : FriendsSearchViewModel {
+        let viewModel = FriendsSearchViewModel(parentViewModel: .example)
+        return viewModel
+    }
+}

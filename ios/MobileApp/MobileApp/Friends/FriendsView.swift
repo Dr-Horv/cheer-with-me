@@ -104,8 +104,12 @@ private struct FriendSearchView: View {
     @ObservedObject var viewModel: FriendsSearchViewModel
 
     var body: some View {
-        List {
-            Section{
+        VStack {
+            Text("Add Friends")
+                .bold()
+
+            HStack {
+                Image(systemName: "magnifyingglass")
                 TextField("Search", text: $viewModel.query)
                     .submitLabel(.search)
                     .onSubmit {
@@ -114,23 +118,31 @@ private struct FriendSearchView: View {
                         }
                     }
             }
+            .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
+            .foregroundColor(.secondary)
+            .background(Color(.secondarySystemBackground))
+            .cornerRadius(10)
 
-            if viewModel.isLoading {
-                ProgressView().progressViewStyle(.circular)
-            }
+            List {
+                if viewModel.isLoading {
+                    ProgressView().progressViewStyle(.circular)
+                }
 
-            Section {
-                ForEach(viewModel.results) { friend in
-                    friendItem(friend: friend,
-                               showButtons: true,
-                               viewModel: viewModel.parentViewModel)
+                Section {
+                    ForEach(viewModel.results) { friend in
+                        friendItem(friend: friend,
+                                   showButtons: true,
+                                   viewModel: viewModel.parentViewModel)
+                    }
                 }
             }
-        }.listStyle(GroupedListStyle())
-        .onDisappear {
-            viewModel.results = []
-            viewModel.query = ""
+            .listStyle(GroupedListStyle())
+            .onDisappear {
+                viewModel.results = []
+                viewModel.query = ""
+            }
         }
+        .padding(20)
     }
 }
 
@@ -169,5 +181,11 @@ private struct CircleButton: View {
 struct FriendsView_Previews: PreviewProvider {
     static var previews: some View {
         FriendsView(viewModel: .example)
+    }
+}
+
+struct FriendsSearchView_Previews: PreviewProvider {
+    static var previews: some View {
+        FriendSearchView(viewModel: .example)
     }
 }
