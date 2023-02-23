@@ -6,7 +6,7 @@ import dev.fredag.cheerwithme.repository.UserFriendsEventsRepository
 
 class UserFriendsService(
     private val userService: UserService,
-    private val userFriendsEventsRepository: UserFriendsEventsRepository = UserFriendsEventsRepository(),
+    private val userFriendsEventsRepository: UserFriendsEventsRepository,
     private val pushService: PushService
 ) {
     private val log by logger()
@@ -71,6 +71,7 @@ class UserFriendsService(
 
     suspend fun getUserFriends(userId: UserId): UserFriends {
         val aggregate = getUserFriendAggregate(userId)
+
         val users = userService.findUsersWithIds(
             aggregate.friends + aggregate.incomingFriendRequests + aggregate.outgoingFriendRequests
         ).groupBy { it.id }

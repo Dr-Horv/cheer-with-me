@@ -37,6 +37,8 @@ repositories {
     mavenCentral()
 }
 
+ext.mockk_version = '1.12.2'
+
 dependencies {
     implementation 'software.amazon.awssdk:sns:2.17.129'
 
@@ -64,8 +66,14 @@ dependencies {
     implementation "org.jetbrains.exposed:exposed-jodatime:$exposed_version"
     implementation 'com.zaxxer:HikariCP:5.0.1'
     implementation "io.ktor:ktor-auth-jwt:$ktor_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.8.1'
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 shadowJar {
