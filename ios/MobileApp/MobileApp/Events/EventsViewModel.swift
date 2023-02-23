@@ -61,7 +61,18 @@ class EventsViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var happenings: [Happening] = []
     @Published var google: AuthProviderProtocol
+    @Published var results: [MKMapItem] = []
+    @Published var isSearching = false
+    @Published var choosenLocation: MKMapItem?
     private var decoder = getDecoder()
+
+    var locationName: String? {
+        choosenLocation?.name ?? choosenLocation?.description
+    }
+
+    var coords: CLLocationCoordinate2D? {
+        return choosenLocation?.placemark.location?.coordinate
+    }
 
     var authHeaders: HTTPHeaders? {
         guard let token = google.token else {
@@ -83,43 +94,59 @@ class EventsViewModel: ObservableObject {
         guard let headers = authHeaders else {
             return
         }
-        
+
         do {
             let request = try URLRequest(url: "\(BACKEND_URL)/happenings", method: .get, headers: headers)
             let (data, _) = try await URLSession.shared.data(for: request)
-            
+
             let response = try getDecoder().decode([Happening].self, from: data)
-            
+
             DispatchQueue.main.async {
                 self.happenings = response
             }
-            
+
         } catch {
             print("Error getEvents: \(error)")
         }
     }
-    
+
     func createEvent(input: HappeningInput) async {
         guard let headers = authHeaders else {
             return
         }
-        
+
         do {
             var request = try URLRequest(url: "\(BACKEND_URL)/happenings/createHappening", method: .post, headers: headers)
-            
             request.httpBody = try getEncoder().encode(input)
-            
+
             let (data, _) = try await URLSession.shared.data(for: request)
             let response = try getDecoder().decode(Happening.self, from: data)
-            
+
             DispatchQueue.main.async {
                 self.happenings.append(response)
             }
-            
-            
         } catch {
             print("Error createEvent: \(error)")
         }
+    }
+
+    @MainActor
+    func search(for location: String) async {
+        isSearching = true
+        let request = MKLocalSearch.Request()
+        request.naturalLanguageQuery = location
+        let search = MKLocalSearch(request: request)
+
+        if let response = try? await search.start() {
+            self.results = response.mapItems
+        }
+
+        isSearching = false
+    }
+
+    func select(result location: MKMapItem) {
+        choosenLocation = location
+        results = []
     }
 }
 
@@ -129,10 +156,10 @@ private func getEncoder() -> JSONEncoder {
     formatter.locale = Locale(identifier: "en_US_POSIX")
     formatter.timeZone = TimeZone(secondsFromGMT: 0)
     formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    
+
     let encoder = JSONEncoder()
     encoder.dateEncodingStrategy = .formatted(formatter)
-        
+
     return encoder
 }
 
