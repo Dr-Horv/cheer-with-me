@@ -3,15 +3,13 @@ package dev.fredag.cheerwithme
 import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.databind.util.StdDateFormat
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import dev.fredag.cheerwithme.model.AppleOauthResponse
-import dev.fredag.cheerwithme.model.AppleUserSignInRequest
-import dev.fredag.cheerwithme.model.GoogleOauthResponse
-import dev.fredag.cheerwithme.model.GoogleUserSignInRequest
+import dev.fredag.cheerwithme.model.*
 import dev.fredag.cheerwithme.repository.UserFriendsEventsRepository
 import dev.fredag.cheerwithme.service.*
 import dev.fredag.cheerwithme.web.*
@@ -57,7 +55,8 @@ private val userFriendsService: UserFriendsService = UserFriendsService(userServ
 private val happeningService: HappeningService = HappeningService(userService = userService, pushService = pushService)
 private val searchService: SearchService = SearchService(userService, friendsService = userFriendsService)
 
-private val logger = LoggerFactory.getLogger("Application.kt")
+private val logger = LoggerFactory.getLogger("dev.fredag.cheerwithme.Application.kt")
+
 
 class InstantSerializerWithMilliSecondPrecision :
     InstantSerializer(INSTANCE, false, DateTimeFormatterBuilder().appendInstant(3).toFormatter())
@@ -83,8 +82,16 @@ fun Application.module(testing: Boolean = false) {
 
     install(StatusPages) {
         exception<Throwable> { cause ->
-            call.respond(HttpStatusCode.InternalServerError, "Internal Server Error")
-            throw cause
+            when (cause) {
+                is MismatchedInputException -> {
+                    call.respond(HttpStatusCode.BadRequest, "Mismatched input: ${cause.localizedMessage}")
+                }
+                else -> {
+                    logger.error("Unexpected error", cause)
+                    call.respond(HttpStatusCode.InternalServerError, "Internal Server Error")
+                    throw cause
+                }
+            }
         }
     }
     install(DefaultHeaders)
