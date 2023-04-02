@@ -103,12 +103,22 @@ object Database {
                 userFriendsService.sendFriendRequest(JUICE_ID, SendFriendRequest(TEJP_ID))
 
 
+                val tomorrow = Instant.now().plus(1, ChronoUnit.DAYS)
                 happeningService.createHappening(HORV_ID, CreateHappening("Discode!", "Kod & Vin",
-                    Instant.now().plus(1, ChronoUnit.DAYS), null, listOf(MALM_ID, NDUSHI_ID)))
+                    tomorrow, null, listOf(MALM_ID, NDUSHI_ID, TEJP_ID)))
 
                 val happening = happeningService.createHappening(TEJP_ID, CreateHappening("Happidyhaps!", ":D",
-                    Instant.now().plus(1, ChronoUnit.DAYS), Location(Coordinate(58.298584, 12.961619)), listOf(HORV_ID, NDUSHI_ID)))
+                    tomorrow, Location(Coordinate(58.298584, 12.961619)), listOf(HORV_ID, NDUSHI_ID)))
                 happeningService.acceptHappeningInvite(HORV_ID, AcceptHappeningInvite(happening.happeningId))
+
+                val cancelledHappening1 = happeningService.createHappening(TEJP_ID,
+                    CreateHappening("Cancelled :(", "", tomorrow, location = null, listOf(HORV_ID, NDUSHI_ID))
+                )
+                happeningService.cancelHappening(cancelledHappening1.admin.id, CancelHappening(cancelledHappening1.happeningId, "Ill"))
+
+                val cancelledHappening2 = happeningService.createHappening(HORV_ID, CreateHappening("Won't happen :'(", "", tomorrow, location = null, listOf(TEJP_ID)))
+
+                happeningService.cancelHappening(cancelledHappening2.admin.id, CancelHappening(cancelledHappening2.happeningId, "Moved"))
 
             }
         }

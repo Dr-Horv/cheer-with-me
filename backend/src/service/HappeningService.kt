@@ -20,7 +20,8 @@ data class HappeningAggregate(
     val location: Location?,
     val attendees: List<UserId>,
     val awaiting: List<UserId>,
-    val cancelled: Boolean
+    val cancelled: Boolean,
+    val cancelReason: String?
 )
 
 data class MutableHappeningAggregate(
@@ -32,11 +33,12 @@ data class MutableHappeningAggregate(
     var location: Location? = null,
     val attendees: MutableList<UserId> = mutableListOf(),
     val awaiting: MutableList<UserId> = mutableListOf(),
-    var cancelled: Boolean = false
+    var cancelled: Boolean = false,
+    var cancelReason: String? = null
 )
 
 fun MutableHappeningAggregate.toHappeningAggregate() =
-    HappeningAggregate(happeningId, adminId, name, description, time, location, attendees, awaiting, cancelled)
+    HappeningAggregate(happeningId, adminId, name, description, time, location, attendees, awaiting, cancelled, cancelReason)
 
 class HappeningService(
     private val happeningEventsRepository: HappeningEventsRepository = HappeningEventsRepository(),
@@ -122,7 +124,8 @@ class HappeningService(
             aggregate.location,
             attendees,
             awaiting,
-            aggregate.cancelled
+            aggregate.cancelled,
+            aggregate.cancelReason
         )
     }
 
@@ -161,7 +164,10 @@ class HappeningService(
                 aggregate.attendees.remove(e.userId)
                 aggregate.awaiting.remove(e.userId)
             }
-            is HappeningCancelled -> aggregate.cancelled = true
+            is HappeningCancelled -> {
+                aggregate.cancelled = true
+                aggregate.cancelReason = e.reason
+            }
         }
 
         return aggregate.toHappeningAggregate()
