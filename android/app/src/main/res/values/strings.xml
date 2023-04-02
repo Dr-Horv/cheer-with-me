@@ -19,6 +19,7 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="oauth_server_client_id">100813085034-huu6nmbj7uicgik0r6ms9oe90j51drl0.apps.googleusercontent.com</string>
+    <string name="mapbox_access_token">/*Look at README.md to see details around getting mapbox access token*/</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

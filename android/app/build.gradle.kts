@@ -103,6 +103,9 @@ dependencies {
 
     // I'm going down
     implementation("com.jakewharton.timber:timber:5.0.1")
+    implementation("com.mapbox.maps:android:10.3.0")
+    implementation("com.mapbox.plugin:maps-logo:10.3.0")
+    implementation("com.mapbox.search:mapbox-search-android-ui:1.0.0-beta.26")
 }
 
 android {

@@ -36,8 +36,8 @@ struct ProfileView: View {
                     .foregroundColor(.red)
                 }
             }
-        }.onAppear {
-            viewModel.getProfileInfo()
+        }.task {
+            await viewModel.getProfileInfo()
         }
     }
 }

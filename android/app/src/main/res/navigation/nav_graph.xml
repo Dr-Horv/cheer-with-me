@@ -16,11 +16,6 @@
         tools:layout="@layout/fragment_profile" >
     </fragment>
     <fragment
-        android:id="@+id/mapsFragment"
-        android:name="dev.fredag.cheerwithme.MapsFragment"
-        android:label="fragment_maps"
-        tools:layout="@layout/fragment_maps" />
-    <fragment
         android:id="@+id/mainFragment"
         android:name="dev.fredag.cheerwithme.MainFragment"
         android:label="fragment_main"

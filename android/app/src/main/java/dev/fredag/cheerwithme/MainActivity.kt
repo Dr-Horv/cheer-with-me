@@ -114,6 +114,7 @@ fun Router(navController: NavHostController) {
 
                 }
                 composable(AuthenticatedScreen.NewHappening.route) {
+                    NewHappeningScreen(hiltViewModel())
 
                 }
                 composable(AuthenticatedScreen.Happenings.route) {

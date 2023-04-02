@@ -3,13 +3,16 @@ package dev.fredag.cheerwithme
 import com.auth0.jwk.JwkProviderBuilder
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.databind.util.StdDateFormat
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import dev.fredag.cheerwithme.model.AppleOauthResponse
 import dev.fredag.cheerwithme.model.AppleUserSignInRequest
 import dev.fredag.cheerwithme.model.GoogleOauthResponse
 import dev.fredag.cheerwithme.model.GoogleUserSignInRequest
+import dev.fredag.cheerwithme.repository.UserFriendsEventsRepository
 import dev.fredag.cheerwithme.service.*
 import dev.fredag.cheerwithme.web.*
 import io.ktor.application.*
@@ -31,6 +34,8 @@ import org.slf4j.event.Level
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.sns.SnsClient
 import java.net.URL
+import java.time.Instant
+import java.time.format.DateTimeFormatterBuilder
 import java.util.concurrent.TimeUnit
 
 
@@ -48,11 +53,14 @@ private val snsService: SnsService = SnsService(buildSnsClient())
 private val pushService: PushService = PushService(snsService, userService)
 private val oauth2Service: Oauth2Service = Oauth2Service()
 private val authService: AuthService = AuthService(userService)
-private val userFriendsService: UserFriendsService = UserFriendsService(userService, pushService = pushService)
+private val userFriendsService: UserFriendsService = UserFriendsService(userService, pushService = pushService, userFriendsEventsRepository = UserFriendsEventsRepository())
 private val happeningService: HappeningService = HappeningService(userService = userService, pushService = pushService)
 private val searchService: SearchService = SearchService(userService, friendsService = userFriendsService)
 
 private val logger = LoggerFactory.getLogger("Application.kt")
+
+class InstantSerializerWithMilliSecondPrecision :
+    InstantSerializer(INSTANCE, false, DateTimeFormatterBuilder().appendInstant(3).toFormatter())
 
 @Suppress("unused") // Referenced in application.conf
 @kotlin.jvm.JvmOverloads
@@ -61,7 +69,9 @@ fun Application.module(testing: Boolean = false) {
     install(ContentNegotiation) {
         jackson {
             enable(SerializationFeature.INDENT_OUTPUT)
-            registerModule(JavaTimeModule())
+            val timeModule = JavaTimeModule()
+            timeModule.addSerializer(Instant::class.java, InstantSerializerWithMilliSecondPrecision())
+            registerModule(timeModule)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
     }

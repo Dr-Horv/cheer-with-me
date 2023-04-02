@@ -1,35 +1,61 @@
 import SwiftUI
 import URLImage
+import Alamofire
 
 let AVATAR_HEIGHT = 40.0
 
 struct FriendsView: View {
     @ObservedObject var viewModel: FriendsViewModel
+    @State var showAddFriend: Bool = false
 
     var body: some View {
-        if viewModel.isLoading {
-            ProgressView().progressViewStyle(.circular)
-        }
-        List {
-            if !viewModel.waitingFriends.isEmpty {
-                Section(header: Text("FRIEND REQUESTS")) {
-                    ForEach(viewModel.waitingFriends) { friend in
+        NavigationView {
+            List {
+                if !viewModel.outgoingFriendRequests.isEmpty {
+                    Section(header: Text("SENT FRIEND REQUESTS")) {
+                        ForEach(viewModel.outgoingFriendRequests) { friend in
+                            friendItem(friend: friend,
+                                       showButtons: false,
+                                       viewModel: viewModel)
+                        }
+                    }.listStyle(GroupedListStyle())
+                }
+
+                if !viewModel.waitingFriends.isEmpty {
+                    Section(header: Text("FRIEND REQUESTS")) {
+                        ForEach(viewModel.waitingFriends) { friend in
+                            friendItem(friend: friend,
+                                       showButtons: true,
+                                       viewModel: viewModel)
+                        }
+                    }.listStyle(GroupedListStyle())
+                }
+
+                Section(header: Text("FRIENDS")) {
+                    ForEach(viewModel.friends) { friend in
                         friendItem(friend: friend,
-                                   showButtons: true,
+                                   showButtons: false,
                                    viewModel: viewModel)
                     }
-                }
-            }
+                }.listStyle(GroupedListStyle())
 
-            Section(header: Text("FRIENDS")) {
-                ForEach(viewModel.friends) { friend in
-                    friendItem(friend: friend,
-                               showButtons: false,
-                               viewModel: viewModel)
-                }
-            }.listStyle(GroupedListStyle())
-        }.onAppear {
-            viewModel.getFriends()
+                Button(action: { self.showAddFriend = true }) {
+                    HStack {
+                        Image(systemName: "plus")
+                        Text("Add friend")
+                    }
+                }.foregroundColor(.accentColor)
+
+            }.navigationTitle("Friends")
+            .refreshable {
+                await viewModel.getFriends()
+            }
+            .task {
+                await viewModel.getFriends()
+            }
+            .sheet(isPresented: $showAddFriend) {
+                FriendSearchView(viewModel: FriendsSearchViewModel(parentViewModel: viewModel))
+            }
         }
     }
 }
@@ -63,16 +89,60 @@ private struct friendItem: View {
                     withAnimation {
                         viewModel.ignore(person: friend)
                     }
-                    print("CLICK")
                 }
                 CircleButton(color: Color.orange, icon: .check) {
-                    withAnimation {
-                        viewModel.befriend(person: friend)
+                    Task {
+                        await viewModel.befriend(person: friend)
                     }
-                    print("CLICK")
                 }
             }
         }
+    }
+}
+
+private struct FriendSearchView: View {    
+    @ObservedObject var viewModel: FriendsSearchViewModel
+
+    var body: some View {
+        VStack {
+            Text("Add Friends")
+                .bold()
+
+            HStack {
+                Image(systemName: "magnifyingglass")
+                TextField("Search", text: $viewModel.query)
+                    .submitLabel(.search)
+                    .onSubmit {
+                        Task {
+                            await viewModel.searchFriends()
+                        }
+                    }
+            }
+            .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
+            .foregroundColor(.secondary)
+            .background(Color(.secondarySystemBackground))
+            .cornerRadius(10)
+
+            List {
+                if viewModel.isLoading {
+                    ProgressView().progressViewStyle(.circular)
+                }
+
+                Section {
+                    ForEach(viewModel.results) { friend in
+                        friendItem(friend: friend,
+                                   showButtons: true,
+                                   viewModel: viewModel.parentViewModel)
+                    }
+                }
+            }
+            .listStyle(GroupedListStyle())
+            .onDisappear {
+                viewModel.results = []
+                viewModel.query = ""
+            }
+        }
+        .padding(20)
     }
 }
 
@@ -111,5 +181,11 @@ private struct CircleButton: View {
 struct FriendsView_Previews: PreviewProvider {
     static var previews: some View {
         FriendsView(viewModel: .example)
+    }
+}
+
+struct FriendsSearchView_Previews: PreviewProvider {
+    static var previews: some View {
+        FriendSearchView(viewModel: .example)
     }
 }

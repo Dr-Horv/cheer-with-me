@@ -7,7 +7,6 @@ import dev.fredag.cheerwithme.FetchStatus
 import dev.fredag.cheerwithme.data.backend.Happening
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import java.time.Instant
 import javax.inject.Inject
 
 data class HappeningsViewState(
@@ -57,8 +56,8 @@ class HappeningsViewModel @Inject constructor(private val happeningsRepository: 
         }
     }
 
-    override fun handleAction(it: HappeningsViewActions) {
-        when (it) {
+    override fun handleAction(action: HappeningsViewActions) {
+        when (action) {
             HappeningsViewActions.RefreshHappnings -> loadHappenings()
             HappeningsViewActions.ClearErrorMessage -> setState { it.copy(showError = false) }
         }

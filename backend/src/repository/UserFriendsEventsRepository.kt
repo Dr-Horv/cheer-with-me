@@ -19,7 +19,7 @@ class UserFriendsEventsRepository {
             this[UserFriendsEvents.userId] = it.userId
             this[UserFriendsEvents.timestamp] = DateTime(it.timestamp.toEpochMilli())
             this[UserFriendsEvents.eventData] = objectMapper.writeValueAsString(it)
-        }
+        }.size
     }
 
     suspend fun readEvents(userId: UserId): List<UserFriendsEvent> = Database.dbQuery {

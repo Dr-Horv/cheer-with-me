@@ -1,6 +1,10 @@
 import Alamofire
 import Foundation
 
+struct FriendRequestPayload: Codable {
+    let userId: UserId
+}
+
 extension User: Equatable {
     static func == (lhs: User, rhs: User) -> Bool {
         lhs.id == rhs.id
@@ -40,6 +44,12 @@ private func randomProfileImage(gender: Gender = .male) -> String {
 
 class FriendsViewModel: ObservableObject {
     @Published var isLoading: Bool = false
+    
+    @Published var outgoingFriendRequests: [User] = [
+//        User(id: 3, nick: "Horvrino", avatarUrl: "https://randomuser.me/api/portraits/men/56.jpg"),
+//        User(id: 4, nick: "Tejperino", avatarUrl: "https://randomuser.me/api/portraits/men/74.jpg"),
+    ]
+    
     @Published var waitingFriends: [User] = [
 //        User(id: 3, nick: "Horvrino", avatarUrl: "https://randomuser.me/api/portraits/men/56.jpg"),
 //        User(id: 4, nick: "Tejperino", avatarUrl: "https://randomuser.me/api/portraits/men/74.jpg"),
@@ -58,7 +68,8 @@ class FriendsViewModel: ObservableObject {
 
         return HTTPHeaders([
             "Authorization": "Bearer \(token)",
-            "Accept": "application/json"
+            "Accept": "application/json",
+            "Content-Type": "application/json"
         ])
     }
 
@@ -66,34 +77,60 @@ class FriendsViewModel: ObservableObject {
         google = authProvider
     }
 
-    func getFriends() {
+    func getFriends() async {
         guard let headers = authHeaders else {
             return
         }
-
-        isLoading = true
-
-        AF.request("\(BACKEND_URL)/friends", headers: headers).responseDecodable(of: FriendsResponse.self) { response in
-            self.isLoading = false
-
-            if let friendResponse = response.value {
+        
+        do {
+            
+            let request = try URLRequest(url: "\(BACKEND_URL)/friends", method: .get, headers: headers)
+            
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let friendResponse = try JSONDecoder().decode(FriendsResponse.self, from: data)
+            
+            
+            DispatchQueue.main.async {
                 self.friends = friendResponse.friends
                 self.waitingFriends = friendResponse.incomingFriendRequests
+                self.outgoingFriendRequests = friendResponse.outgoingFriendRequests
             }
+            
+        } catch {
+            print("Error getFriends: \(error)")
         }
     }
 
-    func befriend(person: User) {
+    func befriend(person: User) async {
+        
+        guard let headers = authHeaders else {
+            return
+        }
+        
         let isWaiting = waitingFriends.contains(person)
 
-        guard isWaiting else { return }
+        if isWaiting {
+            waitingFriends.removeAll(where: { dude in
+                dude.id == person.id
+            })
+        }
 
-        waitingFriends.removeAll(where: { dude in
-            dude.id == person.id
-        })
-
-        friends.append(person)
-        friends.sort()
+        let payload = FriendRequestPayload(userId: person.id)
+        
+        do {
+            var request = try URLRequest(url: "\(BACKEND_URL)/friends/sendFriendRequest", method: .post, headers: headers)
+            
+            request.httpBody = try JSONEncoder().encode(payload)
+            
+            let (_, _) = try await URLSession.shared.data(for: request)
+            
+            friends.append(person)
+            friends.sort()
+            
+            await getFriends()
+        } catch {
+            print("Error befriend: \(error)")
+        }
     }
 
     func ignore(person: User) {
