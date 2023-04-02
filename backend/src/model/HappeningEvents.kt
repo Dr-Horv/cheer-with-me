@@ -38,7 +38,7 @@ class HappeningTimeChanged(userId: UserId, timestamp: Instant, happeningId: Happ
 class HappeningLocationChanged(userId: UserId, timestamp: Instant, happeningId: HappeningId, val location: Location) :
     HappeningEvent(userId, happeningId, timestamp)
 
-class HappeningCancelled(userId: UserId, timestamp: Instant, happeningId: HappeningId, reason: String? = "") :
+class HappeningCancelled(userId: UserId, timestamp: Instant, happeningId: HappeningId, val reason: String? = "") :
     HappeningEvent(userId, happeningId, timestamp)
 
 class UserInvitedToHappening(
@@ -54,7 +54,7 @@ class UserAcceptedHappeningInvite(
     happeningId: HappeningId
 ) : HappeningEvent(userId, happeningId, timestamp)
 
-class UserRejectedHappeningInvite(
+class UserDeclinedHappeningInvite(
     userId: UserId,
     timestamp: Instant,
     happeningId: HappeningId
@@ -83,7 +83,7 @@ class UpdateHappening(
 class CancelHappening(val happeningId: HappeningId, val reason: String?)
 class InviteUsersToHappening(val happeningId: HappeningId, val usersToInvite: List<UserId>)
 class AcceptHappeningInvite(val happeningId: HappeningId)
-class RejectHappeningInvite(val happeningId: HappeningId)
+class DeclineHappeningInvite(val happeningId: HappeningId)
 
 data class Happening(
     val happeningId: HappeningId,
@@ -94,5 +94,6 @@ data class Happening(
     val location: Location?,
     val attendees: List<User>,
     val awaiting: List<User>,
-    val cancelled: Boolean
+    val cancelled: Boolean,
+    val cancelReason: String?
 )

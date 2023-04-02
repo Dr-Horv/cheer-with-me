@@ -1,7 +1,6 @@
 import MapKit
 import SwiftUI
 
-
 struct ContentView: View {
     @ObservedObject var viewModel: MainViewModel
     var google: AuthProviderProtocol

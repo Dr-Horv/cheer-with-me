@@ -1,9 +1,4 @@
 import SwiftUI
-import AuthenticationServices
-import GoogleSignIn
-import UIKit
-import Alamofire
-
 
 struct AccessTokenResponse: Codable {
     let accessToken: String
@@ -36,7 +31,7 @@ struct LoginView : View {
                 
                 Button("Sign in with Apple",
                        action: viewModel.logIn
-                ).frame(width: 300, height: 50, alignment: .center).signInWithAppleButtonStyle(.white)
+                ).frame(width: 300, height: 50, alignment: .center)
             }
             
             Spacer()

@@ -20,7 +20,8 @@ data class HappeningAggregate(
     val location: Location?,
     val attendees: List<UserId>,
     val awaiting: List<UserId>,
-    val cancelled: Boolean
+    val cancelled: Boolean,
+    val cancelReason: String?
 )
 
 data class MutableHappeningAggregate(
@@ -32,11 +33,12 @@ data class MutableHappeningAggregate(
     var location: Location? = null,
     val attendees: MutableList<UserId> = mutableListOf(),
     val awaiting: MutableList<UserId> = mutableListOf(),
-    var cancelled: Boolean = false
+    var cancelled: Boolean = false,
+    var cancelReason: String? = null
 )
 
 fun MutableHappeningAggregate.toHappeningAggregate() =
-    HappeningAggregate(happeningId, adminId, name, description, time, location, attendees, awaiting, cancelled)
+    HappeningAggregate(happeningId, adminId, name, description, time, location, attendees, awaiting, cancelled, cancelReason)
 
 class HappeningService(
     private val happeningEventsRepository: HappeningEventsRepository = HappeningEventsRepository(),
@@ -122,7 +124,8 @@ class HappeningService(
             aggregate.location,
             attendees,
             awaiting,
-            aggregate.cancelled
+            aggregate.cancelled,
+            aggregate.cancelReason
         )
     }
 
@@ -157,11 +160,14 @@ class HappeningService(
                 aggregate.awaiting.remove(e.userId)
                 aggregate.attendees.add(e.userId)
             }
-            is UserRejectedHappeningInvite -> {
+            is UserDeclinedHappeningInvite -> {
                 aggregate.attendees.remove(e.userId)
                 aggregate.awaiting.remove(e.userId)
             }
-            is HappeningCancelled -> aggregate.cancelled = true
+            is HappeningCancelled -> {
+                aggregate.cancelled = true
+                aggregate.cancelReason = e.reason
+            }
         }
 
         return aggregate.toHappeningAggregate()
@@ -311,19 +317,19 @@ class HappeningService(
         }
     }
 
-    suspend fun rejectHappeningInvite(
+    suspend fun declineHappeningInvite(
         userId: UserId,
-        rejectHappeningInviteRequest: RejectHappeningInvite
+        declineHappeningInviteRequest: DeclineHappeningInvite
     ): Happening? {
-        return getHappening(rejectHappeningInviteRequest.happeningId)?.let {
-            val rejected = UserRejectedHappeningInvite(userId, Instant.now(), rejectHappeningInviteRequest.happeningId)
-            happeningEventsRepository.addEvents(listOf(rejected))
+        return getHappening(declineHappeningInviteRequest.happeningId)?.let {
+            val declined = UserDeclinedHappeningInvite(userId, Instant.now(), declineHappeningInviteRequest.happeningId)
+            happeningEventsRepository.addEvents(listOf(declined))
             withContext(Dispatchers.IO) {
                 val user = userService.findUserById(userId)!!
                 pushService.push(it.admin.id, "${user.nick} won't come to ${it.name}")
             }
 
-            getHappening(rejectHappeningInviteRequest.happeningId)!!
+            getHappening(declineHappeningInviteRequest.happeningId)!!
         }
     }
 }

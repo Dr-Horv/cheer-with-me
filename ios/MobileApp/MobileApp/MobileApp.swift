@@ -4,7 +4,6 @@ import URLImageStore
 
 @main
 struct MobileApp: App {
-    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @ObservedObject var viewModel: MainViewModel
     private let auth: AuthProviderProtocol
     
