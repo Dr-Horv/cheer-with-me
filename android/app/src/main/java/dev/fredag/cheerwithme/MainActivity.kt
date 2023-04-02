@@ -8,15 +8,15 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,6 +31,7 @@ import dev.fredag.cheerwithme.friends.FriendsScreen
 import dev.fredag.cheerwithme.happening.Happenings
 import dev.fredag.cheerwithme.ui.CheerWithMeTheme
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -38,6 +39,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
+            val loginViewModel: LoginViewModel = hiltViewModel()
+            lifecycleScope.launch {
+                loginViewModel.setupLoggedInUserState()
+                UserState.loggedIn.value = BackendModule.hasAccessKey(applicationContext)
+            }
+
+
             CheerWithMeTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
@@ -46,7 +54,8 @@ class MainActivity : ComponentActivity() {
             }
         }
         // Comment this out if you don't want to auto-login with stored access key. To test login
-        UserState.loggedIn.postValue(BackendModule.hasAccessKey(applicationContext))
+
+
     }
 }
 
@@ -81,7 +90,7 @@ public fun currentRoute(navController: NavHostController): String? {
 @Composable
 fun Router(navController: NavHostController) {
 
-    val loggedIn = UserState.loggedIn.observeAsState()
+    val loggedIn = UserState.loggedIn.collectAsState()
     Scaffold(bottomBar = {
         Log.d("Bottombar render", "${navController.currentBackStackEntry?.destination?.route}")
         if (currentRoute(navController) != AuthenticatedScreen.Login.route) {
@@ -127,7 +136,9 @@ fun Router(navController: NavHostController) {
                             navController.navigate(AuthenticatedScreen.Happening(it.happeningId).path)
                         })
                 }
-                composable(AuthenticatedScreen.Profile.route) { Profile(navController) }
+                composable(AuthenticatedScreen.Profile.route) {
+                    ProfileView(navController)
+                }
                 composable(AuthenticatedScreen.Login.route) {
                     Login(hiltViewModel(), {
                         navController.navigate(AuthenticatedScreen.Checkin.route)
@@ -149,22 +160,6 @@ fun Happening() {
 @Composable
 fun Map() {
     Text("map")
-}
-
-@Composable
-fun Profile(navController: NavHostController) {
-    val context = LocalContext.current
-    Column() {
-        Text("profile")
-        Button(onClick = {
-            clearAccessToken(context)
-            navController.navigate(AuthenticatedScreen.Login.route)
-        }) {
-            Text(text = "Logout")
-
-        }
-    }
-
 }
 
 fun clearAccessToken(context: Context) {

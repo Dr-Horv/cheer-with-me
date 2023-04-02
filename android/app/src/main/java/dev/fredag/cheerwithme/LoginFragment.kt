@@ -38,6 +38,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.fredag.cheerwithme.data.UserRepository
 import dev.fredag.cheerwithme.data.UserState
 import dev.fredag.cheerwithme.ui.CheerWithMeTheme
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -206,14 +208,21 @@ class LoginViewModel @Inject constructor(
             if (it !== null) {
                 TODO("Error handle")
             }
-            UserState.loggedIn.postValue(true)
-            //val navController = Navigation.findNavController(fragment.requireView())
-            // TODO navigate to home, login done
-            loginSuccess()
-            // navController.navigate(navController.graph.startDestination) TODO
+            viewModelScope.launch {
+                setupLoggedInUserState()
+                loginSuccess()
+            }
         }
-
-
     }
 
+    suspend fun setupLoggedInUserState() {
+        val res  = userRepository.getLoggedInUser()
+        if (res.isSuccessful && res.body() != null) {
+            val r = res.body()!!
+            UserState.user.value = r
+            // Block until user is assigned.
+            UserState.user.filter { it.id == r.id }.first()
+            UserState.loggedIn.value = true
+        }
+    }
 }
