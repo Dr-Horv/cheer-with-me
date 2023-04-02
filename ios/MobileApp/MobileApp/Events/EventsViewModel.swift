@@ -90,15 +90,19 @@ class EventsViewModel: ObservableObject {
         google = authProvider
     }
 
+    @MainActor
     func getEvents() async {
-        guard let headers = authHeaders else {
+        guard let token = google.token else {
             return
         }
 
         do {
-            let request = try URLRequest(url: "\(BACKEND_URL)/happenings", method: .get, headers: headers)
-            let (data, _) = try await URLSession.shared.data(for: request)
+            let url = URL(string: "\(BACKEND_URL)/happenings")!
+            var request = URLRequest(url: url)
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
 
+            let (data, _) = try await URLSession.shared.data(for: request)
             let response = try getDecoder().decode([Happening].self, from: data)
 
             DispatchQueue.main.async {
