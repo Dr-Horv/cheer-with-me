@@ -17,8 +17,12 @@ class FriendRequest(userId: UserId, timestamp: Instant, val requester: UserId, v
 class FriendRequestAccepted(userId: UserId, timestamp: Instant, val requester: UserId, val receiver: UserId) :
     UserFriendsEvent(userId, timestamp)
 
+class FriendRequestDeclined(userId: UserId, timestamp: Instant, val requester: UserId, val receiver: UserId) :
+    UserFriendsEvent(userId, timestamp)
+
 class SendFriendRequest(val userId: UserId)
 class AcceptFriendRequest(val userId: UserId)
+class DeclineFriendRequest(val userId: UserId)
 
 class UserFriendsAggregate(
     val friends: List<UserId>,

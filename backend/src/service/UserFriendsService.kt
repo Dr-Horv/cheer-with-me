@@ -49,6 +49,21 @@ class UserFriendsService(
 
     }
 
+    suspend fun declineFriendRequest(userId: UserId, request: DeclineFriendRequest) {
+        val aggregate = getUserFriendAggregate(userId)
+        if(!aggregate.incomingFriendRequests.contains(request.userId)) {
+            log.debug("$userId doesn't have any incoming friend request from ${request.userId}")
+            return
+        }
+
+        userFriendsEventsRepository.addEvents(
+            listOf(
+                FriendRequestDeclined(userId, now(), requester = request.userId, receiver = userId),
+                FriendRequestDeclined(request.userId, now(), requester = request.userId, receiver = userId)
+            )
+        )
+    }
+
 
     private suspend fun getUserFriendAggregate(userId: UserId): UserFriendsAggregate {
         val userEvents = userFriendsEventsRepository.readEvents(userId)
@@ -64,10 +79,33 @@ class UserFriendsService(
                 myRequests,
                 myIncomingRequests
             )
+            is FriendRequestDeclined -> handleFriendRequestDeclined(
+                e,
+                userId,
+                myFriends,
+                myRequests,
+                myIncomingRequests
+            )
         }
 
         return UserFriendsAggregate(myFriends, myIncomingRequests, myRequests)
     }
+
+    private fun handleFriendRequestDeclined(
+        e: FriendRequestDeclined,
+        userId: UserId,
+        myFriends: MutableList<UserId>,
+        myRequests: MutableList<UserId>,
+        myIncomingRequests: MutableList<UserId>
+    ) {
+        val friendId = if (e.requester == userId) {
+            e.receiver
+        } else {
+            e.requester
+        }
+        cancelFriendRequest(friendId, myFriends, myRequests, myIncomingRequests)
+    }
+
 
     suspend fun getUserFriends(userId: UserId): UserFriends {
         val aggregate = getUserFriendAggregate(userId)
@@ -140,4 +178,15 @@ class UserFriendsService(
         myRequests.remove(friendUserId)
         myIncomingRequests.remove(friendUserId)
     }
+
+    private fun cancelFriendRequest(
+        friendUserId: UserId,
+        myFriends: MutableList<UserId>,
+        myRequests: MutableList<UserId>,
+        myIncomingRequests: MutableList<UserId>
+    ) {
+        myRequests.remove(friendUserId)
+        myIncomingRequests.remove(friendUserId)
+    }
+
 }

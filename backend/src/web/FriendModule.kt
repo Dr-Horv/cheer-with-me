@@ -2,6 +2,7 @@ package dev.fredag.cheerwithme.web
 
 import dev.fredag.cheerwithme.getUserId
 import dev.fredag.cheerwithme.model.AcceptFriendRequest
+import dev.fredag.cheerwithme.model.DeclineFriendRequest
 import dev.fredag.cheerwithme.model.SendFriendRequest
 import dev.fredag.cheerwithme.service.UserFriendsService
 import dev.fredag.cheerwithme.service.UserService
@@ -31,6 +32,12 @@ fun Route.friendRouting(
     post("/friends/acceptFriendRequest") {
         val acceptReq = call.receive<AcceptFriendRequest>()
         userFriendsService.acceptFriendRequest(getUserId(), acceptReq)
+        call.respond(HttpStatusCode.NoContent)
+    }
+
+    post("/friends/declineFriendRequest") {
+        val declineReq = call.receive<DeclineFriendRequest>()
+        userFriendsService.declineFriendRequest(getUserId(), declineReq)
         call.respond(HttpStatusCode.NoContent)
     }
 }
