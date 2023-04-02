@@ -29,12 +29,19 @@ data class FriendRequestMatcher(
     }
 
     private fun equalEvents(e1: UserFriendsEvent, e2: UserFriendsEvent): Boolean =
-        if (e1 is FriendRequestAccepted && e2 is FriendRequestAccepted) {
-           e1.requester == e2.requester && e1.receiver == e2.receiver
-        } else if (e1 is FriendRequest && e2 is FriendRequest) {
-            e1.requester == e2.requester && e1.receiver == e2.receiver
-        } else {
-            false
+        when {
+            e1 is FriendRequestAccepted && e2 is FriendRequestAccepted -> {
+                e1.requester == e2.requester && e1.receiver == e2.receiver
+            }
+            e1 is FriendRequestDeclined && e2 is FriendRequestDeclined -> {
+                e1.requester == e2.requester && e1.receiver == e2.receiver
+            }
+            e1 is FriendRequest && e2 is FriendRequest -> {
+                e1.requester == e2.requester && e1.receiver == e2.receiver
+            }
+            else -> {
+                false
+            }
         }
 
 }
@@ -59,7 +66,7 @@ internal class UserFriendsServiceTest {
         coEvery { userFriendsEventsRepository.readEvents(any<UserId>()) } answers {
             userFriendsEventRepositoryMock.getValue(firstArg())
         }
-        coEvery { userFriendsEventsRepository.addEvents(any<List<FriendRequest>>()) } answers {
+        coEvery { userFriendsEventsRepository.addEvents(any<List<UserFriendsEvent>>()) } answers {
             val events = firstArg<List<UserFriendsEvent>>()
             events.forEach { userFriendsEventRepositoryMock[it.userId] = userFriendsEventRepositoryMock.getValue(it.userId) + it }
             events.size
@@ -118,6 +125,37 @@ internal class UserFriendsServiceTest {
                 matchFriendRequests(
                     FriendRequestAccepted(futureFriend, now(), requester = user, receiver = futureFriend),
                     FriendRequestAccepted(user, now(), requester = user, receiver = futureFriend)
+                )
+            )
+        }
+
+    }
+
+    @Test
+    fun `sending and rejecting friend request should not create friendship and cancel outstanding request`() = runBlocking {
+        val user = 1L
+        val decliningFriend = 2L
+        userFriendsService.sendFriendRequest(user, SendFriendRequest(decliningFriend))
+
+        assertEquals(userFriendsService.getUserFriends(user).outgoingFriendRequests.size, 1)
+        assertEquals(userFriendsService.getUserFriends(decliningFriend).incomingFriendRequests.size, 1)
+
+        userFriendsService.declineFriendRequest(decliningFriend, DeclineFriendRequest(user))
+
+        assertEquals(userFriendsService.getUserFriends(user).outgoingFriendRequests.size, 0)
+        assertEquals(userFriendsService.getUserFriends(decliningFriend).incomingFriendRequests.size, 0)
+
+
+        coVerify {
+            userFriendsEventsRepository.addEvents(
+                matchFriendRequests(
+                    FriendRequest(user, now(), requester = user, receiver = decliningFriend),
+                    FriendRequest(decliningFriend, now(), requester = user, receiver = decliningFriend))
+            )
+            userFriendsEventsRepository.addEvents(
+                matchFriendRequests(
+                    FriendRequestDeclined(decliningFriend, now(), requester = user, receiver = decliningFriend),
+                    FriendRequestDeclined(user, now(), requester = user, receiver = decliningFriend)
                 )
             )
         }

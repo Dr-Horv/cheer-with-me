@@ -23,7 +23,7 @@ fun Route.happeningRouting(happeningService: HappeningService) {
             call.respond(HttpStatusCode.BadRequest, "Missing happeningId from path")
             return@get
         }
-        val happening= happeningService.getHappening(happeningId)
+        val happening = happeningService.getHappening(happeningId)
         if(happening == null) {
             call.respond(HttpStatusCode.NotFound)
             return@get
