@@ -21,6 +21,11 @@ struct Location: Codable {
     }
 }
 
+struct InviteToEventInput: Codable {
+    let happeningId: String
+    let usersToInvite: [UserId]
+}
+
 typealias UserId = Int64
 
 struct HappeningInput: Codable {
@@ -44,7 +49,7 @@ struct Happening: Identifiable, Codable {
     let cancelled: Bool
 }
 
-struct User: Identifiable, Codable {
+struct User: Identifiable, Hashable, Codable {
     let id: UserId
     let nick: String
     let avatarUrl: String?
@@ -136,6 +141,32 @@ class EventsViewModel: ObservableObject {
         }
 
         isSearching = false
+    }
+    
+    func inviteToEvent(happening: Happening, users: [User]) async {
+        guard let token = google.token else {
+            return
+        }
+        
+        let input = InviteToEventInput(happeningId: happening.id, usersToInvite: users.map { $0.id } )
+
+        do {
+            let url = URL(string: "\(BACKEND_URL)/happenings/inviteUsers")!
+            var request = URLRequest(url: url)
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "PUT"
+
+            request.httpBody = try getEncoder().encode(input)
+
+            let (data, _) = try await URLSession.shared.data(for: request)
+            let response = try getDecoder().decode(Happening.self, from: data)
+
+            self.happenings.append(response)
+        } catch {
+            print("Error createEvent: \(error)")
+        }
     }
 
     func select(result location: MKMapItem) {
