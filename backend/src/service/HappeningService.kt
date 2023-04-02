@@ -160,7 +160,7 @@ class HappeningService(
                 aggregate.awaiting.remove(e.userId)
                 aggregate.attendees.add(e.userId)
             }
-            is UserRejectedHappeningInvite -> {
+            is UserDeclinedHappeningInvite -> {
                 aggregate.attendees.remove(e.userId)
                 aggregate.awaiting.remove(e.userId)
             }
@@ -317,19 +317,19 @@ class HappeningService(
         }
     }
 
-    suspend fun rejectHappeningInvite(
+    suspend fun declineHappeningInvite(
         userId: UserId,
-        rejectHappeningInviteRequest: RejectHappeningInvite
+        declineHappeningInviteRequest: DeclineHappeningInvite
     ): Happening? {
-        return getHappening(rejectHappeningInviteRequest.happeningId)?.let {
-            val rejected = UserRejectedHappeningInvite(userId, Instant.now(), rejectHappeningInviteRequest.happeningId)
-            happeningEventsRepository.addEvents(listOf(rejected))
+        return getHappening(declineHappeningInviteRequest.happeningId)?.let {
+            val declined = UserDeclinedHappeningInvite(userId, Instant.now(), declineHappeningInviteRequest.happeningId)
+            happeningEventsRepository.addEvents(listOf(declined))
             withContext(Dispatchers.IO) {
                 val user = userService.findUserById(userId)!!
                 pushService.push(it.admin.id, "${user.nick} won't come to ${it.name}")
             }
 
-            getHappening(rejectHappeningInviteRequest.happeningId)!!
+            getHappening(declineHappeningInviteRequest.happeningId)!!
         }
     }
 }

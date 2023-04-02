@@ -54,7 +54,7 @@ class UserAcceptedHappeningInvite(
     happeningId: HappeningId
 ) : HappeningEvent(userId, happeningId, timestamp)
 
-class UserRejectedHappeningInvite(
+class UserDeclinedHappeningInvite(
     userId: UserId,
     timestamp: Instant,
     happeningId: HappeningId
@@ -83,7 +83,7 @@ class UpdateHappening(
 class CancelHappening(val happeningId: HappeningId, val reason: String?)
 class InviteUsersToHappening(val happeningId: HappeningId, val usersToInvite: List<UserId>)
 class AcceptHappeningInvite(val happeningId: HappeningId)
-class RejectHappeningInvite(val happeningId: HappeningId)
+class DeclineHappeningInvite(val happeningId: HappeningId)
 
 data class Happening(
     val happeningId: HappeningId,

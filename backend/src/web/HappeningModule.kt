@@ -73,9 +73,9 @@ fun Route.happeningRouting(happeningService: HappeningService) {
         call.respond(HttpStatusCode.Accepted, happening)
     }
 
-    post("/happenings/rejectHappeningInvite") {
-        val rejectHappeningInviteRequest = call.receive<RejectHappeningInvite>()
-        val happening = happeningService.rejectHappeningInvite(getUserId(), rejectHappeningInviteRequest)
+    post("/happenings/declineHappeningInvite") {
+        val declineHappeningInviteRequest = call.receive<DeclineHappeningInvite>()
+        val happening = happeningService.declineHappeningInvite(getUserId(), declineHappeningInviteRequest)
         if(happening == null) {
             call.respond(HttpStatusCode.NotFound)
             return@post
