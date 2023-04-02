@@ -1,5 +1,4 @@
 import SwiftUI
-import Alamofire
 import MapKit
 import URLImage
 
