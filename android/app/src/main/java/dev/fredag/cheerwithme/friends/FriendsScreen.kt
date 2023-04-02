@@ -73,8 +73,6 @@ fun FriendsView(
                     .fillMaxHeight()
             ) {
                 LazyColumn(modifier = Modifier.fillMaxHeight()) {
-
-
                     friendsViewState.friendsModel.incomingFriendRequests.takeIf { it.isNotEmpty() }
                         ?.let {
                             item {
@@ -92,7 +90,6 @@ fun FriendsView(
                                         onDenyFriendRequest = {} // TODO https://github.com/fredagsdeploy/cheer-with-me/issues/31
                                     )
                                 }
-
                             }
                         }
 
@@ -111,10 +108,8 @@ fun FriendsView(
                                 ) {
                                     UserWithIcon(it)
                                 }
-
                             }
                         }
-
                     }
                 }
             }
