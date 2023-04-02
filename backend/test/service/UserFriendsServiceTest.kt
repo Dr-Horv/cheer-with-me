@@ -132,7 +132,7 @@ internal class UserFriendsServiceTest {
     }
 
     @Test
-    fun `sending and rejecting friend request should not create friendship and cancel outstanding request`() = runBlocking {
+    fun `sending and declining friend request should not create friendship and cancel outstanding request`() = runBlocking {
         val user = 1L
         val decliningFriend = 2L
         userFriendsService.sendFriendRequest(user, SendFriendRequest(decliningFriend))
