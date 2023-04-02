@@ -1,6 +1,5 @@
 import Foundation
 import GoogleSignIn
-import Alamofire
 
 class MainViewModel: ObservableObject {
     @Published var username = ""
@@ -16,17 +15,6 @@ class MainViewModel: ObservableObject {
 
     var isLoggedIn: Bool {
         google.token != nil
-    }
-
-    var authHeaders: HTTPHeaders? {
-        guard let token = google.token else {
-            return nil
-        }
-
-        return HTTPHeaders([
-            "Authorization": "Bearer \(token)",
-            "Accept": "application/json"
-        ])
     }
 
     func logIn() {
@@ -46,18 +34,21 @@ class MainViewModel: ObservableObject {
         self.objectWillChange.send()
     }
 
+    @MainActor
     func getProfileInfo() async {
-        guard let headers = authHeaders else {
+        guard let token = google.token else {
             return
         }
         
         do {
-            let request = try URLRequest(url: "\(BACKEND_URL)/user/me", method: .get, headers: headers)
+            let url = URL(string: "\(BACKEND_URL)/user/me")!
+            var request = URLRequest(url: url)
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+
             let (data, _) = try await URLSession.shared.data(for: request)
             let me = try JSONDecoder().decode(User.self, from: data)
-            DispatchQueue.main.async {
-                self.friend = me
-            }
+            self.friend = me
         } catch {
             print("Error getProfileInfo: \(error)")
         }
