@@ -1,4 +1,3 @@
-import Alamofire
 import Foundation
 import MapKit
 
@@ -74,18 +73,6 @@ class EventsViewModel: ObservableObject {
         return choosenLocation?.placemark.location?.coordinate
     }
 
-    var authHeaders: HTTPHeaders? {
-        guard let token = google.token else {
-            return nil
-        }
-
-        return HTTPHeaders([
-            "Authorization": "Bearer \(token)",
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-        ])
-    }
-
     init(authProvider: AuthProviderProtocol) {
         google = authProvider
     }
@@ -105,30 +92,33 @@ class EventsViewModel: ObservableObject {
             let (data, _) = try await URLSession.shared.data(for: request)
             let response = try getDecoder().decode([Happening].self, from: data)
 
-            DispatchQueue.main.async {
-                self.happenings = response
-            }
+            self.happenings = response
 
         } catch {
             print("Error getEvents: \(error)")
         }
     }
 
+    @MainActor
     func createEvent(input: HappeningInput) async {
-        guard let headers = authHeaders else {
+        guard let token = google.token else {
             return
         }
 
         do {
-            var request = try URLRequest(url: "\(BACKEND_URL)/happenings/createHappening", method: .post, headers: headers)
+            let url = URL(string: "\(BACKEND_URL)/happenings/createHappening")!
+            var request = URLRequest(url: url)
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue("application/json", forHTTPHeaderField: "Accept")
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "POST"
+
             request.httpBody = try getEncoder().encode(input)
 
             let (data, _) = try await URLSession.shared.data(for: request)
             let response = try getDecoder().decode(Happening.self, from: data)
 
-            DispatchQueue.main.async {
-                self.happenings.append(response)
-            }
+            self.happenings.append(response)
         } catch {
             print("Error createEvent: \(error)")
         }
@@ -155,15 +145,8 @@ class EventsViewModel: ObservableObject {
 }
 
 private func getEncoder() -> JSONEncoder {
-    let formatter = DateFormatter()
-    formatter.calendar = Calendar(identifier: .iso8601)
-    formatter.locale = Locale(identifier: "en_US_POSIX")
-    formatter.timeZone = TimeZone(secondsFromGMT: 0)
-    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-
     let encoder = JSONEncoder()
-    encoder.dateEncodingStrategy = .formatted(formatter)
-
+    encoder.dateEncodingStrategy = .secondsSince1970
     return encoder
 }
 
