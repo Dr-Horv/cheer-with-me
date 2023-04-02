@@ -1,3 +1,8 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+extra.apply{
+    set("MAPBOX_DOWNLOADS_TOKEN", gradleLocalProperties(rootDir).getProperty("MAPBOX_DOWNLOADS_TOKEN"))
+}
+
 val hiltVersion by extra("1.0.0-alpha02")
 
 buildscript {

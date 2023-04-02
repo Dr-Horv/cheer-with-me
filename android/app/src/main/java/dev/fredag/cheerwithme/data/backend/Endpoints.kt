@@ -26,20 +26,20 @@ interface BackendService {
     suspend fun getHappening(@Path("happeningId") happeningId: HappeningId): Response<Happening>
 
     @POST("/happenings/createHappening")
-    suspend fun createHappening(createHappening: CreateHappening): Response<Happening>
+    suspend fun createHappening(@Body createHappening: CreateHappening): Response<Happening>
 
     @PUT("/happenings/updateHappening")
-    suspend fun updateHappening(updateHappening: UpdateHappening): Response<Happening>
+    suspend fun updateHappening(@Body updateHappening: UpdateHappening): Response<Happening>
 
     @DELETE("/happenings/cancelHappening")
-    suspend fun cancelHappening(cancelHappening: CancelHappening): Response<Unit>
+    suspend fun cancelHappening(@Body cancelHappening: CancelHappening): Response<Unit>
 
     @PUT("/happenings/inviteUsers")
-    suspend fun inviteUsersToHappening(inviteUsersToHappening: InviteUsersToHappening): Response<Happening>
+    suspend fun inviteUsersToHappening(@Body inviteUsersToHappening: InviteUsersToHappening): Response<Happening>
 
     @POST("/happenings/acceptHappeningInvite")
-    suspend fun acceptHappeningInvite(acceptHappeningInvite: AcceptHappeningInvite): Response<Happening>
+    suspend fun acceptHappeningInvite(@Body acceptHappeningInvite: AcceptHappeningInvite): Response<Happening>
 
     @POST("/happenings/rejectHappeningInvite")
-    suspend fun rejectHappeningInvite(rejectHappeningInvite: RejectHappeningInvite): Response<Happening>
+    suspend fun rejectHappeningInvite(@Body rejectHappeningInvite: RejectHappeningInvite): Response<Happening>
 }

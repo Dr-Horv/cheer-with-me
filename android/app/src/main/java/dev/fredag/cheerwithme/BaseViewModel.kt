@@ -1,8 +1,10 @@
 package dev.fredag.cheerwithme
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -36,7 +38,7 @@ abstract class BaseViewModel<ViewState, ViewAction, ViewEvent> : ViewModel() {
     init {
         // Collect actions from the actionsFlow and give them to the
         // handleAction method implemented by the the concrete view model
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO + Job()) {
             actionsFlow.collect {
                 handleAction(it)
             }
@@ -70,7 +72,7 @@ abstract class BaseViewModel<ViewState, ViewAction, ViewEvent> : ViewModel() {
     /**
      * This function gets called for every action emitted from the view using the sendAction function
      */
-    protected abstract fun handleAction(it: ViewAction)
+    protected abstract fun handleAction(action: ViewAction)
 
     /**
      * Declare the default value of the view state to initialize the _viewState
