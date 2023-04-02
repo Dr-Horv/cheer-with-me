@@ -7,7 +7,6 @@ let AVATAR_HEIGHT = 40.0
 
 struct FriendsView: View {
     @EnvironmentObject var viewModel: FriendsViewModel
-    // var viewModel: FriendsViewModel
     @State var showAddFriend: Bool = false
 
     var body: some View {
@@ -80,7 +79,7 @@ struct FriendItem<AccessoryView: View>: View {
                     .clipShape(Circle()).padding([.trailing], 20)
             }
 
-            Text(friend.nick)
+            Text(friend.nick).foregroundColor(.primary)
             
             accessoryView
         }
