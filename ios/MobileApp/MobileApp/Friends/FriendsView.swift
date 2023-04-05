@@ -59,7 +59,7 @@ struct FriendItem<AccessoryView: View>: View {
     let friend: User
     let accessoryView: AccessoryView?
     @EnvironmentObject var viewModel: FriendsViewModel
-    
+
     init(friend: User, @ViewBuilder accessoryView: () -> AccessoryView) {
         self.friend = friend
         self.accessoryView = accessoryView()
@@ -80,7 +80,7 @@ struct FriendItem<AccessoryView: View>: View {
             }
 
             Text(friend.nick).foregroundColor(.primary)
-            
+
             accessoryView
         }
     }
@@ -98,8 +98,7 @@ struct FriendRequestItem: View {
     @EnvironmentObject var viewModel: FriendsViewModel
 
     var body: some View {
-        FriendItem(friend: friend, accessoryView: {
-
+        FriendItem(friend: friend) {
             Spacer()
 
             CircleButton(color: Color.gray,
@@ -113,7 +112,7 @@ struct FriendRequestItem: View {
                     await viewModel.befriend(person: friend)
                 }
             }
-        })
+        }
     }
 }
 

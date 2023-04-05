@@ -142,12 +142,12 @@ class EventsViewModel: ObservableObject {
 
         isSearching = false
     }
-    
+
     func inviteToEvent(happening: Happening, users: [User]) async {
         guard let token = google.token else {
             return
         }
-        
+
         let input = InviteToEventInput(happeningId: happening.id, usersToInvite: users.map { $0.id } )
 
         do {

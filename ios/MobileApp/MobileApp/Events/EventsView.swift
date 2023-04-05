@@ -58,7 +58,7 @@ struct SingleEventView: View {
             if let coord = event.location?.coord() {
                 SingleEventMapView(coordinate: coord)
             }
-            
+
             NavigationLink(destination:
                 List {
                     ForEach(event.attendees) { friend in
@@ -68,7 +68,7 @@ struct SingleEventView: View {
             ) {
                 Text("\(event.attendees.count) attending")
             }
-            
+
             NavigationLink(destination:
                 List {
                     ForEach(event.awaiting) { friend in
@@ -80,23 +80,18 @@ struct SingleEventView: View {
             }
         }.navigationTitle(event.name)
         .toolbar {
-               ToolbarItem(placement: .primaryAction) {
-                   Button("Invite friends") {
-                       self.isPresented = true
-                   }
-               }
-           }
+            ToolbarItem(placement: .primaryAction) {
+                Button("Invite friends") {
+                    self.isPresented = true
+                }
+            }
+        }
         .sheet(isPresented: $isPresented, onDismiss: { self.isPresented = false }) {
-            SelectFriendsView(onSubmit: {
-                friends in
-                
+            SelectFriendsView { friends in
                 Task {
                     await viewModel.inviteToEvent(happening: event, users: friends)
                 }
-                
-                
-                
-            })
+            }
         }
     }
 }
@@ -104,10 +99,10 @@ struct SingleEventView: View {
 
 struct SelectFriendsView: View {
     let onSubmit: (_ friends: [User]) -> ()
-    
+
     @EnvironmentObject var viewModel: FriendsViewModel
     @State private var selection: Set<User> = []
-    
+
     private func toggleSelection(selectable: User) {
           if let existingIndex = selection.firstIndex(where: { $0.id == selectable.id }) {
               selection.remove(at: existingIndex)
@@ -115,9 +110,9 @@ struct SelectFriendsView: View {
               selection.insert(selectable)
           }
       }
-    
+
     var body: some View {
-        VStack{
+        VStack {
             List {
                 ForEach(viewModel.friends) { friend in
                        Button(action: { toggleSelection(selectable: friend) }) {
@@ -134,14 +129,12 @@ struct SelectFriendsView: View {
                    }
                }.listStyle(GroupedListStyle())
         }
+
         Button("Submit") {
-            
             let users = Array(selection)
-            
             self.onSubmit(users)
         }
     }
-    
 }
 
 
