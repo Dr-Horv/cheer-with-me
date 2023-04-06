@@ -42,6 +42,7 @@ private func randomProfileImage(gender: Gender = .male) -> String {
     return "https://randomuser.me/api/portraits/\(gender.rawValue)/\(number).jpg"
 }
 
+
 class FriendsViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     

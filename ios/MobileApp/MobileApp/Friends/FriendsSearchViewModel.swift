@@ -25,7 +25,7 @@ class FriendsSearchViewModel: ObservableObject {
         
             let query = query.trimmingCharacters(in: .whitespacesAndNewlines)
             
-            var request = try URLRequest(url: "\(BACKEND_URL)/users/search?nick=\(query)", method: .get, headers: headers)
+            let request = try URLRequest(url: "\(BACKEND_URL)/users/search?nick=\(query)", method: .get, headers: headers)
             
             let (data, _) = try await URLSession.shared.data(for: request)
             let response = try JSONDecoder().decode([User].self, from: data)

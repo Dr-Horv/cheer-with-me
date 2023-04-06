@@ -21,6 +21,7 @@ struct MobileApp: App {
             if viewModel.isLoggedIn {
                 ContentView(viewModel: viewModel, google: auth)
                     .environment(\.urlImageService, urlImageService)
+                    .environmentObject(FriendsViewModel(authProvider: auth))
             } else {
                 LoginView(viewModel: viewModel)
             }

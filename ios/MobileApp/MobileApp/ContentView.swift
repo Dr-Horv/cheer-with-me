@@ -22,7 +22,7 @@ struct ContentView: View {
                     Image(systemName: "calendar")
                     Text("Events")
                 }
-            FriendsView(viewModel: FriendsViewModel(authProvider: google))
+            FriendsView()
                 .tabItem {
                     Image(systemName: "person.2.fill")
                     Text("Friends")

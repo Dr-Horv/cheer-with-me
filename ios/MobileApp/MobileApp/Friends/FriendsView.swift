@@ -4,8 +4,9 @@ import Alamofire
 
 let AVATAR_HEIGHT = 40.0
 
+
 struct FriendsView: View {
-    @ObservedObject var viewModel: FriendsViewModel
+    @EnvironmentObject var viewModel: FriendsViewModel
     @State var showAddFriend: Bool = false
 
     var body: some View {
@@ -14,9 +15,7 @@ struct FriendsView: View {
                 if !viewModel.outgoingFriendRequests.isEmpty {
                     Section(header: Text("SENT FRIEND REQUESTS")) {
                         ForEach(viewModel.outgoingFriendRequests) { friend in
-                            friendItem(friend: friend,
-                                       showButtons: false,
-                                       viewModel: viewModel)
+                            FriendItem(friend)
                         }
                     }.listStyle(GroupedListStyle())
                 }
@@ -24,18 +23,14 @@ struct FriendsView: View {
                 if !viewModel.waitingFriends.isEmpty {
                     Section(header: Text("FRIEND REQUESTS")) {
                         ForEach(viewModel.waitingFriends) { friend in
-                            friendItem(friend: friend,
-                                       showButtons: true,
-                                       viewModel: viewModel)
+                            FriendRequestItem(friend: friend)
                         }
                     }.listStyle(GroupedListStyle())
                 }
 
                 Section(header: Text("FRIENDS")) {
                     ForEach(viewModel.friends) { friend in
-                        friendItem(friend: friend,
-                                   showButtons: false,
-                                   viewModel: viewModel)
+                        FriendItem(friend)
                     }
                 }.listStyle(GroupedListStyle())
 
@@ -60,10 +55,15 @@ struct FriendsView: View {
     }
 }
 
-private struct friendItem: View {
+struct FriendItem<AccessoryView: View>: View {
     let friend: User
-    let showButtons: Bool
-    @State var viewModel: FriendsViewModel
+    let accessoryView: AccessoryView?
+    @EnvironmentObject var viewModel: FriendsViewModel
+
+    init(friend: User, @ViewBuilder accessoryView: () -> AccessoryView) {
+        self.friend = friend
+        self.accessoryView = accessoryView()
+    }
 
     var body: some View {
         HStack {
@@ -79,21 +79,37 @@ private struct friendItem: View {
                     .clipShape(Circle()).padding([.trailing], 20)
             }
 
-            Text(friend.nick)
+            Text(friend.nick).foregroundColor(.primary)
 
-            if showButtons {
-                Spacer()
+            accessoryView
+        }
+    }
+}
 
-                CircleButton(color: Color.gray,
-                             icon: .cross) {
-                    withAnimation {
-                        viewModel.ignore(person: friend)
-                    }
+extension FriendItem where AccessoryView == EmptyView {
+  init(_ friend: User) {
+      self.init(friend: friend, accessoryView: { EmptyView() })
+  }
+}
+
+
+struct FriendRequestItem: View {
+    let friend: User
+    @EnvironmentObject var viewModel: FriendsViewModel
+
+    var body: some View {
+        FriendItem(friend: friend) {
+            Spacer()
+
+            CircleButton(color: Color.gray,
+                         icon: .cross) {
+                withAnimation {
+                    viewModel.ignore(person: friend)
                 }
-                CircleButton(color: Color.orange, icon: .check) {
-                    Task {
-                        await viewModel.befriend(person: friend)
-                    }
+            }
+            CircleButton(color: Color.orange, icon: .check) {
+                Task {
+                    await viewModel.befriend(person: friend)
                 }
             }
         }
@@ -130,9 +146,7 @@ private struct FriendSearchView: View {
 
                 Section {
                     ForEach(viewModel.results) { friend in
-                        friendItem(friend: friend,
-                                   showButtons: true,
-                                   viewModel: viewModel.parentViewModel)
+                        FriendRequestItem(friend: friend)
                     }
                 }
             }
@@ -178,11 +192,12 @@ private struct CircleButton: View {
     }
 }
 
+/*
 struct FriendsView_Previews: PreviewProvider {
     static var previews: some View {
         FriendsView(viewModel: .example)
     }
-}
+}*/
 
 struct FriendsSearchView_Previews: PreviewProvider {
     static var previews: some View {
