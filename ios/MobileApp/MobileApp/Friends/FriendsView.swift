@@ -192,12 +192,12 @@ private struct CircleButton: View {
     }
 }
 
-/*
 struct FriendsView_Previews: PreviewProvider {
     static var previews: some View {
-        FriendsView(viewModel: .example)
+        FriendsView()
+            .environmentObject(FriendsViewModel.example)
     }
-}*/
+}
 
 struct FriendsSearchView_Previews: PreviewProvider {
     static var previews: some View {
