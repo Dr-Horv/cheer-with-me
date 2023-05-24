@@ -11,10 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -82,12 +79,12 @@ public fun currentRoute(navController: NavHostController): String? {
 fun Router(navController: NavHostController) {
 
     val loggedIn = UserState.loggedIn.observeAsState()
-    Scaffold(bottomBar = {
-        Log.d("Bottombar render", "${navController.currentBackStackEntry?.destination?.route}")
-        if (currentRoute(navController) != AuthenticatedScreen.Login.route) {
-            NavBar(navController)
-        }
-    }) {
+    Scaffold(
+        topBar = {
+            if (currentRoute(navController) != AuthenticatedScreen.Login.route) {
+                NavBar(navController)
+            }
+        }) {
         Box(modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 58.dp)) {
             NavHost(
                 navController = navController,
@@ -171,55 +168,3 @@ fun clearAccessToken(context: Context) {
     BackendModule.clearAccessKey(context)
 }
 
-@Composable
-fun NavBar(navController: NavHostController) {
-    val backStackState = navController.currentBackStackEntryAsState()
-    Log.d("NavBar", "Current back stack entry ${backStackState.value}")
-    Column(verticalArrangement = Arrangement.Bottom) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            NavButton(
-                painterResource(R.drawable.ic_beer_black_24dp),
-                AuthenticatedScreen.Checkin,
-                navController
-            )
-            NavButton(
-                painterResource(R.drawable.ic_map_black_24dp),
-                AuthenticatedScreen.Map,
-                navController
-            )
-            NavButton(
-                painterResource(R.drawable.ic_calendar_black_24dp),
-                AuthenticatedScreen.Happenings,
-                navController
-            )
-            NavButton(
-                painterResource(R.drawable.ic_people_black_24dp),
-                AuthenticatedScreen.Friends,
-                navController
-            )
-            NavButton(
-                painterResource(R.drawable.ic_profile_black_24dp),
-                AuthenticatedScreen.Profile,
-                navController
-            )
-        }
-
-        Divider(color = Color.Gray, thickness = 1.dp)
-    }
-
-
-}
-
-@Composable
-fun NavButton(
-    painter: Painter,
-    targetRoute: AuthenticatedScreen,
-    navController: NavHostController
-) {
-    Button(
-        onClick = { navController.navigate(targetRoute.route) },
-        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Transparent)
-    ) {
-        Icon(painter = painter, contentDescription = targetRoute.route, modifier = Modifier)
-    }
-}
